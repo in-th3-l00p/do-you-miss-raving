@@ -13,6 +13,10 @@ Game::Game():
 }
 
 void Game::run() {
+    sf::Texture texture;
+    texture.loadFromFile("../capu ba.png");
+    sf::Sprite sprite;
+    sprite.setTexture(texture);
     while (window.isOpen()) {
         sf::Event event;
         while (window.pollEvent(event)) {
@@ -24,7 +28,7 @@ void Game::run() {
         }
 
         window.clear();
-
+        window.draw(sprite);
         window.display(); // update
     }
 }
