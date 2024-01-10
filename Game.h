@@ -7,10 +7,13 @@
 
 #include <SFML/Window.hpp>
 #include <SFML/Graphics.hpp>
+#include <memory>
+#include "Scene.h"
 
 class Game {
 private:
     sf::RenderWindow window;
+    std::unique_ptr<engine::Scene> scene;
 
 public:
     explicit Game();

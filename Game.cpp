@@ -10,13 +10,12 @@ Game::Game():
     sf::VideoMode(config::DEFAULT_WIDTH, config::DEFAULT_HEIGHT),
     "Do you miss raving?"
     ) {
+    scene = std::unique_ptr<engine::Scene>(new engine::TestScene(window));
 }
 
 void Game::run() {
-    sf::Texture texture;
-    texture.loadFromFile("../capu ba.png");
-    sf::Sprite sprite;
-    sprite.setTexture(texture);
+    sf::Clock deltaClock;
+
     while (window.isOpen()) {
         sf::Event event;
         while (window.pollEvent(event)) {
@@ -27,8 +26,9 @@ void Game::run() {
             }
         }
 
+        sf::Time dt = deltaClock.restart();
         window.clear();
-        window.draw(sprite);
+        scene->update(dt.asSeconds());
         window.display(); // update
     }
 }
