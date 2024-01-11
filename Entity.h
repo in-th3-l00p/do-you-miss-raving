@@ -12,9 +12,11 @@ namespace engine {
     class Entity {
     private:
         ull id;
+        ull zIndex = 0;
 
     public:
         Entity();
+        virtual ~Entity() = default;
 
         virtual void render(sf::RenderWindow& window) = 0;
         virtual void update(float deltaTime) = 0;
@@ -23,6 +25,10 @@ namespace engine {
         bool operator<(const Entity& other) const {
             return id < other.id;
         }
+
+        ull getZIndex() const;
+
+        void setZIndex(ull zIndex);
     };
 
 } // engine

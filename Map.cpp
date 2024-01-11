@@ -11,6 +11,14 @@ namespace game {
             row.resize(height);
     }
 
+    const std::vector<std::vector<Tile>> &Map::getTiles() const {
+        return tiles;
+    }
+
+    const ull Map::getTileSize() const {
+        return tileSize;
+    }
+
     TestMap::TestMap(ull width, ull height, ull tileSize) : Map(width, height, tileSize) {
         // Set the color of the tiles in the first and last row to red
         for (ull i = 0; i < width; ++i) {

@@ -10,7 +10,11 @@ add_executable(raygame main.cpp
         Entity.cpp
         Entity.h
         Map.cpp
-        Map.h)
+        Map.h
+        Player.cpp
+        Player.h
+        Math.cpp
+        Math.h)
 
 find_package(SFML COMPONENTS system window graphics CONFIG REQUIRED)
 target_link_libraries(raygame PRIVATE sfml-system sfml-network sfml-graphics sfml-window)

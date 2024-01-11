@@ -24,6 +24,10 @@ namespace game {
     public:
         Map(ull width, ull height, ull tileSize = config::DEFAULT_TILESIZE);
         virtual ~Map() = default;
+
+        const std::vector<std::vector<Tile>> &getTiles() const;
+
+        const ull getTileSize() const;
     };
 
     class TestMap: public Map {

@@ -7,7 +7,9 @@
 
 #include <iostream>
 #include <set>
+#include <list>
 #include <SFML/Graphics/RenderWindow.hpp>
+#include <memory>
 #include "Entity.h"
 
 namespace engine {
@@ -16,16 +18,14 @@ namespace engine {
     protected:
         sf::RenderWindow& window;
         std::set<std::unique_ptr<Entity>> container;
+        std::list<Entity*> renderQueue;
+
+        void addEntity(std::unique_ptr<Entity> entity);
 
     public:
         explicit Scene(sf::RenderWindow &window);
 
-        virtual void update(float deltaTime) {
-            for (auto &entity : container) {
-                entity->update(deltaTime);
-                entity->render(window);
-            }
-        }
+        virtual void update(float deltaTime);
     };
 
     class TestScene: public Scene {

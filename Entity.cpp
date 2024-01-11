@@ -17,4 +17,12 @@ namespace engine {
     ull Entity::getId() const {
         return id;
     }
+
+    ull Entity::getZIndex() const {
+        return zIndex;
+    }
+
+    void Entity::setZIndex(ull zIndex) {
+        Entity::zIndex = zIndex;
+    }
 } // engine
