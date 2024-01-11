@@ -86,8 +86,8 @@ namespace game {
             engine::math::Vec2<float> rayDir = player.getDirection() + player.getCameraPlane() * cameraX;
 
             engine::math::Vec2<int> mapTile = {
-                    (int)(std::floor(player.getPosition().x / (float)map.getTileSize())),
-                    (int)(std::floor(player.getPosition().y / (float)map.getTileSize()))
+                    (int) (std::floor(player.getPosition().x / (float) map.getTileSize())),
+                    (int) (std::floor(player.getPosition().y / (float) map.getTileSize()))
             };
             engine::math::Vec2<float> horizontalFirstDist, verticalFirstDist;
             engine::math::Vec2<float> horizontalDeltaDist, verticalDeltaDist;
@@ -123,49 +123,63 @@ namespace game {
             engine::math::Vec2<int> verticalTile = mapTile;
             verticalTile.y += down ? 1 : -1;
 
-            while (
-                    verticalTile.x >= 0 & verticalTile.x < map.getWidth() &&
-                    verticalTile.y >= 0 & verticalTile.y < map.getHeight() &&
-                    map.getTiles()[verticalTile.y][verticalTile.x].empty &&
-                    horizontalTile.x >= 0 & horizontalTile.x < map.getWidth() &&
-                    horizontalTile.y >= 0 & horizontalTile.y < map.getHeight() &&
-                    map.getTiles()[horizontalTile.y][horizontalTile.x].empty
-                    ) {
-                horizontal += horizontalDeltaDist;
-                if (right && horizontalTile.x < map.getWidth() - 1)
-                    horizontalTile.x++;
-                else if (!right && horizontalTile.x > 0)
-                    horizontalTile.x--;
+            double horizontalDistance = std::numeric_limits<double>::infinity();
+            double verticalDistance = std::numeric_limits<double>::infinity();
+
+            while (verticalTile.y >= 0 && verticalTile.y < map.getHeight() &&
+                    verticalTile.x>=0 && verticalTile.x<map.getWidth() &&
+                   map.getTiles()[verticalTile.y][verticalTile.x].empty) {
+
                 vertical += verticalDeltaDist;
+
                 if (down && verticalTile.y < map.getHeight() - 1)
                     verticalTile.y++;
                 else if (!down && verticalTile.y > 0)
                     verticalTile.y--;
             }
 
-            double horizontalDistance = sqrt( (player.getPosition().x - horizontal.x) * (player.getPosition().x - horizontal.x) + (player.getPosition().y - horizontal.y) * (player.getPosition().y - horizontal.y));
-            double verticalDistance = sqrt( (player.getPosition().x - vertical.x) * (player.getPosition().x - vertical.x) + (player.getPosition().y - vertical.y) * (player.getPosition().y - vertical.y));
-            if (horizontalDistance < verticalDistance && !map.getTiles()[horizontalTile.y][horizontalTile.x].empty) {
-                sf::VertexArray ray(sf::Lines, 2);
-                ray[0].position = {player.getPosition().x, player.getPosition().y};
-                ray[0].color = sf::Color::Green;
-                ray[1].position = {horizontal.x, horizontal.y};
-                ray[1].color = sf::Color::Green;
-                window.draw(ray);
-            } else if (!map.getTiles()[verticalTile.y][verticalTile.x].empty) {
-                sf::VertexArray ray(sf::Lines, 2);
-                ray[0].position = {player.getPosition().x, player.getPosition().y};
-                ray[0].color = sf::Color::Green;
-                ray[1].position = {vertical.x, vertical.y};
-                ray[1].color = sf::Color::Green;
-                window.draw(ray);
+            verticalDistance = sqrt((player.getPosition().x - vertical.x) * (player.getPosition().x - vertical.x) +
+                                    (player.getPosition().y - vertical.y) * (player.getPosition().y - vertical.y));
+
+            while (horizontalTile.x >= 0 && horizontalTile.x < map.getWidth() &&
+                    horizontalTile.y >= 0 && horizontalTile.y < map.getHeight() &&
+                   map.getTiles()[horizontalTile.y][horizontalTile.x].empty) {
+
+                horizontal += horizontalDeltaDist;
+
+                if (right && horizontalTile.x < map.getWidth() - 1)
+                    horizontalTile.x++;
+                else if (!right && horizontalTile.x > 0)
+                    horizontalTile.x--;
             }
 
-//            std::cout << verticalFirstDist.x << ' ' << verticalFirstDist.y << '\n';
-//            std::cout << verticalDeltaDist.x << ' ' << verticalDeltaDist.y << '\n';
-//            std::cout << '\n';
+            horizontalDistance = sqrt((player.getPosition().x - horizontal.x) * (player.getPosition().x - horizontal.x) +
+                                      (player.getPosition().y - horizontal.y) * (player.getPosition().y - horizontal.y));
+
+
+
+            //double horizontalDistance = sqrt( (player.getPosition().x - horizontal.x) * (player.getPosition().x - horizontal.x) + (player.getPosition().y - horizontal.y) * (player.getPosition().y - horizontal.y));
+            //double verticalDistance = sqrt( (player.getPosition().x - vertical.x) * (player.getPosition().x - vertical.x) + (player.getPosition().y - vertical.y) * (player.getPosition().y - vertical.y));
+
+            double minDistance = std::min(horizontalDistance, verticalDistance);
+
+                if (!map.getTiles()[horizontalTile.y][horizontalTile.x].empty && minDistance == horizontalDistance) {
+                    sf::VertexArray ray(sf::Lines, 2);
+                    ray[0].position = {player.getPosition().x, player.getPosition().y};
+                    ray[0].color = sf::Color::Green;
+                    ray[1].position = {horizontal.x, horizontal.y};
+                    ray[1].color = sf::Color::Green;
+                    window.draw(ray);
+                } else if (!map.getTiles()[verticalTile.y][verticalTile.x].empty && minDistance == verticalDistance) {
+                    sf::VertexArray ray(sf::Lines, 2);
+                    ray[0].position = {player.getPosition().x, player.getPosition().y};
+                    ray[0].color = sf::Color::Green;
+                    ray[1].position = {vertical.x, vertical.y};
+                    ray[1].color = sf::Color::Green;
+                    window.draw(ray);
+                }
+            }
         }
-    }
 
     void Raycaster::update(float deltaTime) {
 
