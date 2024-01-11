@@ -23,11 +23,13 @@ namespace game {
 
     public:
         Map(ull width, ull height, ull tileSize = config::DEFAULT_TILESIZE);
-        virtual ~Map() = default;
+        ~Map() override = default;
 
-        const std::vector<std::vector<Tile>> &getTiles() const;
+        [[nodiscard]] const std::vector<std::vector<Tile>> &getTiles() const;
 
-        const ull getTileSize() const;
+        [[nodiscard]] ull getTileSize() const;
+        [[nodiscard]] ull getWidth() const;
+        [[nodiscard]] ull getHeight() const;
     };
 
     class TestMap: public Map {

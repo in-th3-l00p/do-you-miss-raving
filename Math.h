@@ -67,6 +67,10 @@ namespace engine {
             bool operator!=(const Vec2& rhs) const {
                 return *this != rhs;
             }
+
+            float getAngle() const {
+                return atan2(y, x);
+            }
         };
 
         template<typename T>

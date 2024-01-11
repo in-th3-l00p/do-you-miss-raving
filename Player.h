@@ -15,6 +15,7 @@ namespace game {
     private:
         engine::math::Vec2<float> position;
         engine::math::Vec2<float> direction;
+        engine::math::Vec2<float> cameraPlane = { 0, 0.66f };
         float radius, speed, rotateSpeed;
 
     public:
@@ -31,6 +32,7 @@ namespace game {
 
         [[nodiscard]] const engine::math::Vec2<float> &getPosition() const;
         [[nodiscard]] const engine::math::Vec2<float> &getDirection() const;
+        [[nodiscard]] const engine::math::Vec2<float> &getCameraPlane() const;
         [[nodiscard]] float getRadius() const;
         [[nodiscard]] float getSpeed() const;
         [[nodiscard]] float getRotateSpeed() const;
@@ -40,8 +42,6 @@ namespace game {
     private:
         Player& player;
         Map& map;
-
-        engine::math::Vec2<float> cameraPlane = { 0, 0.66f };
 
     public:
         Raycaster(Player& player, Map& map);

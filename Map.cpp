@@ -15,8 +15,16 @@ namespace game {
         return tiles;
     }
 
-    const ull Map::getTileSize() const {
+    ull Map::getTileSize() const {
         return tileSize;
+    }
+
+    ull Map::getWidth() const {
+        return tiles[0].size();
+    }
+
+    ull Map::getHeight() const {
+        return tiles.size();
     }
 
     TestMap::TestMap(ull width, ull height, ull tileSize) : Map(width, height, tileSize) {
