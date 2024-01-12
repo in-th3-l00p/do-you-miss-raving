@@ -5,13 +5,13 @@
 #include <SFML/Graphics.hpp>
 #include "Raycaster.h"
 
-namespace engine {
-    engine::Raycaster::Raycaster(game::Player &player, game::Map &map):
+namespace utils {
+    utils::Raycaster::Raycaster(game::Player &player, game::Map &map):
             player(player), map(map) {
         setZIndex(10);
     }
 
-    void engine::Raycaster::render(sf::RenderWindow &window) {
+    void utils::Raycaster::render(sf::RenderWindow &window) {
         int windowWidth = static_cast<int>(window.getSize().x) + 1;
         int windowHeight = static_cast<int>(window.getSize().y);
         sf::RectangleShape floor, ceiling;
@@ -38,9 +38,9 @@ namespace engine {
             double distance;
             if (horizontal.distance < vertical.distance) {
                 color = map.getTiles()[horizontal.tile.y][horizontal.tile.x].color;
-                color.r = (sf::Uint8) ((float) color.r * constants::HORIZONTAL_DARKER_MUTLIPLIER);
-                color.g = (sf::Uint8) ((float) color.g * constants::HORIZONTAL_DARKER_MUTLIPLIER);
-                color.b = (sf::Uint8) ((float) color.b * constants::HORIZONTAL_DARKER_MUTLIPLIER);
+                color.r = (sf::Uint8) ((float) color.r * utils::constants::HORIZONTAL_DARKER_MUTLIPLIER);
+                color.g = (sf::Uint8) ((float) color.g * utils::constants::HORIZONTAL_DARKER_MUTLIPLIER);
+                color.b = (sf::Uint8) ((float) color.b * utils::constants::HORIZONTAL_DARKER_MUTLIPLIER);
                 distance = horizontal.distance;
             } else {
                 color = map.getTiles()[vertical.tile.y][vertical.tile.x].color;
@@ -66,7 +66,7 @@ namespace engine {
         }
     }
 
-    void engine::Raycaster::update(float deltaTime) {
+    void utils::Raycaster::update(float deltaTime) {
 
     }
 
@@ -152,4 +152,4 @@ namespace engine {
         intersection.tile = currentTile;
         return intersection;
     }
-} // engine
+} // utils

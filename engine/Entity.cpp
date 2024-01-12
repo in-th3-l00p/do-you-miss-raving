@@ -4,7 +4,7 @@
 
 #include "Entity.h"
 
-namespace engine {
+namespace utils {
     static ull generateId() {
         static ull id = 0;
         return id++;
@@ -25,4 +25,4 @@ namespace engine {
     void Entity::setZIndex(ull zIndex) {
         Entity::zIndex = zIndex;
     }
-} // engine
+} // utils

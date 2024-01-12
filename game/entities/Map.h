@@ -16,13 +16,13 @@ namespace game {
         bool empty = true;
     };
 
-    class Map: public engine::Entity {
+    class Map: public utils::Entity {
     protected:
         std::vector<std::vector<Tile>> tiles;
         const ull tileSize;
 
     public:
-        Map(ull width, ull height, ull tileSize = constants::DEFAULT_TILESIZE);
+        Map(ull width, ull height, ull tileSize = utils::constants::DEFAULT_TILESIZE);
         ~Map() override = default;
 
         [[nodiscard]] const std::vector<std::vector<Tile>> &getTiles() const;
@@ -34,7 +34,7 @@ namespace game {
 
     class TestMap: public Map {
     public:
-        TestMap(ull width, ull height, ull tileSize = constants::DEFAULT_TILESIZE);
+        TestMap(ull width, ull height, ull tileSize = utils::constants::DEFAULT_TILESIZE);
         void render(sf::RenderWindow& window) override;
         void update(float deltaTime) override;
     };

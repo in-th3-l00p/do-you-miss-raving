@@ -12,7 +12,7 @@
 
 using ull = unsigned long long;
 
-namespace constants {
+namespace utils::constants {
     // graphics constants
     inline constexpr int DEFAULT_WIDTH = 1280;
     inline constexpr int DEFAULT_HEIGHT = 720;

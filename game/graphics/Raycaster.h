@@ -8,14 +8,14 @@
 #include "../entities/Player.h"
 #include "../entities/Map.h"
 
-namespace engine {
+namespace utils {
     struct Intersection {
         double distance;
         math::Vec2<float> hit;
         math::Vec2<int> tile;
     };
 
-    class Raycaster: public engine::Entity {
+    class Raycaster: public utils::Entity {
     private:
         game::Player& player;
         game::Map& map;
@@ -41,6 +41,6 @@ namespace engine {
 
         void update(float deltaTime) override;
     };
-} // engine
+} // utils
 
 #endif //RAYGAME_RAYCASTER_H

@@ -12,7 +12,7 @@
 #include <memory>
 #include "Entity.h"
 
-namespace engine {
+namespace utils {
     // base virtual class
     class Scene {
     protected:
@@ -42,6 +42,6 @@ namespace engine {
 
         void update(float deltaTime) override;
     };
-} // engine
+} // utils
 
 #endif //RAYGAME_SCENE_H

@@ -4,5 +4,5 @@
 
 #include "Math.h"
 
-namespace engine {
-} // engine
+namespace utils {
+} // utils

@@ -10,7 +10,7 @@
 #define DEG_TO_RAD(angle) (angle * M_PI / 180.0f)
 #define RAD_TO_DEG(angle) (angle * 180.0f / M_PI)
 
-namespace engine::math {
+namespace utils::math {
     template <typename T>
     struct Mat2;
 

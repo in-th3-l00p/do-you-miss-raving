@@ -30,7 +30,7 @@ namespace game::ui {
         sf::Font& getDefault();
     };
 
-    class MenuScene: public engine::Scene {
+    class MenuScene: public utils::Scene {
     public:
         explicit MenuScene(
                 sf::RenderWindow &window,

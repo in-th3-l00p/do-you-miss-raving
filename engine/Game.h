@@ -13,7 +13,7 @@
 class Game {
 private:
     sf::RenderWindow window;
-    std::unique_ptr<engine::Scene> scene;
+    std::unique_ptr<utils::Scene> scene;
 
 public:
     explicit Game();

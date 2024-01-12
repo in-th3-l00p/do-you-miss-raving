@@ -17,7 +17,7 @@ namespace game {
         }
 
         sf::Font &FontLoader::getDefault() {
-            return getFont(constants::DEFAULT_FONT);
+            return getFont(utils::constants::DEFAULT_FONT);
         }
 
         MenuScene::MenuScene(
