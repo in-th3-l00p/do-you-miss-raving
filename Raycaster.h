@@ -9,14 +9,32 @@
 #include "Map.h"
 
 namespace engine {
+    struct Intersection {
+        double distance;
+        math::Vec2<float> hit;
+        math::Vec2<int> tile;
+    };
+
     class Raycaster: public engine::Entity {
     private:
         game::Player& player;
         game::Map& map;
 
+        // dda for two different sides
+        Intersection getHorizontalDistance(
+                double cameraX,
+                math::Vec2<float> rayDir,
+                math::Vec2<int> mapTile
+                );
+        Intersection getVerticalDistance(
+                double cameraX,
+                math::Vec2<float> rayDir,
+                math::Vec2<int> mapTile
+                );
+
     public:
         Raycaster(game::Player& player, game::Map& map);
-        ~Raycaster() {}
+        ~Raycaster() override {}
 
         void update(float &deltaTime) {}
         void render(sf::RenderWindow& window) override;

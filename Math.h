@@ -10,107 +10,109 @@
 #define DEG_TO_RAD(angle) (angle * M_PI / 180.0f)
 #define RAD_TO_DEG(angle) (angle * 180.0f / M_PI)
 
-namespace engine {
-    namespace math {
-        template <typename T>
-        struct Mat2;
+namespace engine::math {
+    template <typename T>
+    struct Mat2;
 
-        template<typename T>
-        struct Vec2 {
-            T x, y;
+    template<typename T>
+    struct Vec2 {
+        T x, y;
 
-            // Constructor
-            Vec2(T x = 0, T y = 0) : x(x), y(y) {}
+        // Constructor
+        Vec2(T x = 0, T y = 0) : x(x), y(y) {}
 
-            Vec2 operator+=(const Vec2& vec) {
-                x += vec.x;
-                y += vec.y;
-                return *this;
+        Vec2 operator+=(const Vec2& vec) {
+            x += vec.x;
+            y += vec.y;
+            return *this;
+        }
+        Vec2 operator-=(const Vec2& vec) {
+            x -= vec.x;
+            y -= vec.y;
+            return *this;
+        }
+        // Operator overloading
+        Vec2 operator+(const Vec2& vec) const {
+            return Vec2(x + vec.x, y + vec.y);
+        }
+
+        Vec2 operator-(const Vec2& vec) const {
+            return Vec2(x - vec.x, y - vec.y);
+        }
+
+        Vec2 operator*(T scalar) const {
+            return Vec2(x * scalar, y * scalar);
+        }
+
+        Vec2 operator*(const Mat2<T>& mat) const {
+            return Vec2(
+                    x * mat.m[0][0] + y * mat.m[1][0],
+                    x * mat.m[0][1] + y * mat.m[1][1]
+            );
+        }
+
+        Vec2 operator/(T scalar) const {
+            if (scalar != 0) {
+                return Vec2(x / scalar, y / scalar);
+            } else {
+                return Vec2();
             }
-            Vec2 operator-=(const Vec2& vec) {
-                x -= vec.x;
-                y -= vec.y;
-                return *this;
-            }
-            // Operator overloading
-            Vec2 operator+(const Vec2& vec) const {
-                return Vec2(x + vec.x, y + vec.y);
-            }
+        }
 
-            Vec2 operator-(const Vec2& vec) const {
-                return Vec2(x - vec.x, y - vec.y);
-            }
+        bool operator==(const Vec2& rhs) const {
+            return x == rhs.x && y == rhs.y;
+        }
 
-            Vec2 operator*(T scalar) const {
-                return Vec2(x * scalar, y * scalar);
-            }
+        bool operator!=(const Vec2& rhs) const {
+            return *this != rhs;
+        }
 
-            Vec2 operator*(const Mat2<T>& mat) const {
-                return Vec2(
-                        x * mat.m[0][0] + y * mat.m[1][0],
-                        x * mat.m[0][1] + y * mat.m[1][1]
-                );
-            }
+        [[nodiscard]] float getAngle() const {
+            return std::atan2(y, x);
+        }
 
-            Vec2 operator/(T scalar) const {
-                if (scalar != 0) {
-                    return Vec2(x / scalar, y / scalar);
-                } else {
-                    return Vec2();
-                }
-            }
+        float getDistance(const Vec2 other) const {
+            return std::sqrt((x - other.x) * (x - other.x) + (y - other.y) * (y - other.y));
+        }
+    };
 
-            bool operator==(const Vec2& rhs) const {
-                return x == rhs.x && y == rhs.y;
-            }
+    template<typename T>
+    struct Mat2 {
+        T m[2][2];
 
-            bool operator!=(const Vec2& rhs) const {
-                return *this != rhs;
-            }
+        // Constructor
+        explicit Mat2(T m00 = 1, T m01 = 0, T m10 = 0, T m11 = 1) {
+            m[0][0] = m00; m[0][1] = m01;
+            m[1][0] = m10; m[1][1] = m11;
+        }
 
-            float getAngle() const {
-                return atan2(y, x);
-            }
-        };
-
-        template<typename T>
-        struct Mat2 {
-            T m[2][2];
-
-            // Constructor
-            explicit Mat2(T m00 = 1, T m01 = 0, T m10 = 0, T m11 = 1) {
-                m[0][0] = m00; m[0][1] = m01;
-                m[1][0] = m10; m[1][1] = m11;
-            }
-
-            // Operator overloading
-            Mat2 operator*(const Mat2& rhs) const {
-                Mat2 result;
-                for (int i = 0; i < 2; ++i) {
-                    for (int j = 0; j < 2; ++j) {
-                        result.m[i][j] = 0;
-                        for (int k = 0; k < 2; ++k) {
-                            result.m[i][j] += m[i][k] * rhs.m[k][j];
-                        }
+        // Operator overloading
+        Mat2 operator*(const Mat2& rhs) const {
+            Mat2 result;
+            for (int i = 0; i < 2; ++i) {
+                for (int j = 0; j < 2; ++j) {
+                    result.m[i][j] = 0;
+                    for (int k = 0; k < 2; ++k) {
+                        result.m[i][j] += m[i][k] * rhs.m[k][j];
                     }
                 }
-                return result;
             }
-
-            Vec2<T> operator*(const Vec2<T>& vec) const {
-                return Vec2<T>(
-                        m[0][0] * vec.x + m[0][1] * vec.y,
-                        m[1][0] * vec.x + m[1][1] * vec.y
-                );
-            }
-        };
-
-        inline Mat2<float> getRotationMatrix(float angle) {
-            return Mat2<float>(
-                    cos(angle), -sin(angle),
-                    sin(angle), cos(angle)
-                    );
+            return result;
         }
+
+        Vec2<T> operator*(const Vec2<T>& vec) const {
+            return Vec2<T>(
+                    m[0][0] * vec.x + m[0][1] * vec.y,
+                    m[1][0] * vec.x + m[1][1] * vec.y
+            );
+        }
+    };
+
+    inline Mat2<float> getRotationMatrix(float angle) {
+        return Mat2<float>(
+                std::cos(angle), -std::sin(angle),
+                std::sin(angle), std::cos(angle)
+                );
     }
 }
 
