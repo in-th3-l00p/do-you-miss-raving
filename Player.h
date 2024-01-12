@@ -38,20 +38,6 @@ namespace game {
         [[nodiscard]] float getRotateSpeed() const;
     };
 
-    class Raycaster: public engine::Entity {
-    private:
-        Player& player;
-        Map& map;
-
-    public:
-        Raycaster(Player& player, Map& map);
-        ~Raycaster() {}
-
-        void update(float &deltaTime) {}
-        void render(sf::RenderWindow& window) override;
-
-        void update(float deltaTime) override;
-    };
 } // game
 
 #endif //RAYGAME_PLAYER_H

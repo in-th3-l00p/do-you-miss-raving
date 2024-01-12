@@ -5,6 +5,7 @@
 #include "Scene.h"
 #include "Map.h"
 #include "Player.h"
+#include "Raycaster.h"
 
 namespace engine {
     Scene::Scene(sf::RenderWindow &window) : window(window) {}
@@ -40,7 +41,7 @@ namespace engine {
     TestScene::TestScene(sf::RenderWindow &window) : Scene(window) {
         std::unique_ptr<engine::Entity> map = std::make_unique<game::TestMap>(10, 10);
         std::unique_ptr<engine::Entity> player = std::make_unique<game::Player>();
-        auto raycaster = std::make_unique<game::Raycaster>(
+        auto raycaster = std::make_unique<Raycaster>(
                 dynamic_cast<game::Player&>(*player),
                 dynamic_cast<game::Map&>(*map)
                 );
