@@ -52,7 +52,7 @@ namespace game {
                 tile.setSize(sf::Vector2f(tileSize, tileSize));
                 tile.setPosition(i * tileSize, j * tileSize);
                 tile.setFillColor(tiles[i][j].color);
-                window.draw(tile);
+//                window.draw(tile);
             }
         }
     }

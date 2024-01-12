@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 3.27)
+cmake_minimum_required(VERSION 3.26)
 project(raygame)
 
 add_compile_definitions(SFML_STATIC)
@@ -17,9 +17,5 @@ add_executable(raygame main.cpp
         Math.cpp
         Math.h)
 
-set(SFML_STATIC_LIBRARIES TRUE)
-set(SFML_DIR C:/SFML/SFML-2.6.1/lib/cmake/SFML)
 find_package(SFML COMPONENTS system window graphics CONFIG REQUIRED)
-
-include_directories(C:/SFML/SFML-2.6.1/include)
 target_link_libraries(raygame PRIVATE sfml-system sfml-network sfml-graphics sfml-window)

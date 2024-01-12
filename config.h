@@ -21,7 +21,7 @@ namespace config {
     inline constexpr float DEFAULT_PLAYER_DIR_X = 1;
     inline constexpr float DEFAULT_PLAYER_DIR_Y = 0;
     inline constexpr float DEFAULT_PLAYER_RADIUS = 20;
-    inline constexpr float DEFAULT_PLAYER_SPEED = 30;
+    inline constexpr float DEFAULT_PLAYER_SPEED = 100;
     inline constexpr float DEFAULT_PLAYER_ROTATE_SPEED = DEG_TO_RAD(120);
     inline constexpr float DEFAULT_FOV = DEG_TO_RAD(60);
 }

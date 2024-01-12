@@ -23,6 +23,10 @@ void Game::run() {
                 case sf::Event::Closed:
                     window.close();
                     break;
+                case sf::Event::Resized:
+                    sf::FloatRect visibleArea(0, 0, event.size.width, event.size.height);
+                    window.setView(sf::View(visibleArea));
+                    break;
             }
         }
 
