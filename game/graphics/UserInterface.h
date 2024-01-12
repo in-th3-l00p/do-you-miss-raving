@@ -8,8 +8,11 @@
 #include <SFML/Graphics.hpp>
 #include "../../engine/Entity.h"
 #include "../../engine/Scene.h"
+#include "../../utils/Constants.h"
+#include "../../utils/Paths.h"
 
 namespace game::ui {
+    // singleton class that loads fonts automatically and stores them once they are loaded
     class FontLoader {
     private:
         static FontLoader* instance;
@@ -30,7 +33,43 @@ namespace game::ui {
         sf::Font& getDefault();
     };
 
-    class MenuScene: public utils::Scene {
+    inline FontLoader* FontLoader::instance = nullptr;
+
+    class Button: public engine::Entity {
+    private:
+        sf::RectangleShape shape;
+        sf::Text text;
+
+        sf::Color backgroundColor;
+        sf::Color textColor;
+
+        void initText(
+                const std::string& text,
+                const sf::Font& font,
+                unsigned int characterSize,
+                const sf::Color& color
+                );
+
+    public:
+        Button(
+                float x, float y,
+                float width, float height,
+                const std::string& text,
+                const sf::Font& font,
+                unsigned int characterSize,
+                const sf::Color& backgroundColor,
+                const sf::Color& textColor
+                );
+
+        void render(sf::RenderWindow& window) override;
+        void update(float deltaTime) override;
+
+        bool isPressed(const sf::Vector2f& mousePos) const;
+    };
+
+    class MenuScene: public engine::Scene {
+    private:
+        Button* startButton;
     public:
         explicit MenuScene(
                 sf::RenderWindow &window,

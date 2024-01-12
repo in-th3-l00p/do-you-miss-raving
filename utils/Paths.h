@@ -26,10 +26,10 @@
  * implementing path operations for accessing them easier.
  * there can appear many problems especially when the executable is run from another directory.
  * */
-namespace utils::paths {
+namespace engine::paths {
     namespace fs = std::filesystem;
 
-    std::string getExecutablePath() {
+    static std::string getExecutablePath() {
         char path[PATH_MAX];
         #ifdef _WIN32
             GetModuleFileNameA(NULL, path, PATH_MAX);
@@ -42,12 +42,13 @@ namespace utils::paths {
         return std::string{ path };
     }
 
-    std::string getExecutableDir() {
+    static std::string getExecutableDir() {
         std::string path = getExecutablePath();
         return path.substr(0, path.find_last_of("\\/"));
     }
 
     inline const fs::path RESOURCES_DIR = fs::path(getExecutableDir()).append("resources");
+    inline const fs::path FONTS_DIR = RESOURCES_DIR / "fonts";
 }
 
 #endif //RAYGAME_PATHS_H

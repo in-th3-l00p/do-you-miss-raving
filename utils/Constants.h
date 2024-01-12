@@ -12,11 +12,11 @@
 
 using ull = unsigned long long;
 
-namespace utils::constants {
+namespace engine::constants {
     // graphics constants
     inline constexpr int DEFAULT_WIDTH = 1280;
     inline constexpr int DEFAULT_HEIGHT = 720;
-    inline const std::string DEFAULT_FONT = "resources/fonts/Roboto-Regular.ttf";
+    inline const std::string DEFAULT_FONT = "Roboto-Regular.ttf";
 
     // ingame constants
     inline constexpr float HORIZONTAL_DARKER_MUTLIPLIER = 0.7;
@@ -28,7 +28,7 @@ namespace utils::constants {
     inline constexpr float DEFAULT_PLAYER_DIR_X = 1;
     inline constexpr float DEFAULT_PLAYER_DIR_Y = 0;
     inline constexpr float DEFAULT_PLAYER_RADIUS = 20;
-    inline constexpr float DEFAULT_PLAYER_SPEED = 100;
+    inline constexpr float DEFAULT_PLAYER_SPEED = 200;
     inline constexpr float DEFAULT_PLAYER_ROTATE_SPEED = DEG_TO_RAD(120);
     inline constexpr float DEFAULT_FOV = DEG_TO_RAD(60);
 }

@@ -4,13 +4,14 @@
 
 #include "Game.h"
 #include "../utils/Constants.h"
+#include "../game/graphics/UserInterface.h"
 
 Game::Game():
     window(
-    sf::VideoMode(utils::constants::DEFAULT_WIDTH, utils::constants::DEFAULT_HEIGHT),
+    sf::VideoMode(engine::constants::DEFAULT_WIDTH, engine::constants::DEFAULT_HEIGHT),
     "Do you miss raving?"
     ) {
-    scene = std::unique_ptr<utils::Scene>(new utils::TestScene(window, scene));
+    scene = std::unique_ptr<engine::Scene>(new game::ui::MenuScene(window, scene));
 }
 
 void Game::run() {

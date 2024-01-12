@@ -7,8 +7,8 @@
 
 namespace game {
     Player::Player(
-            utils::math::Vec2<float> position,
-            utils::math::Vec2<float> direction,
+            engine::math::Vec2<float> position,
+            engine::math::Vec2<float> direction,
             float radius,
             float speed,
             float rotateSpeed
@@ -36,22 +36,22 @@ namespace game {
             position -= direction * speed * delta; // i show speed
 
         if (sf::Keyboard::isKeyPressed(sf::Keyboard::A)) {
-            utils::math::Mat2<float> rotMat = utils::math::getRotationMatrix(rotateSpeed * delta);
+            engine::math::Mat2<float> rotMat = engine::math::getRotationMatrix(rotateSpeed * delta);
             direction = direction * rotMat;
             cameraPlane = cameraPlane * rotMat;
         }
         if (sf::Keyboard::isKeyPressed(sf::Keyboard::D)) {
-            utils::math::Mat2<float> rotMat = utils::math::getRotationMatrix(-rotateSpeed * delta);
+            engine::math::Mat2<float> rotMat = engine::math::getRotationMatrix(-rotateSpeed * delta);
             direction = direction * rotMat;
             cameraPlane = cameraPlane * rotMat;
         }
     }
 
-    const utils::math::Vec2<float> &Player::getPosition() const {
+    const engine::math::Vec2<float> &Player::getPosition() const {
         return position;
     }
 
-    const utils::math::Vec2<float> &Player::getDirection() const {
+    const engine::math::Vec2<float> &Player::getDirection() const {
         return direction;
     }
 
@@ -67,7 +67,7 @@ namespace game {
         return rotateSpeed;
     }
 
-    const utils::math::Vec2<float> &Player::getCameraPlane() const {
+    const engine::math::Vec2<float> &Player::getCameraPlane() const {
         return cameraPlane;
     }
 } // game

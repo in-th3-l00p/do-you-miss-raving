@@ -8,7 +8,7 @@
 #include <SFML/Graphics/RenderWindow.hpp>
 #include "../utils/Constants.h"
 
-namespace utils {
+namespace engine {
     class Entity {
     private:
         ull id;
@@ -31,6 +31,6 @@ namespace utils {
         void setZIndex(ull zIndex);
     };
 
-} // utils
+} // engine
 
 #endif //RAYGAME_ENTITY_H

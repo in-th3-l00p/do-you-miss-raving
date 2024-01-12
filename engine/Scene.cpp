@@ -8,7 +8,7 @@
 #include "../game/graphics/Raycaster.h"
 #include "../game/graphics/UserInterface.h"
 
-namespace utils {
+namespace engine {
     Scene::Scene(
             sf::RenderWindow &window,
             std::unique_ptr<Scene>& sceneRef
@@ -48,8 +48,8 @@ namespace utils {
             sf::RenderWindow &window,
             std::unique_ptr<Scene>& sceneRef
             ) : Scene(window, sceneRef) {
-        std::unique_ptr<utils::Entity> map = std::make_unique<game::TestMap>(10, 10);
-        std::unique_ptr<utils::Entity> player = std::make_unique<game::Player>();
+        std::unique_ptr<engine::Entity> map = std::make_unique<game::TestMap>(10, 10);
+        std::unique_ptr<engine::Entity> player = std::make_unique<game::Player>();
         auto raycaster = std::make_unique<Raycaster>(
                 dynamic_cast<game::Player&>(*player),
                 dynamic_cast<game::Map&>(*map)
@@ -62,4 +62,4 @@ namespace utils {
     void TestScene::update(float deltaTime) {
         Scene::update(deltaTime);
     }
-} // utils
+} // engine
