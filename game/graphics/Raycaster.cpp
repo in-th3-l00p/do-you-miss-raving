@@ -38,9 +38,9 @@ namespace engine {
             double distance;
             if (horizontal.distance < vertical.distance) {
                 color = map.getTiles()[horizontal.tile.y][horizontal.tile.x].color;
-                color.r = (sf::Uint8) ((float) color.r * config::HORIZONTAL_DARKER_MUTLIPLIER);
-                color.g = (sf::Uint8) ((float) color.g * config::HORIZONTAL_DARKER_MUTLIPLIER);
-                color.b = (sf::Uint8) ((float) color.b * config::HORIZONTAL_DARKER_MUTLIPLIER);
+                color.r = (sf::Uint8) ((float) color.r * constants::HORIZONTAL_DARKER_MUTLIPLIER);
+                color.g = (sf::Uint8) ((float) color.g * constants::HORIZONTAL_DARKER_MUTLIPLIER);
+                color.b = (sf::Uint8) ((float) color.b * constants::HORIZONTAL_DARKER_MUTLIPLIER);
                 distance = horizontal.distance;
             } else {
                 color = map.getTiles()[vertical.tile.y][vertical.tile.x].color;

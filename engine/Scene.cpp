@@ -3,9 +3,10 @@
 //
 
 #include "Scene.h"
-#include "Map.h"
-#include "Player.h"
-#include "Raycaster.h"
+#include "../game/entities/Map.h"
+#include "../game/entities/Player.h"
+#include "../game/graphics/Raycaster.h"
+#include "../game/graphics/UserInterface.h"
 
 namespace engine {
     Scene::Scene(

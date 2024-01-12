@@ -6,7 +6,7 @@
 #define RAYGAME_ENTITY_H
 
 #include <SFML/Graphics/RenderWindow.hpp>
-#include "config.h"
+#include "../utils/Constants.h"
 
 namespace engine {
     class Entity {

@@ -7,8 +7,8 @@
 
 #include <SFML/Graphics.hpp>
 #include <vector>
-#include "Entity.h"
-#include "config.h"
+#include "../../engine/Entity.h"
+#include "../../utils/Constants.h"
 
 namespace game {
     struct Tile {
@@ -22,7 +22,7 @@ namespace game {
         const ull tileSize;
 
     public:
-        Map(ull width, ull height, ull tileSize = config::DEFAULT_TILESIZE);
+        Map(ull width, ull height, ull tileSize = constants::DEFAULT_TILESIZE);
         ~Map() override = default;
 
         [[nodiscard]] const std::vector<std::vector<Tile>> &getTiles() const;
@@ -34,7 +34,7 @@ namespace game {
 
     class TestMap: public Map {
     public:
-        TestMap(ull width, ull height, ull tileSize = config::DEFAULT_TILESIZE);
+        TestMap(ull width, ull height, ull tileSize = constants::DEFAULT_TILESIZE);
         void render(sf::RenderWindow& window) override;
         void update(float deltaTime) override;
     };

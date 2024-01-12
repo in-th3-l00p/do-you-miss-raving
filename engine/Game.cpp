@@ -3,11 +3,11 @@
 //
 
 #include "Game.h"
-#include "config.h"
+#include "../utils/Constants.h"
 
 Game::Game():
     window(
-    sf::VideoMode(config::DEFAULT_WIDTH, config::DEFAULT_HEIGHT),
+    sf::VideoMode(constants::DEFAULT_WIDTH, constants::DEFAULT_HEIGHT),
     "Do you miss raving?"
     ) {
     scene = std::unique_ptr<engine::Scene>(new engine::TestScene(window, scene));

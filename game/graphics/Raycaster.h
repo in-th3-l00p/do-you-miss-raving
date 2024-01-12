@@ -5,8 +5,8 @@
 #ifndef RAYGAME_RAYCASTER_H
 #define RAYGAME_RAYCASTER_H
 
-#include "Player.h"
-#include "Map.h"
+#include "../entities/Player.h"
+#include "../entities/Map.h"
 
 namespace engine {
     struct Intersection {

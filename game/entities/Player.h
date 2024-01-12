@@ -5,8 +5,8 @@
 #ifndef RAYGAME_PLAYER_H
 #define RAYGAME_PLAYER_H
 
-#include "Math.h"
-#include "Entity.h"
+#include "../../utils/Math.h"
+#include "../../engine/Entity.h"
 #include "Map.h"
 
 namespace game {
@@ -20,11 +20,11 @@ namespace game {
 
     public:
         explicit Player(
-            engine::math::Vec2<float> position = { config::DEFAULT_PLAYER_X, config::DEFAULT_PLAYER_Y },
-            engine::math::Vec2<float> direction = { config::DEFAULT_PLAYER_DIR_X, config::DEFAULT_PLAYER_DIR_Y },
-            float radius = config::DEFAULT_PLAYER_RADIUS,
-            float speed = config::DEFAULT_PLAYER_SPEED,
-            float rotateSpeed = config::DEFAULT_PLAYER_ROTATE_SPEED
+            engine::math::Vec2<float> position = {constants::DEFAULT_PLAYER_X, constants::DEFAULT_PLAYER_Y },
+            engine::math::Vec2<float> direction = {constants::DEFAULT_PLAYER_DIR_X, constants::DEFAULT_PLAYER_DIR_Y },
+            float radius = constants::DEFAULT_PLAYER_RADIUS,
+            float speed = constants::DEFAULT_PLAYER_SPEED,
+            float rotateSpeed = constants::DEFAULT_PLAYER_ROTATE_SPEED
         );
 
         void render(sf::RenderWindow& window) override;
