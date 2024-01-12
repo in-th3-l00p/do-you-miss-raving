@@ -10,7 +10,7 @@ Game::Game():
     sf::VideoMode(config::DEFAULT_WIDTH, config::DEFAULT_HEIGHT),
     "Do you miss raving?"
     ) {
-    scene = std::unique_ptr<engine::Scene>(new engine::TestScene(window));
+    scene = std::unique_ptr<engine::Scene>(new engine::TestScene(window, scene));
 }
 
 void Game::run() {

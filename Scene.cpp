@@ -8,7 +8,12 @@
 #include "Raycaster.h"
 
 namespace engine {
-    Scene::Scene(sf::RenderWindow &window) : window(window) {}
+    Scene::Scene(
+            sf::RenderWindow &window,
+            std::unique_ptr<Scene>& sceneRef
+            ) : window(window), sceneRef(sceneRef) {
+
+    }
 
     void Scene::addEntity(std::unique_ptr<Entity> entity) {
         int lo = 0, hi = (int)renderQueue.size() - 1;
@@ -38,7 +43,10 @@ namespace engine {
             entity->render(window);
     }
 
-    TestScene::TestScene(sf::RenderWindow &window) : Scene(window) {
+    TestScene::TestScene(
+            sf::RenderWindow &window,
+            std::unique_ptr<Scene>& sceneRef
+            ) : Scene(window, sceneRef) {
         std::unique_ptr<engine::Entity> map = std::make_unique<game::TestMap>(10, 10);
         std::unique_ptr<engine::Entity> player = std::make_unique<game::Player>();
         auto raycaster = std::make_unique<Raycaster>(
