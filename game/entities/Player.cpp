@@ -35,10 +35,10 @@ namespace game {
         sf::RectangleShape staminaBar(sf::Vector2f(stamina, 10));
         staminaBar.setPosition(position.x - radius, position.y + radius + 5);
         staminaBar.setFillColor(sf::Color::White);
-        staminaBar.setOutlineColor(sf::Color::Black);  // Optional: add an outline for better visibility
+        staminaBar.setOutlineColor(sf::Color::Black);
         staminaBar.setOutlineThickness(1.0f);
-        staminaBar.setOrigin(0, staminaBar.getSize().y / 2.0f);  // Set origin to make positioning easier
-        staminaBar.move(0, -radius - 5);  // Move the stamina bar to the desired position
+        staminaBar.setOrigin(0, staminaBar.getSize().y / 2.0f);
+        staminaBar.move(0, -radius - 5);
         window.draw(staminaBar);
     }
 

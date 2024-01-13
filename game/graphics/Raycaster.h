@@ -7,6 +7,7 @@
 
 #include "../entities/Player.h"
 #include "../entities/Map.h"
+#include "../entities/Enemy.h"
 
 namespace engine {
     struct Intersection {
@@ -19,6 +20,7 @@ namespace engine {
     private:
         game::Player& player;
         game::Map& map;
+        std::vector<game::Enemy>enemies;
 
         // dda for two different sides
         Intersection getHorizontalDistance(
@@ -35,7 +37,8 @@ namespace engine {
     public:
         Raycaster(game::Player& player, game::Map& map);
         ~Raycaster() override {}
-
+        void renderEnemies(sf::RenderWindow& window);
+        void updateEnemies(float deltaTime);
         void update(float &deltaTime) {}
         void render(sf::RenderWindow& window) override;
 

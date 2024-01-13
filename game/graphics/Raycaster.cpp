@@ -3,12 +3,14 @@
 //
 
 #include <SFML/Graphics.hpp>
+#include <iostream>
 #include "Raycaster.h"
 
 namespace engine {
     engine::Raycaster::Raycaster(game::Player &player, game::Map &map):
             player(player), map(map) {
         setZIndex(10);
+        enemies.emplace_back(engine::math::Vec2<float>(200.0f, 200.0f), engine::math::Vec2<float>(1.0f, 0.0f), 10.0f);
     }
 
     void engine::Raycaster::render(sf::RenderWindow &window) {
@@ -64,10 +66,47 @@ namespace engine {
             line[1].color = color;
             window.draw(line);
         }
+        renderEnemies(window);
+    }
+
+    void Raycaster::renderEnemies(sf::RenderWindow& window) {
+        for (const auto& enemy : enemies) {
+
+            std::cout << "Enemy Position in World: " << enemy.getPosition().x << ", " << enemy.getPosition().y << std::endl;
+            // Calculate enemy position on the screen based on raycasting
+            math::Vec2<float> enemyPositionInWorld = enemy.getPosition();
+            math::Vec2<float> normalizedDirection = player.getDirection().normalize();
+            math::Vec2<float> relativePosition = enemyPositionInWorld - player.getPosition();
+
+            float dotProduct = relativePosition.x * normalizedDirection.x + relativePosition.y * normalizedDirection.y;
+            float directionLength = sqrt(player.getDirection().x * player.getDirection().x + player.getDirection().y * player.getDirection().y);
+            float relativePositionLength = sqrt(relativePosition.x * relativePosition.x + relativePosition.y * relativePosition.y);
+            float cameraX = (enemy.getPosition().x - player.getPosition().x) / player.getDirection().x;
+            //float cameraX = dotProduct;
+            float projectedEnemyDistance = relativePositionLength * cos(atan2(relativePosition.y, relativePosition.x) - atan2(player.getDirection().y, player.getDirection().x));
+            float lineHeight = static_cast<float>(window.getSize().y) / projectedEnemyDistance * map.getTileSize();
+            float lineStart = static_cast<float>(window.getSize().y) / 2 - lineHeight / 2;
+
+            std::cout << "ProjectedEnemyDistance: " << projectedEnemyDistance << ", LineHeight: " << lineHeight << ", LineStart: " << lineStart << std::endl;
+            std::cout << "relativePositionLength: " << relativePositionLength << ", directionLength: " << directionLength << std::endl;
+            std::cout << "cameraX: " << cameraX << std::endl;
+            // Example: Draw a simple representation of the enemy
+            sf::CircleShape enemyShape(100.0f);
+            // Adjust the position based on the enemy's position (use raycasting logic)
+            enemyShape.setPosition((float) window.getSize().x / 2 + (float) window.getSize().x * cameraX, lineStart);
+            enemyShape.setFillColor(sf::Color::Yellow);
+            window.draw(enemyShape);;
+        }
     }
 
     void engine::Raycaster::update(float deltaTime) {
+        updateEnemies(deltaTime);
+    }
 
+    void Raycaster::updateEnemies(float deltaTime) {
+        for (auto& enemy : enemies) {
+            enemy.update(deltaTime);
+        }
     }
 
     Intersection Raycaster::getHorizontalDistance(

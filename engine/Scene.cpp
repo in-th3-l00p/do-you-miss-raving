@@ -7,6 +7,7 @@
 #include "../game/entities/Player.h"
 #include "../game/graphics/Raycaster.h"
 #include "../game/graphics/UserInterface.h"
+#include "../game/entities/Enemy.h"
 
 namespace engine {
     Scene::Scene(
@@ -54,6 +55,8 @@ namespace engine {
                 dynamic_cast<game::Player&>(*player),
                 dynamic_cast<game::Map&>(*map)
                 );
+        std::unique_ptr<engine::Entity> enemy = std::make_unique<game::Enemy>();
+        addEntity(std::move(enemy));
         addEntity(std::move(map));
         addEntity(std::move(player));
         addEntity(std::move(raycaster));

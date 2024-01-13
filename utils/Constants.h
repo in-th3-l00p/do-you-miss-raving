@@ -23,14 +23,19 @@ namespace engine::constants {
 
     // testing
     inline constexpr int DEFAULT_TILESIZE = 64;
-    inline constexpr float DEFAULT_PLAYER_X = 96;
-    inline constexpr float DEFAULT_PLAYER_Y = 96;
+    inline constexpr float DEFAULT_PLAYER_X = 100;
+    inline constexpr float DEFAULT_PLAYER_Y = 100;
     inline constexpr float DEFAULT_PLAYER_DIR_X = 1;
     inline constexpr float DEFAULT_PLAYER_DIR_Y = 0;
     inline constexpr float DEFAULT_PLAYER_RADIUS = 20;
     inline constexpr float DEFAULT_PLAYER_SPEED = 50;
     inline constexpr float DEFAULT_PLAYER_ROTATE_SPEED = DEG_TO_RAD(120);
     inline constexpr float DEFAULT_FOV = DEG_TO_RAD(60);
+    inline constexpr float DEFAULT_ENEMY_X = 200;
+    inline constexpr float DEFAULT_ENEMY_Y = 200;
+    inline constexpr float DEFAULT_ENEMY_SPEED = 10;
+    inline constexpr float DEFAULT_ENEMY_DIR_X = 1;
+    inline constexpr float DEFAULT_ENEMY_DIR_Y = 0;
 }
 
 #endif //RAYGAME_CONSTANTS_H
