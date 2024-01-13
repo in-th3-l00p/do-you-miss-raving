@@ -13,20 +13,33 @@
 namespace game {
     class Enemy : public engine::Entity {
     private:
-        engine::math::Vec2<float> position;
-        engine::math::Vec2<float> direction;
-        float speed;
-
+            bool inView;
+            engine::math::Vec2<float> position;
+            float enemySpeed;
+            float direction;
+            float distance;
+            float number;
     public:
-        explicit Enemy(
-                engine::math::Vec2<float> startPos = { engine::constants::DEFAULT_ENEMY_X, engine::constants::DEFAULT_ENEMY_Y },
-                engine::math::Vec2<float> enemyDirection = { engine::constants::DEFAULT_ENEMY_DIR_X, engine::constants::DEFAULT_ENEMY_DIR_Y },
-                float enemySpeed = engine::constants::DEFAULT_ENEMY_SPEED
-        );
-        void render(sf::RenderWindow &window)override;
+        Enemy(bool inView, engine::math::Vec2<float> position, float enemySpeed, float direction, float distance, float number);
+        void render(sf::RenderWindow &window) override;
         void update(float delta) override;
 
-        [[nodiscard]] const engine::math::Vec2<float> &getPosition() const;
+        [[nodiscard]]  const engine::math::Vec2<float> &getPosition() const;
+
+        [[nodiscard]]  bool isInView() const;
+
+        [[nodiscard]]  float getEnemySpeed() const;
+
+        [[nodiscard]]  float getDirection() const;
+
+        [[nodiscard]]  float getDistance() const;
+
+        int getHeight(sf::RenderWindow &window) const;
+        int getWidth(sf::RenderWindow &window) const;
+
+        float getNumber() const;
+
+        void setNumber(float number);
     };
 } // game
 
