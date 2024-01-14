@@ -120,6 +120,7 @@ namespace engine {
             if (spriteDistance > constants::RENDER_DISTANCE)
                 continue;
 
+            sf::Sprite* spriteInstance = new sf::Sprite(sprite.sprite);
             double spriteX = sprite.position.x - player.getPosition().x;
             double spriteY = sprite.position.y - player.getPosition().y;
 
@@ -127,11 +128,12 @@ namespace engine {
             double transformX = invDet * (player.getDirection().y * spriteX - player.getDirection().x * spriteY);
             double transformY = invDet * (-player.getCameraPlane().y * spriteX + player.getCameraPlane().x * spriteY);
 
-            sprite.sprite.setPosition(spriteX, spriteY);
+            spriteInstance->setPosition(transformX, transformY);
+            spriteInstance->setOrigin(sprite.sprite.getTexture()->getSize().x / 2, sprite.sprite.getTexture()->getSize().y / 2);
 
-            double SpriteScaling = spriteDistance/ constants::RENDER_DISTANCE;
-            sprite.sprite.setScale(SpriteScaling,SpriteScaling);
-            zBuffer.emplace_back(&sprite.sprite,spriteDistance);
+            double spriteScaling = spriteDistance / constants::RENDER_DISTANCE;
+            spriteInstance->setScale(spriteScaling, spriteScaling);
+            zBuffer.emplace_back(spriteInstance, spriteDistance);
         }
 
         sort(zBuffer.begin(), zBuffer.end(), [](const std::pair<sf::Sprite*, double>& a, const std::pair<sf::Sprite*, double>& b) {
