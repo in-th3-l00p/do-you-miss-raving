@@ -26,6 +26,30 @@ namespace engine {
         window.draw(floor);
         window.draw(ceiling);
 
+        // drawing the floor and ceiling lighting gradient for distance
+        sf::VertexArray floorGradient(sf::Quads, 4);
+        sf::VertexArray ceilingGradient(sf::Quads, 4);
+        floorGradient[0].position = sf::Vector2f(0, (float)windowHeight / 2);
+        floorGradient[1].position = sf::Vector2f((float)windowWidth, (float)windowHeight / 2);
+        floorGradient[2].position = sf::Vector2f((float)windowWidth, (float)windowHeight);
+        floorGradient[3].position = sf::Vector2f(0, (float)windowHeight);
+        floorGradient[0].color = sf::Color(0, 0, 0, 255);
+        floorGradient[1].color = sf::Color(0, 0, 0, 255);
+        floorGradient[2].color = sf::Color(0, 0, 0, 0);
+        floorGradient[3].color = sf::Color(0, 0, 0, 0);
+
+        ceilingGradient[0].position = sf::Vector2f(0, 0);
+        ceilingGradient[1].position = sf::Vector2f((float)windowWidth, 0);
+        ceilingGradient[2].position = sf::Vector2f((float)windowWidth, (float)windowHeight / 2);
+        ceilingGradient[3].position = sf::Vector2f(0, (float)windowHeight / 2);
+        ceilingGradient[0].color = sf::Color(0, 0, 0, 0);
+        ceilingGradient[1].color = sf::Color(0, 0, 0, 0);
+        ceilingGradient[2].color = sf::Color(0, 0, 0, 255);
+        ceilingGradient[3].color = sf::Color(0, 0, 0, 255);
+
+        window.draw(floorGradient);
+        window.draw(ceilingGradient);
+
         for (int x = 0; x < windowWidth; x++) {
             float cameraX = 2.f * (float) x / (float) (windowWidth) - 1;
             math::Vec2<float> rayDir = player.getDirection() + player.getCameraPlane() * cameraX;
@@ -36,20 +60,37 @@ namespace engine {
             Intersection horizontal = getHorizontalDistance(cameraX, rayDir, mapTile);
             Intersection vertical = getVerticalDistance(cameraX, rayDir, mapTile);
 
-            double distance;
             const sf::Texture* texture;
-            int textureHit;
+            double distance;
+            sf::Sprite line;
+            int color = 255;
             if (horizontal.distance < vertical.distance) {
+                distance = horizontal.distance;
+                if (distance > constants::RENDER_DISTANCE)
+                    continue;
+
                 texture = &map.getTiles()[horizontal.tile.y][horizontal.tile.x].texture;
                 double multiplier = horizontal.hit.y / (double) map.getTileSize() - horizontal.tile.y;
-                textureHit = std::floor(engine::math::linearInterpolation<double>(multiplier, 0, 1, 0, (double) texture->getSize().y));
-                distance = horizontal.distance;
+                int hit = std::floor(engine::math::linearInterpolation<double>(multiplier, 0, 1, 0, (double) texture->getSize().y));
+                line.setTexture(*texture);
+                line.setTextureRect(sf::IntRect(hit, 0, 1, texture->getSize().y));
             } else {
+                distance = vertical.distance;
+                if (distance > constants::RENDER_DISTANCE)
+                    continue;
+
                 texture = &map.getTiles()[vertical.tile.y][vertical.tile.x].texture;
                 double multiplier = vertical.hit.x / (double) map.getTileSize() - vertical.tile.x;
-                textureHit = std::floor(engine::math::linearInterpolation<double>(multiplier, 0, 1, 0, (double) texture->getSize().x));
-                distance = vertical.distance;
+                int hit = std::floor(engine::math::linearInterpolation<double>(multiplier, 0, 1, 0, (double) texture->getSize().x));
+                line.setTexture(*texture);
+                line.setTextureRect(sf::IntRect(hit, 0, 1, texture->getSize().y));
+
+                color = std::floor((float) color * constants::HORIZONTAL_DARKER_MUTLIPLIER);
             }
+
+            // lighting
+            color = (int)((float) color * (float) (1 - distance / constants::RENDER_DISTANCE ));
+            line.setColor(sf::Color(color, color, color));
 
             double calculatedAngle =
                     atan2(player.getDirection().y, player.getDirection().x) -
@@ -61,7 +102,6 @@ namespace engine {
 
             double lineHeight = (double) windowHeight / (distance * cos(calculatedAngle)) * map.getTileSize();
             double lineStart = (double) windowHeight / 2 - lineHeight / 2;
-            sf::Sprite line(*texture, sf::IntRect(textureHit, 0, 1, texture->getSize().y));
             line.setScale(1, (float) lineHeight / (float) texture->getSize().y);
             line.setPosition((float) x, (float) lineStart);
             window.draw(line);

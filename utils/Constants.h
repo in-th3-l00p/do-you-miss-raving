@@ -20,6 +20,7 @@ namespace engine::constants {
 
     // ingame constants
     inline constexpr float HORIZONTAL_DARKER_MUTLIPLIER = 0.7;
+    inline constexpr float RENDER_DISTANCE = 700;
 
     // testing
     inline constexpr int DEFAULT_TILESIZE = 64;
