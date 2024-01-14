@@ -9,7 +9,7 @@
 #define texWidth 64
 
 namespace engine {
-    engine::Raycaster::Raycaster(game::Player &player, game::Map &map, game::Enemy &enemy):
+    engine::Raycaster::Raycaster(game::Player &player, game::Map &map, game::SSprite &enemy):
             player(player), map(map), enemy(enemy) {
         setZIndex(10);
     }
@@ -51,6 +51,10 @@ namespace engine {
         window.draw(floorGradient);
         window.draw(ceilingGradient);
 
+        // z buffer, first what should be rendered, second the distance
+        std::vector<std::pair<sf::Sprite*, double>> zBuffer;
+
+        // adding lines
         for (int x = 0; x < windowWidth; x++) {
             float cameraX = 2.f * (float) x / (float) (windowWidth) - 1;
             math::Vec2<float> rayDir = player.getDirection() + player.getCameraPlane() * cameraX;
@@ -63,7 +67,9 @@ namespace engine {
 
             const sf::Texture* texture;
             double distance;
-            sf::Sprite line;
+
+            // to do implement it in the stack
+            auto* line = new sf::Sprite();
             int color = 255;
             if (horizontal.distance < vertical.distance) {
                 distance = horizontal.distance;
@@ -73,8 +79,8 @@ namespace engine {
                 texture = &map.getTiles()[horizontal.tile.y][horizontal.tile.x].texture;
                 double multiplier = horizontal.hit.y / (double) map.getTileSize() - horizontal.tile.y;
                 int hit = std::floor(engine::math::linearInterpolation<double>(multiplier, 0, 1, 0, (double) texture->getSize().y));
-                line.setTexture(*texture);
-                line.setTextureRect(sf::IntRect(hit, 0, 1, texture->getSize().y));
+                line->setTexture(*texture);
+                line->setTextureRect(sf::IntRect(hit, 0, 1, texture->getSize().y));
             } else {
                 distance = vertical.distance;
                 if (distance > constants::RENDER_DISTANCE)
@@ -83,15 +89,15 @@ namespace engine {
                 texture = &map.getTiles()[vertical.tile.y][vertical.tile.x].texture;
                 double multiplier = vertical.hit.x / (double) map.getTileSize() - vertical.tile.x;
                 int hit = std::floor(engine::math::linearInterpolation<double>(multiplier, 0, 1, 0, (double) texture->getSize().x));
-                line.setTexture(*texture);
-                line.setTextureRect(sf::IntRect(hit, 0, 1, texture->getSize().y));
+                line->setTexture(*texture);
+                line->setTextureRect(sf::IntRect(hit, 0, 1, texture->getSize().y));
 
                 color = std::floor((float) color * constants::HORIZONTAL_DARKER_MUTLIPLIER);
             }
 
             // lighting
             color = (int)((float) color * (float) (1 - distance / constants::RENDER_DISTANCE ));
-            line.setColor(sf::Color(color, color, color));
+            line->setColor(sf::Color(color, color, color));
 
             double calculatedAngle =
                     atan2(player.getDirection().y, player.getDirection().x) -
@@ -103,73 +109,91 @@ namespace engine {
 
             double lineHeight = (double) windowHeight / (distance * cos(calculatedAngle)) * map.getTileSize();
             double lineStart = (double) windowHeight / 2 - lineHeight / 2;
-            line.setScale(1, (float) lineHeight / (float) texture->getSize().y);
-            line.setPosition((float) x, (float) lineStart);
-            window.draw(line);
+            line->setScale(1, (float) lineHeight / (float) texture->getSize().y);
+            line->setPosition((float) x, (float) lineStart);
+            zBuffer.emplace_back(line, distance);
+        }
+
+        // putting the sprites in the z buffer
+        for (auto sprite: map.getSprites()) {
+            double spriteDistance = player.getPosition().getDistance(sprite.position);
+            if (spriteDistance > constants::RENDER_DISTANCE)
+                continue;
+
+            double spriteX = sprite.position.x - player.getPosition().x;
+            double spriteY = sprite.position.y - player.getPosition().y;
+
+        }
+
+        sort(zBuffer.begin(), zBuffer.end(), [](const std::pair<sf::Sprite*, double>& a, const std::pair<sf::Sprite*, double>& b) {
+            return a.second > b.second;
+        });
+
+        for (auto& sprite: zBuffer) {
+            window.draw(*sprite.first);
+            delete sprite.first;
         }
     }
 
-    double spriteDistance;
-
-    void engine::Raycaster::renderSprites(sf::RenderWindow& window)
-    {
-        spriteDistance = ((player.getPosition().x - enemy.getPosition().x) * (player.getPosition().x - enemy.getPosition().x) + (player.getPosition().y - enemy.getPosition().y) * (player.getPosition().y - enemy.getPosition().y)); //sqrt not taken, unneeded;
-            double spriteX = enemy.getPosition().x - player.getPosition().x;
-            double spriteY = enemy.getPosition().y - player.getPosition().y;;
-
-            //transform sprite with the inverse camera matrix
-            // [ planeX   dirX ] -1                                       [ dirY      -dirX ]
-            // [               ]       =  1/(planeX*dirY-dirX*planeY) *   [                 ]
-            // [ planeY   dirY ]                                          [ -planeY  planeX ]
-
-            double invDet = 1.0 / (player.getCameraPlane().x * player.getDirection().y - player.getDirection().x * player.getCameraPlane().y); //required for correct matrix multiplication
-
-            double transformX = invDet * (player.getDirection().y * spriteX - player.getDirection().x * spriteY);
-            double transformY = invDet * (-player.getCameraPlane().y * spriteX + player.getCameraPlane().x * spriteY); //this is actually the depth inside the screen, that what Z is in 3D
-
-            int w= enemy.getWidth(window);
-            int h= enemy.getWidth(window);
-            int spriteScreenX = int((w / 2) * (1 + transformX / transformY));
-
-            //calculate height of the sprite on screen
-            int spriteHeight = abs(int(enemy.getHeight(window) / (transformY))); //using 'transformY' instead of the real distance prevents fisheye
-            //calculate lowest and highest pixel to fill in current stripe
-            int drawStartY = -spriteHeight / 2 + h / 2;
-            if(drawStartY < 0) drawStartY = 0;
-            int drawEndY = spriteHeight / 2 + h / 2;
-            if(drawEndY >= h) drawEndY = h - 1;
-
-            //calculate width of the sprite
-            int spriteWidth = abs( int (h / (transformY)));
-            int drawStartX = -spriteWidth / 2 + spriteScreenX;
-            if(drawStartX < 0) drawStartX = 0;
-            int drawEndX = spriteWidth / 2 + spriteScreenX;
-            if(drawEndX >= w) drawEndX = w - 1;
-
-            //loop through every vertical stripe of the sprite on screen
-            for(int stripe = drawStartX; stripe < drawEndX; stripe++)
-            {
-
-                int circleX = stripe - drawStartX;
-
-                int texX = int(256 * (stripe - (-spriteWidth / 2 + spriteScreenX)) * texWidth / spriteWidth) / 256;
-
-                //the conditions in the if are:
-                if (circleX >= 0 && circleX < spriteWidth && transformY > 0 && stripe > 0 && stripe < w && transformY < ZBuffer[stripe]) {
-                    for (int y = drawStartY; y < drawEndY; y++) //for every pixel of the current stripe
-                    {
-                        int d = (y) * 256 - h * 128 + spriteHeight * 128; //256 and 128 factors to avoid floats
-                        int texY = ((d * texHeight) / spriteHeight) / 256;
-                        int circleY = y - drawStartY;
-                        if (circleX * circleX + circleY * circleY < (spriteWidth / 2) * (spriteWidth / 2))
-                        {
-                            // Draw a colored pixel for the circle
-                            Uint32 color = // Specify your color for the circle here;
-                                    buffer[y][stripe] = color;
-                        }
-                }
-            }
-        }
+//    void engine::Raycaster::renderSprites(sf::RenderWindow& window)
+//    {
+//        spriteDistance = ((player.getPosition().x - enemy.getPosition().x) * (player.getPosition().x - enemy.getPosition().x) + (player.getPosition().y - enemy.getPosition().y) * (player.getPosition().y - enemy.getPosition().y)); //sqrt not taken, unneeded;
+//            double spriteX = enemy.getPosition().x - player.getPosition().x;
+//            double spriteY = enemy.getPosition().y - player.getPosition().y;;
+//
+//            //transform sprite with the inverse camera matrix
+//            // [ planeX   dirX ] -1                                       [ dirY      -dirX ]
+//            // [               ]       =  1/(planeX*dirY-dirX*planeY) *   [                 ]
+//            // [ planeY   dirY ]                                          [ -planeY  planeX ]
+//
+//            double invDet = 1.0 / (player.getCameraPlane().x * player.getDirection().y - player.getDirection().x * player.getCameraPlane().y); //required for correct matrix multiplication
+//
+//            double transformX = invDet * (player.getDirection().y * spriteX - player.getDirection().x * spriteY);
+//            double transformY = invDet * (-player.getCameraPlane().y * spriteX + player.getCameraPlane().x * spriteY); //this is actually the depth inside the screen, that what Z is in 3D
+//
+//            int w= enemy.getWidth(window);
+//            int h= enemy.getWidth(window);
+//            int spriteScreenX = int((w / 2) * (1 + transformX / transformY));
+//
+//            //calculate height of the sprite on screen
+//            int spriteHeight = abs(int(enemy.getHeight(window) / (transformY))); //using 'transformY' instead of the real distance prevents fisheye
+//            //calculate lowest and highest pixel to fill in current stripe
+//            int drawStartY = -spriteHeight / 2 + h / 2;
+//            if(drawStartY < 0) drawStartY = 0;
+//            int drawEndY = spriteHeight / 2 + h / 2;
+//            if(drawEndY >= h) drawEndY = h - 1;
+//
+//            //calculate width of the sprite
+//            int spriteWidth = abs( int (h / (transformY)));
+//            int drawStartX = -spriteWidth / 2 + spriteScreenX;
+//            if(drawStartX < 0) drawStartX = 0;
+//            int drawEndX = spriteWidth / 2 + spriteScreenX;
+//            if(drawEndX >= w) drawEndX = w - 1;
+//
+//            //loop through every vertical stripe of the sprite on screen
+//            for(int stripe = drawStartX; stripe < drawEndX; stripe++)
+//            {
+//
+//                int circleX = stripe - drawStartX;
+//
+//                int texX = int(256 * (stripe - (-spriteWidth / 2 + spriteScreenX)) * texWidth / spriteWidth) / 256;
+//
+//                //the conditions in the if are:
+//                if (circleX >= 0 && circleX < spriteWidth && transformY > 0 && stripe > 0 && stripe < w && transformY < ZBuffer[stripe]) {
+//                    for (int y = drawStartY; y < drawEndY; y++) //for every pixel of the current stripe
+//                    {
+//                        int d = (y) * 256 - h * 128 + spriteHeight * 128; //256 and 128 factors to avoid floats
+//                        int texY = ((d * texHeight) / spriteHeight) / 256;
+//                        int circleY = y - drawStartY;
+//                        if (circleX * circleX + circleY * circleY < (spriteWidth / 2) * (spriteWidth / 2))
+//                        {
+//                            // Draw a colored pixel for the circle
+//                            Uint32 color = // Specify your color for the circle here;
+//                                    buffer[y][stripe] = color;
+//                        }
+//                }
+//            }
+//        }
 
     Intersection Raycaster::getHorizontalDistance(
             double cameraX, math::Vec2<float> rayDir, math::Vec2<int> mapTile
@@ -255,4 +279,5 @@ namespace engine {
         intersection.tile = currentTile;
         return intersection;
     }
+
 } // engine

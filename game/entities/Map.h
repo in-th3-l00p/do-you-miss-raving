@@ -9,8 +9,17 @@
 #include <vector>
 #include "../../engine/Entity.h"
 #include "../../utils/Constants.h"
+#include "../../utils/Math.h"
 
 namespace game {
+    struct Sprite {
+        sf::Sprite sprite;
+        engine::math::Vec2<float> position;
+
+        Sprite(std::string path, engine::math::Vec2<float> position);
+    };
+
+
     struct Tile {
         sf::Texture texture;
         bool empty = true;
@@ -21,11 +30,15 @@ namespace game {
         std::vector<std::vector<Tile>> tiles;
         const ull tileSize;
 
+        std::vector<Sprite> sprites;
+
     public:
         Map(ull width, ull height, ull tileSize = engine::constants::DEFAULT_TILESIZE);
         ~Map() override = default;
 
         [[nodiscard]] const std::vector<std::vector<Tile>> &getTiles() const;
+
+        const std::vector<Sprite> &getSprites() const;
 
         [[nodiscard]] ull getTileSize() const;
         [[nodiscard]] ull getWidth() const;

@@ -4,10 +4,10 @@
 
 #include <SFML/Graphics.hpp>
 #include <iostream>
-#include "Enemy.h"
+#include "SSprite.h"
 
 namespace game {
-    Enemy::Enemy(
+    SSprite::SSprite(
             bool inView,
             engine::math::Vec2<float> position,
             float enemySpeed,
@@ -23,47 +23,47 @@ namespace game {
     sf::Texture texture;
     sf::Sprite sprite;
 
-    void Enemy::initTexture(){
+    void SSprite::initTexture(){
         if(!texture.loadFromFile("resources/images/capu ba.png")) {
             std::cerr << "Error loading image from file\n";
             return;
         }
     }
 
-    void Enemy::initSprite() {
+    void SSprite::initSprite() {
         sprite.setTexture(texture);
     }
 
-    float Enemy::getNumber() const {
+    float SSprite::getNumber() const {
         return number;
     }
 
-    void Enemy::setNumber(float number) {
-        Enemy::number = number;
+    void SSprite::setNumber(float number) {
+        SSprite::number = number;
     }
 
-    bool Enemy::isInView() const {
+    bool SSprite::isInView() const {
         return inView;
     }
 
-    float Enemy::getEnemySpeed() const {
+    float SSprite::getEnemySpeed() const {
         return enemySpeed;
     }
 
-    float Enemy::getDirection() const {
+    float SSprite::getDirection() const {
         return direction;
     }
 
-    float Enemy::getDistance() const {
+    float SSprite::getDistance() const {
         return distance;
     }
 
-    int Enemy::getHeight(sf::RenderWindow& window) const
+    int SSprite::getHeight(sf::RenderWindow& window) const
     {
         return round(window.getSize().x / (distance * tan(engine::math::degToRad(0.5f * 90))));
     }
 
-    int Enemy::getWidth(sf::RenderWindow& window) const
+    int SSprite::getWidth(sf::RenderWindow& window) const
     {
         float sprite_height = sprite.getScale().y;
         float sprite_width = sprite.getScale().x;
@@ -72,11 +72,11 @@ namespace game {
     }
 
 
-    const engine::math::Vec2<float>& Enemy::getPosition() const {
+    const engine::math::Vec2<float>& SSprite::getPosition() const {
         return position;
     }
 //
-    void Enemy::render(sf::RenderWindow& window)
+    void SSprite::render(sf::RenderWindow& window)
     {
         float sprite_height = sprite.getScale().y;
         float sprite_width = sprite.getScale().x;
@@ -87,7 +87,7 @@ namespace game {
         drawSprite(sf::Vector2<short>(position.x, position.y+number), window, getWidth(window)/sprite_width, getHeight(window)/sprite_height);
     }
 
-    void Enemy::drawSprite(const sf::Vector2<short>& i_position, sf::RenderWindow& i_window, const float i_scale_x, const float i_scale_y) {
+    void SSprite::drawSprite(const sf::Vector2<short>& i_position, sf::RenderWindow& i_window, const float i_scale_x, const float i_scale_y) {
 
         sprite.setOrigin(sprite.getScale().x, sprite.getScale().y / 2);
         sprite.setPosition(sf::Vector2f(i_position));
@@ -96,11 +96,11 @@ namespace game {
         i_window.draw(sprite);
     }
 
-    void Enemy::setPosition(const engine::math::Vec2<float> &position) {
-        Enemy::position = position;
+    void SSprite::setPosition(const engine::math::Vec2<float> &position) {
+        SSprite::position = position;
     }
 
-    void Enemy::update(float delta) {
+    void SSprite::update(float delta) {
         position.x +=delta*1;
     }
 } // game
