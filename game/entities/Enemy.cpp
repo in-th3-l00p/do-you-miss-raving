@@ -13,22 +13,25 @@ namespace game {
             float enemySpeed,
             float direction,
             float distance,
-            float number,
-            sf::Texture texture,
-            sf::Sprite sprite
-    ) : inView(inView), position(position), enemySpeed(enemySpeed), direction(direction), distance(distance), number(number),texture(texture),sprite(sprite) {
-        setZIndex(1);
+            float numberddddd
+    ) : inView(inView), position(position), enemySpeed(enemySpeed), direction(direction), distance(distance), number(number) {
+        setZIndex(11);
+        initTexture();
+        initSprite();
     }
 
+    sf::Texture texture;
+    sf::Sprite sprite;
+
     void Enemy::initTexture(){
-        if(!texture.loadFromFile("resources/images/capu ba.png.png")) {
+        if(!texture.loadFromFile("resources/images/capu ba.png")) {
             std::cerr << "Error loading image from file\n";
             return;
         }
     }
 
-    void Enemy::initSprite(){
-        sf::Sprite enemySprite(texture);
+    void Enemy::initSprite() {
+        sprite.setTexture(texture);
     }
 
     float Enemy::getNumber() const {
@@ -78,15 +81,18 @@ namespace game {
         float sprite_height = sprite.getScale().y;
         float sprite_width = sprite.getScale().x;
 
+        std::cout << "DrawSprite position: " << position.x << ", " << position.y << "\n";
+
         inView &= window.getSize().y > number + position.y && window.getSize().x > position.x && position.x> -1 * getWidth(window) && number + position.y > -1 * getHeight(window);
         drawSprite(sf::Vector2<short>(position.x, position.y+number), window, getWidth(window)/sprite_width, getHeight(window)/sprite_height);
     }
 
-    void Enemy::drawSprite(const sf::Vector2<short>& i_position, sf::RenderWindow& i_window, const float i_scale_x, const float i_scale_y)
-    {
-        sprite.setOrigin(sprite.getScale().x, sprite.getScale().y /2);
+    void Enemy::drawSprite(const sf::Vector2<short>& i_position, sf::RenderWindow& i_window, const float i_scale_x, const float i_scale_y) {
+
+        sprite.setOrigin(sprite.getScale().x, sprite.getScale().y / 2);
         sprite.setPosition(sf::Vector2f(i_position));
         sprite.setScale(i_scale_x, i_scale_y);
+
         i_window.draw(sprite);
     }
 
@@ -95,6 +101,6 @@ namespace game {
     }
 
     void Enemy::update(float delta) {
-        position += direction*delta;
+        position.x +=delta*1;
     }
 } // game

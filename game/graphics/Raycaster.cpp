@@ -6,10 +6,11 @@
 #include "Raycaster.h"
 #include "../../utils/Math.h"
 #include <iostream>
+#define texWidth 64
 
 namespace engine {
-    engine::Raycaster::Raycaster(game::Player &player, game::Map &map):
-            player(player), map(map) {
+    engine::Raycaster::Raycaster(game::Player &player, game::Map &map, game::Enemy &enemy):
+            player(player), map(map), enemy(enemy) {
         setZIndex(10);
     }
 
@@ -106,8 +107,69 @@ namespace engine {
             line.setPosition((float) x, (float) lineStart);
             window.draw(line);
         }
-        renderEnemies(window);
     }
+
+    double spriteDistance;
+
+    void engine::Raycaster::renderSprites(sf::RenderWindow& window)
+    {
+        spriteDistance = ((player.getPosition().x - enemy.getPosition().x) * (player.getPosition().x - enemy.getPosition().x) + (player.getPosition().y - enemy.getPosition().y) * (player.getPosition().y - enemy.getPosition().y)); //sqrt not taken, unneeded;
+            double spriteX = enemy.getPosition().x - player.getPosition().x;
+            double spriteY = enemy.getPosition().y - player.getPosition().y;;
+
+            //transform sprite with the inverse camera matrix
+            // [ planeX   dirX ] -1                                       [ dirY      -dirX ]
+            // [               ]       =  1/(planeX*dirY-dirX*planeY) *   [                 ]
+            // [ planeY   dirY ]                                          [ -planeY  planeX ]
+
+            double invDet = 1.0 / (player.getCameraPlane().x * player.getDirection().y - player.getDirection().x * player.getCameraPlane().y); //required for correct matrix multiplication
+
+            double transformX = invDet * (player.getDirection().y * spriteX - player.getDirection().x * spriteY);
+            double transformY = invDet * (-player.getCameraPlane().y * spriteX + player.getCameraPlane().x * spriteY); //this is actually the depth inside the screen, that what Z is in 3D
+
+            int w= enemy.getWidth(window);
+            int h= enemy.getWidth(window);
+            int spriteScreenX = int((w / 2) * (1 + transformX / transformY));
+
+            //calculate height of the sprite on screen
+            int spriteHeight = abs(int(enemy.getHeight(window) / (transformY))); //using 'transformY' instead of the real distance prevents fisheye
+            //calculate lowest and highest pixel to fill in current stripe
+            int drawStartY = -spriteHeight / 2 + h / 2;
+            if(drawStartY < 0) drawStartY = 0;
+            int drawEndY = spriteHeight / 2 + h / 2;
+            if(drawEndY >= h) drawEndY = h - 1;
+
+            //calculate width of the sprite
+            int spriteWidth = abs( int (h / (transformY)));
+            int drawStartX = -spriteWidth / 2 + spriteScreenX;
+            if(drawStartX < 0) drawStartX = 0;
+            int drawEndX = spriteWidth / 2 + spriteScreenX;
+            if(drawEndX >= w) drawEndX = w - 1;
+
+            //loop through every vertical stripe of the sprite on screen
+            for(int stripe = drawStartX; stripe < drawEndX; stripe++)
+            {
+
+                int circleX = stripe - drawStartX;
+
+                int texX = int(256 * (stripe - (-spriteWidth / 2 + spriteScreenX)) * texWidth / spriteWidth) / 256;
+
+                //the conditions in the if are:
+                if (circleX >= 0 && circleX < spriteWidth && transformY > 0 && stripe > 0 && stripe < w && transformY < ZBuffer[stripe]) {
+                    for (int y = drawStartY; y < drawEndY; y++) //for every pixel of the current stripe
+                    {
+                        int d = (y) * 256 - h * 128 + spriteHeight * 128; //256 and 128 factors to avoid floats
+                        int texY = ((d * texHeight) / spriteHeight) / 256;
+                        int circleY = y - drawStartY;
+                        if (circleX * circleX + circleY * circleY < (spriteWidth / 2) * (spriteWidth / 2))
+                        {
+                            // Draw a colored pixel for the circle
+                            Uint32 color = // Specify your color for the circle here;
+                                    buffer[y][stripe] = color;
+                        }
+                }
+            }
+        }
 
     Intersection Raycaster::getHorizontalDistance(
             double cameraX, math::Vec2<float> rayDir, math::Vec2<int> mapTile

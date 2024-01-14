@@ -19,10 +19,14 @@ namespace game {
             float direction;
             float distance;
             float number;
-            sf::Texture texture;
-            sf::Sprite sprite;
     public:
-        Enemy(bool inView, engine::math::Vec2<float> position, float enemySpeed, float direction, float distance, float number, sf::Texture texture, sf::Sprite soreute);
+        explicit
+            Enemy(bool inView = true,
+                  engine::math::Vec2<float> position = {200,200},
+                  float enemySpeed=10,
+                  float direction=0,
+                  float distance=100,
+                  float number=10);
         void render(sf::RenderWindow &window) override;
         void update(float delta) override;
 

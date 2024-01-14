@@ -32,7 +32,6 @@ namespace game {
         );
 
         void render(sf::RenderWindow& window) override;
-        void renderStaminaBar(sf::RenderWindow &window);
         void update(float delta) override;
 
         [[nodiscard]] const engine::math::Vec2<float> &getPosition() const;
@@ -42,6 +41,8 @@ namespace game {
         [[nodiscard]] float getSpeed() const;
         [[nodiscard]] float getRotateSpeed() const;
         float getStamina() const;
+
+        void renderStaminaBar(sf::RenderWindow &window);
     };
 
 } // game
