@@ -4,6 +4,8 @@
 
 #include <SFML/Graphics.hpp>
 #include "Raycaster.h"
+#include "../../utils/Math.h"
+#include <iostream>
 
 namespace engine {
     engine::Raycaster::Raycaster(game::Player &player, game::Map &map):
@@ -33,17 +35,21 @@ namespace engine {
             };
             Intersection horizontal = getHorizontalDistance(cameraX, rayDir, mapTile);
             Intersection vertical = getVerticalDistance(cameraX, rayDir, mapTile);
-            sf::Color color;
+
+            sf::Texture* texture;
 
             double distance;
             if (horizontal.distance < vertical.distance) {
-                color = map.getTiles()[horizontal.tile.y][horizontal.tile.x].color;
-                color.r = (sf::Uint8) ((float) color.r * engine::constants::HORIZONTAL_DARKER_MUTLIPLIER);
-                color.g = (sf::Uint8) ((float) color.g * engine::constants::HORIZONTAL_DARKER_MUTLIPLIER);
-                color.b = (sf::Uint8) ((float) color.b * engine::constants::HORIZONTAL_DARKER_MUTLIPLIER);
+                const game::Tile& tile = map.getTiles()[horizontal.tile.y][horizontal.tile.x];
+                double multiplier = horizontal.hit.y / (double) map.getTileSize() - horizontal.tile.y;
+                int hit = std::floor(engine::math::linearInterpolation<double>(multiplier, 0, 1, 0, (double) tile.texture->getWidth()));
+                texture = &(*tile.texture)[hit];
                 distance = horizontal.distance;
             } else {
-                color = map.getTiles()[vertical.tile.y][vertical.tile.x].color;
+                const game::Tile& tile = map.getTiles()[vertical.tile.y][vertical.tile.x];
+                double multiplier = vertical.hit.x / (double) map.getTileSize() - vertical.tile.x;
+                int hit = std::floor(engine::math::linearInterpolation<double>(multiplier, 0, 1, 0, (double) tile.texture->getWidth()));
+                texture = &(*tile.texture)[hit];
                 distance = vertical.distance;
             }
 
@@ -57,11 +63,9 @@ namespace engine {
 
             double lineHeight = (double) windowHeight / (distance * cos(calculatedAngle)) * map.getTileSize();
             double lineStart = (double) windowHeight / 2 - lineHeight / 2;
-            sf::VertexArray line(sf::Lines, 2);
-            line[0].position = {(float) x, (float) lineStart};
-            line[0].color = color;
-            line[1].position = {(float) x, (float) (lineStart + lineHeight)};
-            line[1].color = color;
+            sf::Sprite line(*texture);
+            line.setScale(1, (float) lineHeight / (float) texture->getSize().y);
+            line.setPosition((float) x, (float) lineStart);
             window.draw(line);
         }
     }
@@ -88,8 +92,10 @@ namespace engine {
         deltaDist.y = tanAngle * deltaDist.x;
 
         math::Vec2<float> currentCoords = player.getPosition() + firstDist;
-        math::Vec2<int> currentTile = mapTile;
-        currentTile.x += right ? 1 : -1;
+        math::Vec2<int> currentTile = {
+                (int)(currentCoords.x / (float) map.getTileSize()) + (right ? 0 : -1),
+                (int)(currentCoords.y / (float) map.getTileSize())
+        };
         while (
                 currentTile.x >= 0 && currentTile.x < map.getWidth() &&
                 currentTile.y >= 0 && currentTile.y < map.getHeight() &&
@@ -97,11 +103,10 @@ namespace engine {
                 ) {
 
             currentCoords += deltaDist;
-
-            if (right && currentTile.x < map.getWidth() - 1)
-                currentTile.x++;
-            else if (!right && currentTile.x > 0)
-                currentTile.x--;
+            currentTile = {
+                    (int)(currentCoords.x / (float) map.getTileSize()) + (right ? 0 : -1),
+                    (int)(currentCoords.y / (float) map.getTileSize())
+            };
         }
 
         Intersection intersection;
@@ -128,9 +133,11 @@ namespace engine {
         firstDist.x = ctgAngle * firstDist.y;
         deltaDist.x = ctgAngle * deltaDist.y;
 
-        math::Vec2<float> currentCords = player.getPosition() + firstDist;
-        math::Vec2<int> currentTile = mapTile;
-        currentTile.y += down ? 1 : -1;
+        math::Vec2<float> currentCoords = player.getPosition() + firstDist;
+        math::Vec2<int> currentTile = {
+                (int)(currentCoords.x / (float) map.getTileSize()),
+                (int)(currentCoords.y / (float) map.getTileSize()) + (down ? 0 : -1)
+        };
 
         while (
                 currentTile.y >= 0 && currentTile.y < map.getHeight() &&
@@ -138,17 +145,16 @@ namespace engine {
                 map.getTiles()[currentTile.y][currentTile.x].empty
                 ) {
 
-            currentCords += deltaDist;
-
-            if (down && currentTile.y < map.getHeight() - 1)
-                currentTile.y++;
-            else if (!down && currentTile.y > 0)
-                currentTile.y--;
+            currentCoords += deltaDist;
+            currentTile = {
+                    (int)(currentCoords.x / (float) map.getTileSize()),
+                    (int)(currentCoords.y / (float) map.getTileSize()) + (down ? 0 : -1)
+            };
         }
 
         Intersection intersection;
-        intersection.distance = player.getPosition().getDistance(currentCords);
-        intersection.hit = currentCords;
+        intersection.distance = player.getPosition().getDistance(currentCoords);
+        intersection.hit = currentCoords;
         intersection.tile = currentTile;
         return intersection;
     }

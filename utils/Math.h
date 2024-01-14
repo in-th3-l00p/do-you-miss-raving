@@ -114,6 +114,11 @@ namespace engine::math {
                 std::sin(angle), std::cos(angle)
                 );
     }
+
+    template <typename T>
+    inline T linearInterpolation(T value, T min1, T max1, T min2, T max2) {
+        return (value - min1) * (max2 - min2) / (max1 - min1) + min2;
+    }
 }
 
 #endif //RAYGAME_MATH_H

@@ -20,7 +20,8 @@ add_executable(raygame main.cpp
         game/graphics/Raycaster.h
         game/graphics/UserInterface.cpp
         game/graphics/UserInterface.h
-        utils/Paths.h)
+        utils/Paths.h
+)
 
 # luci
 if (WIN32)
