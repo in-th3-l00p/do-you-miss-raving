@@ -3,6 +3,7 @@
 //
 
 #include <SFML/Graphics.hpp>
+#include <iostream>
 #include "Enemy.h"
 
 namespace game {
@@ -12,9 +13,22 @@ namespace game {
             float enemySpeed,
             float direction,
             float distance,
-            float number
-    ) : inView(inView), position(position), enemySpeed(enemySpeed), direction(direction), distance(distance), number(number) {
+            float number,
+            sf::Texture texture,
+            sf::Sprite sprite
+    ) : inView(inView), position(position), enemySpeed(enemySpeed), direction(direction), distance(distance), number(number),texture(texture),sprite(sprite) {
         setZIndex(1);
+    }
+
+    void Enemy::initTexture(){
+        if(!texture.loadFromFile("resources/images/capu ba.png.png")) {
+            std::cerr << "Error loading image from file\n";
+            return;
+        }
+    }
+
+    void Enemy::initSprite(){
+        sf::Sprite enemySprite(texture);
     }
 
     float Enemy::getNumber() const {
@@ -48,8 +62,8 @@ namespace game {
 
     int Enemy::getWidth(sf::RenderWindow& window) const
     {
-        float sprite_height = 10;
-        float sprite_width = 10;
+        float sprite_height = sprite.getScale().y;
+        float sprite_width = sprite.getScale().x;
 
         return round(window.getSize().y * sprite_width / (distance * sprite_height * tan(engine::math::degToRad(0.5f * 90))));
     }
@@ -58,17 +72,29 @@ namespace game {
     const engine::math::Vec2<float>& Enemy::getPosition() const {
         return position;
     }
-
+//
     void Enemy::render(sf::RenderWindow& window)
     {
-        float sprite_height = 30;
-        float sprite_width = 20;
+        float sprite_height = sprite.getScale().y;
+        float sprite_width = sprite.getScale().x;
 
         inView &= window.getSize().y > number + position.y && window.getSize().x > position.x && position.x> -1 * getWidth(window) && number + position.y > -1 * getHeight(window);
+        drawSprite(sf::Vector2<short>(position.x, position.y+number), window, getWidth(window)/sprite_width, getHeight(window)/sprite_height);
+    }
+
+    void Enemy::drawSprite(const sf::Vector2<short>& i_position, sf::RenderWindow& i_window, const float i_scale_x, const float i_scale_y)
+    {
+        sprite.setOrigin(sprite.getScale().x, sprite.getScale().y /2);
+        sprite.setPosition(sf::Vector2f(i_position));
+        sprite.setScale(i_scale_x, i_scale_y);
+        i_window.draw(sprite);
+    }
+
+    void Enemy::setPosition(const engine::math::Vec2<float> &position) {
+        Enemy::position = position;
     }
 
     void Enemy::update(float delta) {
-        // Implement enemy movement
         position += direction*delta;
     }
 } // game

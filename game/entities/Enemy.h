@@ -19,8 +19,10 @@ namespace game {
             float direction;
             float distance;
             float number;
+            sf::Texture texture;
+            sf::Sprite sprite;
     public:
-        Enemy(bool inView, engine::math::Vec2<float> position, float enemySpeed, float direction, float distance, float number);
+        Enemy(bool inView, engine::math::Vec2<float> position, float enemySpeed, float direction, float distance, float number, sf::Texture texture, sf::Sprite soreute);
         void render(sf::RenderWindow &window) override;
         void update(float delta) override;
 
@@ -37,9 +39,18 @@ namespace game {
         int getHeight(sf::RenderWindow &window) const;
         int getWidth(sf::RenderWindow &window) const;
 
-        float getNumber() const;
+        [[nodiscard]] float getNumber() const;
 
         void setNumber(float number);
+
+        void initTexture();
+
+        void initSprite();
+
+        void drawSprite(const sf::Vector2<short> &i_position, sf::RenderWindow &i_window, const float i_scale_x,
+                        const float i_scale_y);
+
+        void setPosition(const engine::math::Vec2<float> &position);
     };
 } // game
 

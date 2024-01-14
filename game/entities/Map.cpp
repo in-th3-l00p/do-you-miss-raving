@@ -31,23 +31,23 @@ namespace game {
     TestMap::TestMap(ull width, ull height, ull tileSize) : Map(width, height, tileSize) {
         // Set the color of the tiles in the first and last row to red
         for (ull i = 0; i < width; ++i) {
-            tiles[i][0].texture.loadFromFile(engine::paths::WOLFSTEIN_PATH / "wood.png");
-            tiles[i][height - 1].texture.loadFromFile(engine::paths::WOLFSTEIN_PATH / "wood.png");
+            tiles[i][0].texture.loadFromFile((engine::paths::WOLFSTEIN_PATH / "wood.png").string());
+            tiles[i][height - 1].texture.loadFromFile((engine::paths::WOLFSTEIN_PATH / "wood.png").string());
             tiles[i][0].empty = false;
             tiles[i][height - 1].empty = false;
         }
 
         // Set the color of the tiles in the first and last column to red
         for (ull j = 0; j < height; ++j) {
-            tiles[0][j].texture.loadFromFile(engine::paths::WOLFSTEIN_PATH / "wood.png");
-            tiles[width - 1][j].texture.loadFromFile(engine::paths::WOLFSTEIN_PATH / "wood.png");
+            tiles[0][j].texture.loadFromFile((engine::paths::WOLFSTEIN_PATH / "wood.png").string());
+            tiles[width - 1][j].texture.loadFromFile((engine::paths::WOLFSTEIN_PATH / "wood.png").string());
             tiles[0][j].empty = false;
             tiles[width - 1][j].empty = false;
         }
 
-        tiles[5][3].texture.loadFromFile(engine::paths::WOLFSTEIN_PATH / "wood.png");
+        tiles[5][3].texture.loadFromFile((engine::paths::WOLFSTEIN_PATH / "wood.png").string());
         tiles[5][3].empty = false;
-        tiles[2][4].texture.loadFromFile(engine::paths::WOLFSTEIN_PATH / "wood.png");
+        tiles[2][4].texture.loadFromFile((engine::paths::WOLFSTEIN_PATH / "wood.png").string());
         tiles[2][4].empty = false;
     }
 
