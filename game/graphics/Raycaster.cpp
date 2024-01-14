@@ -36,20 +36,18 @@ namespace engine {
             Intersection horizontal = getHorizontalDistance(cameraX, rayDir, mapTile);
             Intersection vertical = getVerticalDistance(cameraX, rayDir, mapTile);
 
-            sf::Texture* texture;
-
             double distance;
+            const sf::Texture* texture;
+            int textureHit;
             if (horizontal.distance < vertical.distance) {
-                const game::Tile& tile = map.getTiles()[horizontal.tile.y][horizontal.tile.x];
+                texture = &map.getTiles()[horizontal.tile.y][horizontal.tile.x].texture;
                 double multiplier = horizontal.hit.y / (double) map.getTileSize() - horizontal.tile.y;
-                int hit = std::floor(engine::math::linearInterpolation<double>(multiplier, 0, 1, 0, (double) tile.texture->getWidth()));
-                texture = &(*tile.texture)[hit];
+                textureHit = std::floor(engine::math::linearInterpolation<double>(multiplier, 0, 1, 0, (double) texture->getSize().y));
                 distance = horizontal.distance;
             } else {
-                const game::Tile& tile = map.getTiles()[vertical.tile.y][vertical.tile.x];
+                texture = &map.getTiles()[vertical.tile.y][vertical.tile.x].texture;
                 double multiplier = vertical.hit.x / (double) map.getTileSize() - vertical.tile.x;
-                int hit = std::floor(engine::math::linearInterpolation<double>(multiplier, 0, 1, 0, (double) tile.texture->getWidth()));
-                texture = &(*tile.texture)[hit];
+                textureHit = std::floor(engine::math::linearInterpolation<double>(multiplier, 0, 1, 0, (double) texture->getSize().x));
                 distance = vertical.distance;
             }
 
@@ -63,7 +61,7 @@ namespace engine {
 
             double lineHeight = (double) windowHeight / (distance * cos(calculatedAngle)) * map.getTileSize();
             double lineStart = (double) windowHeight / 2 - lineHeight / 2;
-            sf::Sprite line(*texture);
+            sf::Sprite line(*texture, sf::IntRect(textureHit, 0, 1, texture->getSize().y));
             line.setScale(1, (float) lineHeight / (float) texture->getSize().y);
             line.setPosition((float) x, (float) lineStart);
             window.draw(line);

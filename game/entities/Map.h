@@ -11,22 +11,8 @@
 #include "../../utils/Constants.h"
 
 namespace game {
-    class Texture {
-    private:
-        std::vector<sf::Texture> textureColumns;
-        ull width, height;
-
-    public:
-        explicit Texture(const std::string& path);
-        sf::Texture& operator[](int index);
-
-        [[nodiscard]] ull getWidth() const;
-        [[nodiscard]] ull getHeight() const;
-    };
-
-
     struct Tile {
-        std::unique_ptr<Texture> texture;
+        sf::Texture texture;
         bool empty = true;
     };
 
