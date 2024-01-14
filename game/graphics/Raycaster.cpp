@@ -123,16 +123,15 @@ namespace engine {
             double spriteX = sprite.position.x - player.getPosition().x;
             double spriteY = sprite.position.y - player.getPosition().y;
 
-            sprite.sprite.setPosition(spriteX, spriteY);
-
             double invDet = 1.0 / (player.getCameraPlane().x * player.getDirection().y - player.getDirection().x * player.getCameraPlane().y);
             double transformX = invDet * (player.getDirection().y * spriteX - player.getDirection().x * spriteY);
             double transformY = invDet * (-player.getCameraPlane().y * spriteX + player.getCameraPlane().x * spriteY);
 
-            int w= sprite.sprite.getScale().x;
-            int h= sprite.sprite.getScale().y;
-            int spriteScreenX = int((w / 2) * (1 + transformX / transformY));
-            int spriteHeight = abs(int(enemy.getHeight(window) / (transformY)));
+            sprite.sprite.setPosition(spriteX, spriteY);
+
+            double SpriteScaling = spriteDistance/ constants::RENDER_DISTANCE;
+            sprite.sprite.setScale(SpriteScaling,SpriteScaling);
+            zBuffer.emplace_back(&sprite.sprite,spriteDistance);
         }
 
         sort(zBuffer.begin(), zBuffer.end(), [](const std::pair<sf::Sprite*, double>& a, const std::pair<sf::Sprite*, double>& b) {
