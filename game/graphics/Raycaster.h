@@ -36,13 +36,13 @@ namespace engine {
 
     public:
         Raycaster(game::Player& player, game::Map& map);
-        ~Raycaster() override {}
-        void renderEnemies(sf::RenderWindow& window);
-        void updateEnemies(float deltaTime);
+        ~Raycaster() override = default;
+        void renderEnemies(sf::RenderWindow& window) {};
+        void updateEnemies(float deltaTime) {};
         void update(float &deltaTime) {}
         void render(sf::RenderWindow& window) override;
 
-        void update(float deltaTime) override;
+        void update(float deltaTime) override {};
     };
 } // engine
 

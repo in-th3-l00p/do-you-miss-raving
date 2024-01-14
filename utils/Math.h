@@ -125,12 +125,12 @@ namespace engine::math {
                 );
     }
 
-    float getDegrees(const float i_degrees)
+    inline float getDegrees(const float i_degrees)
     {
         return static_cast<float>(fmod(360 + fmod(i_degrees, 360), 360));
     }
 
-    float degToRad(const float i_degrees)
+    inline float degToRad(const float i_degrees)
     {
         return 3.141592653589793116f * getDegrees(i_degrees) / 180;
     }
