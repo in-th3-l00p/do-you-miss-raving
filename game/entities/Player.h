@@ -18,7 +18,10 @@ namespace game {
         engine::math::Vec2<float> direction;
         engine::math::Vec2<float> cameraPlane = {0, 0.66f };
         float radius, speed, rotateSpeed;
-
+        float stamina;
+        const float maxStamina;
+        const float staminaRegen;
+        bool isRunning;
     public:
         explicit Player(
                 engine::math::Vec2<float> position = {engine::constants::DEFAULT_PLAYER_X, engine::constants::DEFAULT_PLAYER_Y },
@@ -29,6 +32,7 @@ namespace game {
         );
 
         void render(sf::RenderWindow& window) override;
+        void renderStaminaBar(sf::RenderWindow &window);
         void update(float delta) override;
 
         [[nodiscard]] const engine::math::Vec2<float> &getPosition() const;
@@ -37,6 +41,7 @@ namespace game {
         [[nodiscard]] float getRadius() const;
         [[nodiscard]] float getSpeed() const;
         [[nodiscard]] float getRotateSpeed() const;
+        float getStamina() const;
     };
 
 } // game

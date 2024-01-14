@@ -6,6 +6,7 @@
 #define RAYGAME_USERINTERFACE_H
 
 #include <SFML/Graphics.hpp>
+#include <unordered_map>
 #include "../../engine/Entity.h"
 #include "../../engine/Scene.h"
 #include "../../utils/Constants.h"

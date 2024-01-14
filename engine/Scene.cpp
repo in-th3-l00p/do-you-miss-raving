@@ -7,6 +7,7 @@
 #include "../game/entities/Player.h"
 #include "../game/graphics/Raycaster.h"
 #include "../game/graphics/UserInterface.h"
+#include "../game/entities/Enemy.h"
 
 namespace engine {
     Scene::Scene(

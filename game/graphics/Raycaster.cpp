@@ -106,10 +106,7 @@ namespace engine {
             line.setPosition((float) x, (float) lineStart);
             window.draw(line);
         }
-    }
-
-    void engine::Raycaster::update(float deltaTime) {
-
+        renderEnemies(window);
     }
 
     Intersection Raycaster::getHorizontalDistance(

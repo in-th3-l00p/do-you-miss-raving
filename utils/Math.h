@@ -21,6 +21,16 @@ namespace engine::math {
         // Constructor
         Vec2(T x = 0, T y = 0) : x(x), y(y) {}
 
+        [[nodiscard]] Vec2<float> normalize() const {
+            float length = std::sqrt(x * x + y * y);
+            if (length != 0) {
+                return Vec2<float>(x / length, y / length);
+            } else {
+                // Handle division by zero if the vector is already of zero length
+                return Vec2<float>(0, 0);
+            }
+        }
+
         Vec2 operator+=(const Vec2& vec) {
             x += vec.x;
             y += vec.y;
@@ -113,6 +123,16 @@ namespace engine::math {
                 std::cos(angle), -std::sin(angle),
                 std::sin(angle), std::cos(angle)
                 );
+    }
+
+    float getDegrees(const float i_degrees)
+    {
+        return static_cast<float>(fmod(360 + fmod(i_degrees, 360), 360));
+    }
+
+    float degToRad(const float i_degrees)
+    {
+        return 3.141592653589793116f * getDegrees(i_degrees) / 180;
     }
 
     template <typename T>

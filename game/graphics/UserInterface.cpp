@@ -12,7 +12,8 @@ namespace game::ui {
     sf::Font &FontLoader::getFont(const std::string &fontName) {
         if (fontsContainer.find(fontName) == fontsContainer.end()) {
             sf::Font font;
-            font.loadFromFile(engine::paths::FONTS_DIR / fontName);
+            engine::paths::fs::path fontPath = engine::paths::FONTS_DIR / fontName;
+            font.loadFromFile(fontPath.string());
             fontsContainer[fontName] = font;
         }
         return fontsContainer[fontName];
