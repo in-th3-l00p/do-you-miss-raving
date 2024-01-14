@@ -54,12 +54,30 @@ namespace game {
         sprites.emplace_back(
                 (engine::paths::IMAGES_PATH / "gimnastica.jpeg").string(),
                 engine::math::Vec2<float>{ 460, 300 },
-                engine::math::Vec2<float>{ (float) tileSize, (float) tileSize }
+                engine::math::Vec2<float>{ (float) tileSize * 3, (float) tileSize * 3 }
         );
 
         sprites.emplace_back(
                 (engine::paths::IMAGES_PATH / "iosub_aripi_devant.png").string(),
                 engine::math::Vec2<float>{ 460, 460 },
+                engine::math::Vec2<float>{ (float) tileSize, (float) tileSize }
+        );
+
+        sprites.emplace_back(
+                (engine::paths::IMAGES_PATH / "luci.jpeg").string(),
+                engine::math::Vec2<float>{ 300, 360 },
+                engine::math::Vec2<float>{ (float) tileSize, (float) tileSize }
+        );
+
+        sprites.emplace_back(
+                (engine::paths::IMAGES_PATH / "capu ba.png").string(),
+                engine::math::Vec2<float>{ 100, 100 },
+                engine::math::Vec2<float>{ (float) tileSize, (float) tileSize }
+        );
+
+        sprites.emplace_back(
+                (engine::paths::IMAGES_PATH / "floricel.png").string(),
+                engine::math::Vec2<float>{ 200, 100 },
                 engine::math::Vec2<float>{ (float) tileSize, (float) tileSize }
         );
 

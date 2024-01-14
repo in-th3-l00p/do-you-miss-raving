@@ -116,7 +116,7 @@ namespace engine {
 
         // putting the sprites in the z buffer
         for (auto sprite: map.getSprites()) {
-            double spriteDistance = player.getPosition().getDistance(sprite.position);
+            double spriteDistance = player.getPosition().getDistance(sprite.position + sprite.size / 2);
             if (spriteDistance > constants::RENDER_DISTANCE)
                 continue;
 
