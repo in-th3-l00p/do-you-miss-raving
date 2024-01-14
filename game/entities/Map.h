@@ -6,17 +6,27 @@
 #define RAYGAME_MAP_H
 
 #include <SFML/Graphics.hpp>
+#include <memory>
 #include <vector>
 #include "../../engine/Entity.h"
 #include "../../utils/Constants.h"
 #include "../../utils/Math.h"
 
 namespace game {
+    // to do: fix memory leak
     struct Sprite {
+        sf::Texture* texture;
         sf::Sprite sprite;
         engine::math::Vec2<float> position;
+        engine::math::Vec2<float> size;
 
-        Sprite(std::string path, engine::math::Vec2<float> position);
+        Sprite(
+                std::string path,
+                engine::math::Vec2<float> position,
+                engine::math::Vec2<float> size
+                );
+
+        ~Sprite() = default;
     };
 
 

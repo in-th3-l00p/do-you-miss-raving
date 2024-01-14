@@ -14,7 +14,7 @@ namespace game {
             float speed,
             float rotateSpeed
     ): position(position), direction(direction), radius(radius), speed(speed), rotateSpeed(rotateSpeed), stamina(80), maxStamina(100), staminaRegen(20), isRunning(false) {
-        setZIndex(1);
+        setZIndex(1000);
     }
 
     void Player::render(sf::RenderWindow &window) {
@@ -26,9 +26,10 @@ namespace game {
         line[1].position = sf::Vector2f(position.x + direction.x * 30, position.y + direction.y * 30);
         line[0].color = sf::Color::Red;
         line[1].color = sf::Color::Red;
-//        window.draw(circle);
-//        window.draw(line);
-
+        if (sf::Keyboard::isKeyPressed(sf::Keyboard::M)) {
+            window.draw(circle);
+            window.draw(line);
+        }
     }
 
     void Player::renderStaminaBar(sf::RenderWindow &window) {
