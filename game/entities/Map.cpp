@@ -2,6 +2,7 @@
 // Created by intheloop on 10.01.2024.
 //
 
+#include <iostream>
 #include "Map.h"
 #include "../../utils/Paths.h"
 
@@ -12,7 +13,10 @@ namespace game {
             engine::math::Vec2<float> size
     ): position(position), size(size) {
         texture = new sf::Texture();
-        texture->loadFromFile(path);
+        bool loadSuccessful = texture->loadFromFile(path);
+        if (!loadSuccessful) {
+            std::cerr << "Failed to load texture from path: " << path << std::endl;
+        }
         sprite.setTexture(*texture);
     }
 
@@ -53,53 +57,35 @@ namespace game {
 
         sprites.emplace_back(
                 (engine::paths::IMAGES_PATH / "gimnastica.jpeg").string(),
-                engine::math::Vec2<float>{ 460, 300 },
-                engine::math::Vec2<float>{ (float) tileSize * 3, (float) tileSize * 3 }
+                engine::math::Vec2<float>{ 260, 300 },
+                engine::math::Vec2<float>{ (float) tileSize, (float) tileSize }
         );
 
         sprites.emplace_back(
                 (engine::paths::IMAGES_PATH / "iosub_aripi_devant.png").string(),
-                engine::math::Vec2<float>{ 460, 460 },
-                engine::math::Vec2<float>{ (float) tileSize, (float) tileSize }
-        );
-
-        sprites.emplace_back(
-                (engine::paths::IMAGES_PATH / "luci.jpeg").string(),
-                engine::math::Vec2<float>{ 300, 360 },
-                engine::math::Vec2<float>{ (float) tileSize, (float) tileSize }
-        );
-
-        sprites.emplace_back(
-                (engine::paths::IMAGES_PATH / "capu ba.png").string(),
-                engine::math::Vec2<float>{ 100, 100 },
-                engine::math::Vec2<float>{ (float) tileSize, (float) tileSize }
-        );
-
-        sprites.emplace_back(
-                (engine::paths::IMAGES_PATH / "floricel.png").string(),
-                engine::math::Vec2<float>{ 200, 100 },
+                engine::math::Vec2<float>{ 360, 260 },
                 engine::math::Vec2<float>{ (float) tileSize, (float) tileSize }
         );
 
         // Set the color of the tiles in the first and last row to red
         for (ull i = 0; i < width; ++i) {
-            tiles[i][0].texture.loadFromFile((engine::paths::IMAGES_PATH / "iosubugrasu.png").string());
-            tiles[i][height - 1].texture.loadFromFile((engine::paths::IMAGES_PATH / "iosubugrasu.png").string());
-            tiles[i][0].empty = false;
-            tiles[i][height - 1].empty = false;
+                tiles.at(i).at(0).changeTexture((engine::paths::IMAGES_PATH / "iosubugrasu.png").string());
+                tiles.at(i).at(height - 1).changeTexture((engine::paths::IMAGES_PATH / "iosubugrasu.png").string());
+                tiles.at(i).at(0).empty = false;
+                tiles.at(i).at(height - 1).empty = false;
         }
 
         // Set the color of the tiles in the first and last column to red
         for (ull j = 0; j < height; ++j) {
-            tiles[0][j].texture.loadFromFile((engine::paths::IMAGES_PATH / "iosubugrasu.png").string());
-            tiles[width - 1][j].texture.loadFromFile((engine::paths::IMAGES_PATH / "iosubugrasu.png").string());
+            tiles[0][j].changeTexture((engine::paths::IMAGES_PATH / "iosubugrasu.png").string());
+            tiles[width - 1][j].changeTexture((engine::paths::IMAGES_PATH / "iosubugrasu.png").string());
             tiles[0][j].empty = false;
             tiles[width - 1][j].empty = false;
         }
 
-        tiles[5][3].texture.loadFromFile((engine::paths::IMAGES_PATH / "jumpscare.jpg").string());
+        tiles[5][3].changeTexture((engine::paths::IMAGES_PATH / "jumpscare.jpg").string());
         tiles[5][3].empty = false;
-        tiles[2][4].texture.loadFromFile((engine::paths::IMAGES_PATH / "jumpscare.jpg").string());
+        tiles[2][4].changeTexture((engine::paths::IMAGES_PATH / "jumpscare.jpg").string());
         tiles[2][4].empty = false;
     }
 

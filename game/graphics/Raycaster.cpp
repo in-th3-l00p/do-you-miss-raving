@@ -6,7 +6,6 @@
 #include "Raycaster.h"
 #include "../../utils/Math.h"
 #include <iostream>
-#define texWidth 64
 
 namespace engine {
     engine::Raycaster::Raycaster(game::Player &player, game::Map &map, game::SSprite &enemy):
@@ -24,8 +23,8 @@ namespace engine {
         floor.setPosition(0, (float)windowHeight / 2);
         floor.setSize(sf::Vector2f((float)windowWidth, (float)windowHeight / 2));
         floor.setFillColor(sf::Color::Blue);
-        window.draw(floor);
-        window.draw(ceiling);
+//        window.draw(floor);
+//        window.draw(ceiling);
 
         // drawing the floor and ceiling lighting gradient for distance
         sf::VertexArray floorGradient(sf::Quads, 4);
@@ -53,6 +52,64 @@ namespace engine {
 
         // z buffer, first what should be rendered, second the distance
         std::vector<std::pair<sf::Sprite*, double>> zBuffer;
+
+        sf::Image background;
+        background.create(windowWidth, windowHeight);
+        for(int y = 0;y < windowHeight; y++)
+        {
+            math::Vec2<float> rayDir0 = player.getDirection() - player.getCameraPlane() ;
+            math::Vec2<float> rayDir1 = player.getDirection() + player.getCameraPlane();
+
+            float midDist = y - windowHeight / 2;
+            float Zpos = windowHeight / 2;
+            float rowDistance = Zpos / midDist * map.getTileSize();
+
+            math::Vec2<float> floorPosition = player.getPosition() +
+                    math::Vec2<float>(rowDistance * rayDir0.x,
+                                      rowDistance * rayDir0.y
+                                      );
+            math::Vec2<float> floorStep = math::Vec2<float>(
+                    rowDistance *(rayDir1.x - rayDir0.x)/ windowWidth,
+                    rowDistance * (rayDir1.y - rayDir0.y) / windowWidth
+                    );
+
+
+            for(int x = 0; x < windowWidth; x++)
+            {
+                int cellX = (int) ((float) floorPosition.x / map.getTileSize());
+                int cellY = (int) ((float) floorPosition.y / map.getTileSize());
+                if (cellX < 0 || cellX >= map.getWidth() || cellY < 0 || cellY >= map.getHeight())
+                    continue;
+
+                const game::Tile& currentTile = map.getTiles()[cellY][cellX];
+                const engine::math::Vec2<unsigned int> texturePosition = {
+                        (unsigned int) std::floor(
+                                engine::math::linearInterpolation<float>(floorPosition.x,
+                                 0, map.getWidth() * map.getTileSize(), 0, currentTile.texture.getSize().x)
+                                 ),
+                        (unsigned int) std::floor(
+                                engine::math::linearInterpolation<float>(floorPosition.y - cellY * map.getTileSize(),
+                                 0, map.getHeight() * map.getTileSize(), 0, currentTile.texture.getSize().y)
+                                 )
+                };
+
+                floorPosition.x += floorStep.x;
+                floorPosition.y += floorStep.y;
+
+                // good boy copilot ^-^
+                if (texturePosition.x < 0 || texturePosition.x >= currentTile.texture.getSize().x ||
+                    texturePosition.y < 0 || texturePosition.y >= currentTile.texture.getSize().y)
+                    continue;
+                sf::Color color = currentTile.image.getPixel(texturePosition.x, texturePosition.y);
+                background.setPixel(x, y, color);
+            }
+        }
+
+        sf::Texture backgroundTexture;
+        backgroundTexture.loadFromImage(background);
+        sf::Sprite backgroundSprite(backgroundTexture);
+        backgroundSprite.setPosition(0, 0);
+        window.draw(backgroundSprite);
 
         // adding lines
         for (int x = 0; x < windowWidth; x++) {
@@ -116,7 +173,7 @@ namespace engine {
 
         // putting the sprites in the z buffer
         for (auto sprite: map.getSprites()) {
-            double spriteDistance = player.getPosition().getDistance(sprite.position + sprite.size / 2);
+            double spriteDistance = player.getPosition().getDistance(sprite.position);
             if (spriteDistance > constants::RENDER_DISTANCE)
                 continue;
 

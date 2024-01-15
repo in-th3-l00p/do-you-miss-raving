@@ -11,20 +11,16 @@
 #include "../../engine/Entity.h"
 #include "../../utils/Constants.h"
 #include "../../utils/Math.h"
+#include "../../utils/Paths.h"
 
 namespace game {
     // to do: fix memory leak
     struct Sprite {
-        sf::Texture* texture;
+        Sprite(std::string path, engine::math::Vec2<float> position, engine::math::Vec2<float> size);
+        sf::Texture *texture;
         sf::Sprite sprite;
-        engine::math::Vec2<float> position;
+        engine::math::Vec2<float> position; // ruxy
         engine::math::Vec2<float> size;
-
-        Sprite(
-                std::string path,
-                engine::math::Vec2<float> position,
-                engine::math::Vec2<float> size
-                );
 
         ~Sprite() = default;
     };
@@ -32,7 +28,18 @@ namespace game {
 
     struct Tile {
         sf::Texture texture;
+        sf::Image image;
         bool empty = true;
+
+        Tile() {
+            texture.loadFromFile((engine::paths::WOLFSTEIN_PATH / "mossy.png").string());
+            image.loadFromFile((engine::paths::WOLFSTEIN_PATH / "mossy.png").string());
+        }
+
+        void changeTexture(std::string path) {
+            texture.loadFromFile(path);
+            image.loadFromFile(path);
+        }
     };
 
     class Map: public engine::Entity {

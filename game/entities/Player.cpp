@@ -55,8 +55,9 @@ namespace game {
         } else {
             isRunning = false;
             currentSpeed=speed;
-            if (stamina < maxStamina)
-                stamina += delta * staminaRegen;
+            if (stamina < maxStamina) {
+            stamina += delta * staminaRegen;
+            }
         }
 
         if(sf::Keyboard::isKeyPressed(sf::Keyboard::W))
