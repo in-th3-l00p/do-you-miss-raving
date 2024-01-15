@@ -16,52 +16,15 @@ namespace engine {
     void engine::Raycaster::render(sf::RenderWindow &window) {
         int windowWidth = static_cast<int>(window.getSize().x) + 1;
         int windowHeight = static_cast<int>(window.getSize().y);
-        sf::RectangleShape floor, ceiling;
-        ceiling.setPosition(0, 0);
-        ceiling.setSize(sf::Vector2f((float)windowWidth, (float)windowHeight / 2));
-        ceiling.setFillColor(sf::Color::Green);
-        floor.setPosition(0, (float)windowHeight / 2);
-        floor.setSize(sf::Vector2f((float)windowWidth, (float)windowHeight / 2));
-        floor.setFillColor(sf::Color::Blue);
-//        window.draw(floor);
-//        window.draw(ceiling);
-
-        // drawing the floor and ceiling lighting gradient for distance
-        sf::VertexArray floorGradient(sf::Quads, 4);
-        sf::VertexArray ceilingGradient(sf::Quads, 4);
-        floorGradient[0].position = sf::Vector2f(0, (float)windowHeight / 2);
-        floorGradient[1].position = sf::Vector2f((float)windowWidth, (float)windowHeight / 2);
-        floorGradient[2].position = sf::Vector2f((float)windowWidth, (float)windowHeight);
-        floorGradient[3].position = sf::Vector2f(0, (float)windowHeight);
-        floorGradient[0].color = sf::Color(0, 0, 0, 255);
-        floorGradient[1].color = sf::Color(0, 0, 0, 255);
-        floorGradient[2].color = sf::Color(0, 0, 0, 0);
-        floorGradient[3].color = sf::Color(0, 0, 0, 0);
-
-        ceilingGradient[0].position = sf::Vector2f(0, 0);
-        ceilingGradient[1].position = sf::Vector2f((float)windowWidth, 0);
-        ceilingGradient[2].position = sf::Vector2f((float)windowWidth, (float)windowHeight / 2);
-        ceilingGradient[3].position = sf::Vector2f(0, (float)windowHeight / 2);
-        ceilingGradient[0].color = sf::Color(0, 0, 0, 0);
-        ceilingGradient[1].color = sf::Color(0, 0, 0, 0);
-        ceilingGradient[2].color = sf::Color(0, 0, 0, 255);
-        ceilingGradient[3].color = sf::Color(0, 0, 0, 255);
-
-        window.draw(floorGradient);
-        window.draw(ceilingGradient);
-
-        // z buffer, first what should be rendered, second the distance
-        std::vector<std::pair<sf::Sprite*, double>> zBuffer;
-
         sf::Image background;
-        background.create(windowWidth, windowHeight);
-        for(int y = 0;y < windowHeight; y++)
+        background.create(constants::DEFAULT_WIDTH / 2, constants::DEFAULT_HEIGHT / 2);
+        for(int y = 0; y < background.getSize().y; y++)
         {
             math::Vec2<float> rayDir0 = player.getDirection() - player.getCameraPlane() ;
             math::Vec2<float> rayDir1 = player.getDirection() + player.getCameraPlane();
 
-            float midDist = y - windowHeight / 2;
-            float Zpos = windowHeight / 2;
+            float midDist = y - background.getSize().y / 2;
+            float Zpos = background.getSize().y / 2;
             float rowDistance = Zpos / midDist * map.getTileSize();
 
             math::Vec2<float> floorPosition = player.getPosition() +
@@ -69,12 +32,12 @@ namespace engine {
                                       rowDistance * rayDir0.y
                                       );
             math::Vec2<float> floorStep = math::Vec2<float>(
-                    rowDistance *(rayDir1.x - rayDir0.x)/ windowWidth,
-                    rowDistance * (rayDir1.y - rayDir0.y) / windowWidth
+                    rowDistance *(rayDir1.x - rayDir0.x)/ background.getSize().x,
+                    rowDistance * (rayDir1.y - rayDir0.y) / background.getSize().x
                     );
 
 
-            for(int x = 0; x < windowWidth; x++)
+            for(int x = 0; x < background.getSize().x; x++)
             {
                 int cellX = (int) ((float) floorPosition.x / map.getTileSize());
                 int cellY = (int) ((float) floorPosition.y / map.getTileSize());
@@ -100,8 +63,9 @@ namespace engine {
                 if (texturePosition.x < 0 || texturePosition.x >= currentTile.texture.getSize().x ||
                     texturePosition.y < 0 || texturePosition.y >= currentTile.texture.getSize().y)
                     continue;
-                sf::Color color = currentTile.image.getPixel(texturePosition.x, texturePosition.y);
-                background.setPixel(x, y, color);
+                sf::Color floorColor = currentTile.image.getPixel(texturePosition.x, texturePosition.y);
+                background.setPixel(x, y, floorColor);
+                background.setPixel(x, background.getSize().y - y - 1, floorColor);
             }
         }
 
@@ -109,7 +73,15 @@ namespace engine {
         backgroundTexture.loadFromImage(background);
         sf::Sprite backgroundSprite(backgroundTexture);
         backgroundSprite.setPosition(0, 0);
+        backgroundSprite.setScale(
+                (float) windowWidth / background.getSize().x,
+                (float) windowHeight / background.getSize().y
+                );
         window.draw(backgroundSprite);
+        std::cout << windowWidth / background.getSize().x << ' ' << windowHeight / background.getSize().y << '\n';
+
+        // z buffer, first what should be rendered, second the distance
+        std::vector<std::pair<sf::Sprite*, double>> zBuffer;
 
         // adding lines
         for (int x = 0; x < windowWidth; x++) {
