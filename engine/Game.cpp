@@ -3,7 +3,6 @@
 //
 
 #include "Game.h"
-#include "../utils/Constants.h"
 #include "../game/graphics/UserInterface.h"
 #include "../game/entities/Player.h"
 
@@ -17,11 +16,6 @@ Game::Game():
 
 void Game::run() {
     sf::Clock deltaClock;
-    game::Player player({engine::constants::DEFAULT_PLAYER_X,engine::constants::DEFAULT_PLAYER_Y},
-                        {engine::constants::DEFAULT_PLAYER_DIR_X, engine::constants::DEFAULT_PLAYER_DIR_Y},
-                        engine::constants::DEFAULT_PLAYER_RADIUS,
-                        engine::constants::DEFAULT_PLAYER_SPEED,
-                        engine::constants::DEFAULT_PLAYER_ROTATE_SPEED);
     while (window.isOpen()) {
         sf::Event event;
         while (window.pollEvent(event)) {

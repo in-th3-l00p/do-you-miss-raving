@@ -50,7 +50,7 @@ namespace engine {
             std::unique_ptr<Scene>& sceneRef
             ) : Scene(window, sceneRef) {
         std::unique_ptr<engine::Entity> map = std::make_unique<game::TestMap>(10, 10);
-        std::unique_ptr<engine::Entity> player = std::make_unique<game::Player>();
+        std::unique_ptr<engine::Entity> player = std::make_unique<game::Player>(dynamic_cast<game::TestMap&>(*map));
         std::unique_ptr<engine::Entity> enemy = std::make_unique<game::SSprite>();
         auto raycaster = std::make_unique<Raycaster>(
                 dynamic_cast<game::Player&>(*player),

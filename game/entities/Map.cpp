@@ -48,9 +48,13 @@ namespace game {
         return tiles.size();
     }
 
+    Tile & Map::getTile(int i, int i1) {
+        return tiles[i][i1];
+    }
+
     TestMap::TestMap(ull width, ull height, ull tileSize) : Map(width, height, tileSize) {
         sprites.emplace_back(
-                (engine::paths::WOLFSTEIN_PATH / "barrel.png").string(),
+                (engine::paths::WOLFSTEIN_PATH / "hatz1.png").string(),
                 engine::math::Vec2<float>{ 360, 260 },
                 engine::math::Vec2<float>{ (float) tileSize, (float) tileSize }
         );

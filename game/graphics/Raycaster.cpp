@@ -23,9 +23,9 @@ namespace engine {
             math::Vec2<float> rayDir0 = player.getDirection() - player.getCameraPlane() ;
             math::Vec2<float> rayDir1 = player.getDirection() + player.getCameraPlane();
 
-            float midDist = y - background.getSize().y / 2;
-            float Zpos = background.getSize().y / 2;
-            float rowDistance = Zpos / midDist * map.getTileSize();
+            float midDist = (float) y - (float )background.getSize().y / 2;
+            float Zpos = (float) background.getSize().y / 2;
+            float rowDistance = Zpos / midDist * (float) map.getTileSize();
 
             math::Vec2<float> floorPosition = player.getPosition() +
                     math::Vec2<float>(rowDistance * rayDir0.x,
@@ -69,6 +69,8 @@ namespace engine {
             }
         }
 
+        double distance;
+
         sf::Texture backgroundTexture;
         backgroundTexture.loadFromImage(background);
         sf::Sprite backgroundSprite(backgroundTexture);
@@ -78,7 +80,6 @@ namespace engine {
                 (float) windowHeight / background.getSize().y
                 );
         window.draw(backgroundSprite);
-        std::cout << windowWidth / background.getSize().x << ' ' << windowHeight / background.getSize().y << '\n';
 
         // z buffer, first what should be rendered, second the distance
         std::vector<std::pair<sf::Sprite*, double>> zBuffer;
@@ -95,7 +96,6 @@ namespace engine {
             Intersection vertical = getVerticalDistance(cameraX, rayDir, mapTile);
 
             const sf::Texture* texture;
-            double distance;
 
             // to do implement it in the stack
             auto* line = new sf::Sprite();

@@ -8,12 +8,13 @@
 
 namespace game {
     Player::Player(
+            game::Map& map,
             engine::math::Vec2<float> position,
             engine::math::Vec2<float> direction,
             float radius,
             float speed,
             float rotateSpeed
-    ): position(position), direction(direction), radius(radius), speed(speed), rotateSpeed(rotateSpeed), stamina(80), maxStamina(100), staminaRegen(20), isRunning(false) {
+    ): position(position), direction(direction), radius(radius), speed(speed), rotateSpeed(rotateSpeed), stamina(80), maxStamina(100), staminaRegen(20), isRunning(false), map(map){
         setZIndex(1000);
     }
 
@@ -60,10 +61,18 @@ namespace game {
             }
         }
 
-        if(sf::Keyboard::isKeyPressed(sf::Keyboard::W))
-            position += direction * currentSpeed * delta;
+        if(sf::Keyboard::isKeyPressed(sf::Keyboard::W)) {
+            auto newPosition = position + direction * currentSpeed * delta;
+            auto tileX = static_cast<int>(newPosition.x / map.getTileSize());
+            auto tileY = static_cast<int>(newPosition.y / map.getTileSize());
+
+            if (map.getTile(tileX, tileY).empty) {
+                position = newPosition;
+            }
+            std::cout<<position.x<<" "<<position.y<<"\n";
+        }
         if(sf::Keyboard::isKeyPressed(sf::Keyboard::S))
-            position -= direction * speed * delta; // i show speed
+            position -= direction * speed * delta;
 
         if (sf::Keyboard::isKeyPressed(sf::Keyboard::A)) {
             engine::math::Mat2<float> rotMat = engine::math::getRotationMatrix(rotateSpeed * delta);
