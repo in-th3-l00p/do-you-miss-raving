@@ -22,8 +22,10 @@ namespace game {
         const float maxStamina;
         const float staminaRegen;
         bool isRunning;
+        game::Map& map;
     public:
         explicit Player(
+                game::Map& map,
                 engine::math::Vec2<float> position = {engine::constants::DEFAULT_PLAYER_X, engine::constants::DEFAULT_PLAYER_Y },
                 engine::math::Vec2<float> direction = {engine::constants::DEFAULT_PLAYER_DIR_X, engine::constants::DEFAULT_PLAYER_DIR_Y },
                 float radius = engine::constants::DEFAULT_PLAYER_RADIUS,
