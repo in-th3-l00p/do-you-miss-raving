@@ -48,12 +48,16 @@ namespace game {
         return tiles.size();
     }
 
+    Tile & Map::getTile(int i, int i1) {
+        return tiles[i][i1];
+    }
+
     TestMap::TestMap(ull width, ull height, ull tileSize) : Map(width, height, tileSize) {
         sprites.emplace_back(
-                (engine::paths::IMAGES_PATH / "hatz1.png").string(),
-                engine::math::Vec2<float>{ 300, 300 },
+                (engine::paths::WOLFSTEIN_PATH / "hatz1.png").string(),
+                engine::math::Vec2<float>{ 360, 260 },
                 engine::math::Vec2<float>{ (float) tileSize, (float) tileSize }
-                );
+        );
 
         // Set the color of the tiles in the first and last row to red
         for (ull i = 0; i < width; ++i) {

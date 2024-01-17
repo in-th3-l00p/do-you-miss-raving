@@ -8,12 +8,13 @@
 
 namespace game {
     Player::Player(
+            game::Map& map,
             engine::math::Vec2<float> position,
             engine::math::Vec2<float> direction,
             float radius,
             float speed,
             float rotateSpeed
-    ): position(position), direction(direction), radius(radius), speed(speed), rotateSpeed(rotateSpeed), stamina(80), maxStamina(100), staminaRegen(20), isRunning(false) {
+    ): position(position), direction(direction), radius(radius), speed(speed), rotateSpeed(rotateSpeed), stamina(80), maxStamina(100), staminaRegen(20), isRunning(false), map(map){
         setZIndex(1000);
     }
 
@@ -44,26 +45,60 @@ namespace game {
     }
 
     void Player::update(float delta) {
-        float currentSpeed = speed ;
+        float currentSpeed = speed;
 
-        if(sf::Keyboard::isKeyPressed((sf::Keyboard::LShift))) {
-            if(stamina>0) {
+        if (sf::Keyboard::isKeyPressed((sf::Keyboard::LShift))) {
+            if (stamina > 0) {
                 isRunning = true;
-                currentSpeed=speed*2;
+                currentSpeed = speed * 2;
                 stamina -= delta * 30;
             }
         } else {
             isRunning = false;
-            currentSpeed=speed;
+            currentSpeed = speed;
             if (stamina < maxStamina) {
-            stamina += delta * staminaRegen;
+                stamina += delta * staminaRegen;
             }
         }
 
-        if(sf::Keyboard::isKeyPressed(sf::Keyboard::W))
-            position += direction * currentSpeed * delta;
-        if(sf::Keyboard::isKeyPressed(sf::Keyboard::S))
-            position -= direction * speed * delta; // i show speed
+        if (sf::Keyboard::isKeyPressed(sf::Keyboard::W))
+        {
+            auto newPosition = position + direction * currentSpeed * delta;
+            auto tileX = static_cast<int>((newPosition.x) / map.getTileSize());
+            auto tileY = static_cast<int>((newPosition.y) / map.getTileSize());
+
+            if (map.getTile(tileY, tileX).empty)
+            {
+                position = newPosition;
+            }
+            else if (map.getTile(tileY+1, tileX).empty)
+            {
+                position.x = newPosition.x;
+            }
+            else if (map.getTile(tileY, tileX+1).empty)
+            {
+                position.y = newPosition.y;
+            }
+        }
+        if (sf::Keyboard::isKeyPressed(sf::Keyboard::S))
+        {
+            auto newPosition = position - direction * currentSpeed * delta;
+            auto tileX = static_cast<int>(newPosition.x / map.getTileSize());
+            auto tileY = static_cast<int>(newPosition.y / map.getTileSize());
+
+            if (map.getTile(tileY, tileX).empty)
+            {
+                position = newPosition;
+            }
+            else if (map.getTile(tileY-1, tileX).empty)
+            {
+                position.x = newPosition.x;
+            }
+            else if (map.getTile(tileY, tileX-1).empty)
+            {
+                position.y = newPosition.y;
+            }
+        }
 
         if (sf::Keyboard::isKeyPressed(sf::Keyboard::A)) {
             engine::math::Mat2<float> rotMat = engine::math::getRotationMatrix(rotateSpeed * delta);

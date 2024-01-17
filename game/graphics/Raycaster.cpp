@@ -83,6 +83,8 @@ namespace engine {
             }
         }
 
+        double distance;
+
         sf::Texture backgroundTexture;
         backgroundTexture.loadFromImage(background);
         sf::Sprite backgroundSprite(backgroundTexture);
@@ -108,7 +110,6 @@ namespace engine {
             Intersection vertical = getVerticalDistance(cameraX, rayDir, mapTile);
 
             const sf::Texture* texture;
-            double distance;
 
             // to do implement it in the stack
             auto* line = new sf::Sprite();

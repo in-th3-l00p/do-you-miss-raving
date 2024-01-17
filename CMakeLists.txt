@@ -30,7 +30,7 @@ if (WIN32)
     include_directories(C:/SFML/SFML-2.6.1/include)
 endif ()
 
-#find_package(SFML COMPONENTS system window graphics CONFIG REQUIRED)
+find_package(SFML COMPONENTS system window graphics CONFIG REQUIRED)
 target_link_libraries(raygame PRIVATE sfml-system sfml-graphics sfml-window)
 
 # copying everything inside of the /resources directory to the build directory

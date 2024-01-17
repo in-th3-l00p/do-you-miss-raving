@@ -60,6 +60,8 @@ namespace game {
         [[nodiscard]] ull getTileSize() const;
         [[nodiscard]] ull getWidth() const;
         [[nodiscard]] ull getHeight() const;
+
+        Tile & getTile(int i, int i1);
     };
 
     class TestMap: public Map {
