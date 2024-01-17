@@ -61,15 +61,24 @@ namespace game {
             }
         }
 
-        if (sf::Keyboard::isKeyPressed(sf::Keyboard::W)) {
+        if (sf::Keyboard::isKeyPressed(sf::Keyboard::W))
+        {
             auto newPosition = position + direction * currentSpeed * delta;
-            auto tileX = static_cast<int>(newPosition.x / map.getTileSize());
-            auto tileY = static_cast<int>(newPosition.y / map.getTileSize());
+            auto tileX = static_cast<int>((newPosition.x) / map.getTileSize());
+            auto tileY = static_cast<int>((newPosition.y) / map.getTileSize());
 
-            if (map.getTile(tileY, tileX).empty) {
+            if (map.getTile(tileY, tileX).empty)
+            {
                 position = newPosition;
             }
-            std::cout << position.x << " " << position.y << "\n";
+            else if (map.getTile(tileY+1, tileX).empty)
+            {
+                position.x = newPosition.x;
+            }
+            else if (map.getTile(tileY, tileX+1).empty)
+            {
+                position.y = newPosition.y;
+            }
         }
         if (sf::Keyboard::isKeyPressed(sf::Keyboard::S))
         {
@@ -77,8 +86,17 @@ namespace game {
             auto tileX = static_cast<int>(newPosition.x / map.getTileSize());
             auto tileY = static_cast<int>(newPosition.y / map.getTileSize());
 
-            if (map.getTile(tileY, tileX).empty) {
+            if (map.getTile(tileY, tileX).empty)
+            {
                 position = newPosition;
+            }
+            else if (map.getTile(tileY-1, tileX).empty)
+            {
+                position.x = newPosition.x;
+            }
+            else if (map.getTile(tileY, tileX-1).empty)
+            {
+                position.y = newPosition.y;
             }
         }
 

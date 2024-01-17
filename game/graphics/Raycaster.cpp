@@ -17,7 +17,7 @@ namespace engine {
         int windowWidth = static_cast<int>(window.getSize().x) + 1;
         int windowHeight = static_cast<int>(window.getSize().y);
         sf::Image background;
-        background.create(constants::DEFAULT_WIDTH / 2, constants::DEFAULT_HEIGHT / 2);
+        background.create(constants::DEFAULT_WIDTH/2, constants::DEFAULT_HEIGHT/2);
         for(int y = 0; y < background.getSize().y; y++)
         {
             math::Vec2<float> rayDir0 = player.getDirection() - player.getCameraPlane() ;
@@ -32,8 +32,8 @@ namespace engine {
                                       rowDistance * rayDir0.y
                                       );
             math::Vec2<float> floorStep = math::Vec2<float>(
-                    rowDistance *(rayDir1.x - rayDir0.x)/ background.getSize().x,
-                    rowDistance * (rayDir1.y - rayDir0.y) / background.getSize().x
+                    rowDistance *(rayDir1.x - rayDir0.x)/ (float)background.getSize().x,
+                    rowDistance * (rayDir1.y - rayDir0.y) / (float)background.getSize().x
                     );
 
 
@@ -63,6 +63,7 @@ namespace engine {
                 if (texturePosition.x < 0 || texturePosition.x >= currentTile.texture.getSize().x ||
                     texturePosition.y < 0 || texturePosition.y >= currentTile.texture.getSize().y)
                     continue;
+
                 sf::Color floorColor = currentTile.image.getPixel(texturePosition.x, texturePosition.y);
                 background.setPixel(x, y, floorColor);
                 background.setPixel(x, background.getSize().y - y - 1, floorColor);
