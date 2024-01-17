@@ -45,34 +45,42 @@ namespace game {
     }
 
     void Player::update(float delta) {
-        float currentSpeed = speed ;
+        float currentSpeed = speed;
 
-        if(sf::Keyboard::isKeyPressed((sf::Keyboard::LShift))) {
-            if(stamina>0) {
+        if (sf::Keyboard::isKeyPressed((sf::Keyboard::LShift))) {
+            if (stamina > 0) {
                 isRunning = true;
-                currentSpeed=speed*2;
+                currentSpeed = speed * 2;
                 stamina -= delta * 30;
             }
         } else {
             isRunning = false;
-            currentSpeed=speed;
+            currentSpeed = speed;
             if (stamina < maxStamina) {
-            stamina += delta * staminaRegen;
+                stamina += delta * staminaRegen;
             }
         }
 
-        if(sf::Keyboard::isKeyPressed(sf::Keyboard::W)) {
+        if (sf::Keyboard::isKeyPressed(sf::Keyboard::W)) {
             auto newPosition = position + direction * currentSpeed * delta;
             auto tileX = static_cast<int>(newPosition.x / map.getTileSize());
             auto tileY = static_cast<int>(newPosition.y / map.getTileSize());
 
-            if (map.getTile(tileX, tileY).empty) {
+            if (map.getTile(tileY, tileX).empty) {
                 position = newPosition;
             }
-            std::cout<<position.x<<" "<<position.y<<"\n";
+            std::cout << position.x << " " << position.y << "\n";
         }
-        if(sf::Keyboard::isKeyPressed(sf::Keyboard::S))
-            position -= direction * speed * delta;
+        if (sf::Keyboard::isKeyPressed(sf::Keyboard::S))
+        {
+            auto newPosition = position - direction * currentSpeed * delta;
+            auto tileX = static_cast<int>(newPosition.x / map.getTileSize());
+            auto tileY = static_cast<int>(newPosition.y / map.getTileSize());
+
+            if (map.getTile(tileY, tileX).empty) {
+                position = newPosition;
+            }
+        }
 
         if (sf::Keyboard::isKeyPressed(sf::Keyboard::A)) {
             engine::math::Mat2<float> rotMat = engine::math::getRotationMatrix(rotateSpeed * delta);
