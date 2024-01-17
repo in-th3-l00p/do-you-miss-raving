@@ -8,8 +8,8 @@
 #include <iostream>
 
 namespace engine {
-    engine::Raycaster::Raycaster(game::Player &player, game::Map &map, game::SSprite &enemy):
-            player(player), map(map), enemy(enemy) {
+    engine::Raycaster::Raycaster(game::Player &player, game::Map &map):
+            player(player), map(map) {
         setZIndex(10);
     }
 
@@ -17,56 +17,69 @@ namespace engine {
         int windowWidth = static_cast<int>(window.getSize().x) + 1;
         int windowHeight = static_cast<int>(window.getSize().y);
         sf::Image background;
-        background.create(constants::DEFAULT_WIDTH/2, constants::DEFAULT_HEIGHT/2);
-        for(int y = 0; y < background.getSize().y; y++)
-        {
-            math::Vec2<float> rayDir0 = player.getDirection() - player.getCameraPlane() ;
-            math::Vec2<float> rayDir1 = player.getDirection() + player.getCameraPlane();
+        background.create(constants::DEFAULT_WIDTH / 2, constants::DEFAULT_HEIGHT / 2, sf::Color::Red);
+        for (int y = 0; y < background.getSize().y; y++) {
+            engine::math::Vec2<float> rayDir0(
+                    player.getDirection().x - player.getCameraPlane().x,
+                    player.getDirection().y - player.getCameraPlane().y
+            );
+            engine::math::Vec2<float> rayDir1(
+                    player.getDirection().x + player.getCameraPlane().x,
+                    player.getDirection().y + player.getCameraPlane().y
+            );
 
-            float midDist = (float) y - (float )background.getSize().y / 2;
-            float Zpos = (float) background.getSize().y / 2;
-            float rowDistance = Zpos / midDist * (float) map.getTileSize();
+            int p = y - background.getSize().y / 2;
+            float posZ = 0.5f * background.getSize().y;
+            float rowDistance = posZ / p;
 
-            math::Vec2<float> floorPosition = player.getPosition() +
-                    math::Vec2<float>(rowDistance * rayDir0.x,
-                                      rowDistance * rayDir0.y
-                                      );
-            math::Vec2<float> floorStep = math::Vec2<float>(
-                    rowDistance *(rayDir1.x - rayDir0.x)/ (float)background.getSize().x,
-                    rowDistance * (rayDir1.y - rayDir0.y) / (float)background.getSize().x
-                    );
+            engine::math::Vec2<float> floorStep = {
+                    rowDistance * (rayDir1.x - rayDir0.x) / background.getSize().x,
+                    rowDistance * (rayDir1.y - rayDir0.y) / background.getSize().x
+            };
+            engine::math::Vec2<float> floor = {
+                    player.getPosition().x / (float) map.getTileSize() + rowDistance * rayDir0.x,
+                    player.getPosition().y / (float) map.getTileSize() + rowDistance * rayDir0.y
+            };
 
+            for (int x = 0; x < background.getSize().x; x++) {
+                int cellX = (int) floor.x;
+                int cellY = (int) floor.y;
+                if (cellX < 0)
+                    cellX = 0;
+                if (cellX >= map.getWidth())
+                    cellX = map.getWidth() - 1;
+                if (cellY < 0)
+                    cellY = 0;
+                if (cellY >= map.getHeight())
+                    cellY = map.getHeight() - 1;
 
-            for(int x = 0; x < background.getSize().x; x++)
-            {
-                int cellX = (int) ((float) floorPosition.x / map.getTileSize());
-                int cellY = (int) ((float) floorPosition.y / map.getTileSize());
-                if (cellX < 0 || cellX >= map.getWidth() || cellY < 0 || cellY >= map.getHeight())
-                    continue;
+                auto& tile = map.getTiles()[cellY][cellX];
+                int tx = (int) (tile.image.getSize().x * (floor.x - cellX)) & (tile.image.getSize().x - 1);
+                int ty = (int) (tile.image.getSize().y * (floor.y - cellY)) & (tile.image.getSize().y - 1);
 
-                const game::Tile& currentTile = map.getTiles()[cellY][cellX];
-                const engine::math::Vec2<unsigned int> texturePosition = {
-                        (unsigned int) std::floor(
-                                engine::math::linearInterpolation<float>(floorPosition.x,
-                                 0, map.getWidth() * map.getTileSize(), 0, currentTile.texture.getSize().x)
-                                 ),
-                        (unsigned int) std::floor(
-                                engine::math::linearInterpolation<float>(floorPosition.y - cellY * map.getTileSize(),
-                                 0, map.getHeight() * map.getTileSize(), 0, currentTile.texture.getSize().y)
-                                 )
-                };
+                floor.x += floorStep.x;
+                floor.y += floorStep.y;
 
-                floorPosition.x += floorStep.x;
-                floorPosition.y += floorStep.y;
+                if (tx < 0)
+                    tx = 0;
+                if (ty < 0)
+                    ty = 0;
+                if (tx >= map.getTileSize())
+                    tx = map.getTileSize() - 1;
+                if (ty >= map.getTileSize())
+                    ty = map.getTileSize() - 1;
 
-                // good boy copilot ^-^
-                if (texturePosition.x < 0 || texturePosition.x >= currentTile.texture.getSize().x ||
-                    texturePosition.y < 0 || texturePosition.y >= currentTile.texture.getSize().y)
-                    continue;
-
-                sf::Color floorColor = currentTile.image.getPixel(texturePosition.x, texturePosition.y);
+                sf::Color floorColor = tile.image.getPixel(tx, ty);
+                floorColor.r = std::floor((float) floorColor.r * ((float) y / (float) (background.getSize().y - 1)));
+                floorColor.g = std::floor((float) floorColor.g * ((float) y / (float) (background.getSize().y - 1)));
+                floorColor.b = std::floor((float) floorColor.b * ((float) y / (float) (background.getSize().y - 1)));
                 background.setPixel(x, y, floorColor);
-                background.setPixel(x, background.getSize().y - y - 1, floorColor);
+
+                sf::Color ceilingColor = tile.image.getPixel(tx, ty);
+                ceilingColor.r = std::floor((float) ceilingColor.r * ((float) y / (float) (background.getSize().y - 1)));
+                ceilingColor.g = std::floor((float) ceilingColor.g * ((float) y / (float) (background.getSize().y - 1)));
+                ceilingColor.b = std::floor((float) ceilingColor.b * ((float) y / (float) (background.getSize().y - 1)));
+                background.setPixel(x, background.getSize().y - y - 1, ceilingColor);
             }
         }
 
@@ -103,9 +116,6 @@ namespace engine {
             int color = 255;
             if (horizontal.distance < vertical.distance) {
                 distance = horizontal.distance;
-                if (distance > constants::RENDER_DISTANCE)
-                    continue;
-
                 texture = &map.getTiles()[horizontal.tile.y][horizontal.tile.x].texture;
                 double multiplier = horizontal.hit.y / (double) map.getTileSize() - horizontal.tile.y;
                 int hit = std::floor(engine::math::linearInterpolation<double>(multiplier, 0, 1, 0, (double) texture->getSize().y));
@@ -113,9 +123,6 @@ namespace engine {
                 line->setTextureRect(sf::IntRect(hit, 0, 1, texture->getSize().y));
             } else {
                 distance = vertical.distance;
-                if (distance > constants::RENDER_DISTANCE)
-                    continue;
-
                 texture = &map.getTiles()[vertical.tile.y][vertical.tile.x].texture;
                 double multiplier = vertical.hit.x / (double) map.getTileSize() - vertical.tile.x;
                 int hit = std::floor(engine::math::linearInterpolation<double>(multiplier, 0, 1, 0, (double) texture->getSize().x));
@@ -126,7 +133,7 @@ namespace engine {
             }
 
             // lighting
-            color = (int)((float) color * (float) (1 - distance / constants::RENDER_DISTANCE ));
+            color = (int)((float) color * (float) (1 - std::min((float) distance, constants::RENDER_DISTANCE / 2) / constants::RENDER_DISTANCE ));
             line->setColor(sf::Color(color, color, color));
 
             double calculatedAngle =
@@ -163,7 +170,7 @@ namespace engine {
             if (scale < 0)
                 continue;
 
-            spriteInstance->setPosition(screenX, (float) windowHeight / 2 - scale / 2);
+            spriteInstance->setPosition(screenX, windowHeight / 2 - scale);
             spriteInstance->setOrigin(
                     sprite.sprite.getTexture()->getSize().x / 2,
                     sprite.sprite.getTexture()->getSize().y / 2
@@ -184,66 +191,6 @@ namespace engine {
             delete sprite.first;
         }
     }
-
-//    void engine::Raycaster::renderSprites(sf::RenderWindow& window)
-//    {
-//        spriteDistance = ((player.getPosition().x - enemy.getPosition().x) * (player.getPosition().x - enemy.getPosition().x) + (player.getPosition().y - enemy.getPosition().y) * (player.getPosition().y - enemy.getPosition().y)); //sqrt not taken, unneeded;
-//            double spriteX = enemy.getPosition().x - player.getPosition().x;
-//            double spriteY = enemy.getPosition().y - player.getPosition().y;;
-//
-//            //transform sprite with the inverse camera matrix
-//            // [ planeX   dirX ] -1                                       [ dirY      -dirX ]
-//            // [               ]       =  1/(planeX*dirY-dirX*planeY) *   [                 ]
-//            // [ planeY   dirY ]                                          [ -planeY  planeX ]
-//
-//            double invDet = 1.0 / (player.getCameraPlane().x * player.getDirection().y - player.getDirection().x * player.getCameraPlane().y); //required for correct matrix multiplication
-//
-//            double transformX = invDet * (player.getDirection().y * spriteX - player.getDirection().x * spriteY);
-//            double transformY = invDet * (-player.getCameraPlane().y * spriteX + player.getCameraPlane().x * spriteY); //this is actually the depth inside the screen, that what Z is in 3D
-//
-//            int w= enemy.getWidth(window);
-//            int h= enemy.getWidth(window);
-//            int spriteScreenX = int((w / 2) * (1 + transformX / transformY));
-//
-//            //calculate height of the sprite on screen
-//            int spriteHeight = abs(int(enemy.getHeight(window) / (transformY))); //using 'transformY' instead of the real distance prevents fisheye
-//            //calculate lowest and highest pixel to fill in current stripe
-//            int drawStartY = -spriteHeight / 2 + h / 2;
-//            if(drawStartY < 0) drawStartY = 0;
-//            int drawEndY = spriteHeight / 2 + h / 2;
-//            if(drawEndY >= h) drawEndY = h - 1;
-//
-//            //calculate width of the sprite
-//            int spriteWidth = abs( int (h / (transformY)));
-//            int drawStartX = -spriteWidth / 2 + spriteScreenX;
-//            if(drawStartX < 0) drawStartX = 0;
-//            int drawEndX = spriteWidth / 2 + spriteScreenX;
-//            if(drawEndX >= w) drawEndX = w - 1;
-//
-//            //loop through every vertical stripe of the sprite on screen
-//            for(int stripe = drawStartX; stripe < drawEndX; stripe++)
-//            {
-//
-//                int circleX = stripe - drawStartX;
-//
-//                int texX = int(256 * (stripe - (-spriteWidth / 2 + spriteScreenX)) * texWidth / spriteWidth) / 256;
-//
-//                //the conditions in the if are:
-//                if (circleX >= 0 && circleX < spriteWidth && transformY > 0 && stripe > 0 && stripe < w && transformY < ZBuffer[stripe]) {
-//                    for (int y = drawStartY; y < drawEndY; y++) //for every pixel of the current stripe
-//                    {
-//                        int d = (y) * 256 - h * 128 + spriteHeight * 128; //256 and 128 factors to avoid floats
-//                        int texY = ((d * texHeight) / spriteHeight) / 256;
-//                        int circleY = y - drawStartY;
-//                        if (circleX * circleX + circleY * circleY < (spriteWidth / 2) * (spriteWidth / 2))
-//                        {
-//                            // Draw a colored pixel for the circle
-//                            Uint32 color = // Specify your color for the circle here;
-//                                    buffer[y][stripe] = color;
-//                        }
-//                }
-//            }
-//        }
 
     Intersection Raycaster::getHorizontalDistance(
             double cameraX, math::Vec2<float> rayDir, math::Vec2<int> mapTile

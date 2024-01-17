@@ -32,13 +32,13 @@ namespace game {
         bool empty = true;
 
         Tile() {
-            texture.loadFromFile((engine::paths::WOLFSTEIN_PATH / "mossy.png").string());
-            image.loadFromFile((engine::paths::WOLFSTEIN_PATH / "mossy.png").string());
+            image.loadFromFile((engine::paths::WOLFSTEIN_PATH / "colorstone.png").string());
+            texture.loadFromImage(image);
         }
 
-        void changeTexture(std::string path) {
-            texture.loadFromFile(path);
+        void changeTexture(const std::string& path) {
             image.loadFromFile(path);
+            texture.loadFromImage(image);
         }
     };
 
