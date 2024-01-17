@@ -68,8 +68,18 @@ namespace engine {
                     tx = map.getTileSize() - 1;
                 if (ty >= map.getTileSize())
                     ty = map.getTileSize() - 1;
-                background.setPixel(x, y, tile.image.getPixel(tx, ty));
-                background.setPixel(x, background.getSize().y - y - 1, tile.image.getPixel(tx, ty));
+
+                sf::Color floorColor = tile.image.getPixel(tx, ty);
+                floorColor.r = std::floor((float) floorColor.r * ((float) y / (float) (background.getSize().y - 1)));
+                floorColor.g = std::floor((float) floorColor.g * ((float) y / (float) (background.getSize().y - 1)));
+                floorColor.b = std::floor((float) floorColor.b * ((float) y / (float) (background.getSize().y - 1)));
+                background.setPixel(x, y, floorColor);
+
+                sf::Color ceilingColor = tile.image.getPixel(tx, ty);
+                ceilingColor.r = std::floor((float) ceilingColor.r * ((float) y / (float) (background.getSize().y - 1)));
+                ceilingColor.g = std::floor((float) ceilingColor.g * ((float) y / (float) (background.getSize().y - 1)));
+                ceilingColor.b = std::floor((float) ceilingColor.b * ((float) y / (float) (background.getSize().y - 1)));
+                background.setPixel(x, background.getSize().y - y - 1, ceilingColor);
             }
         }
 
@@ -105,9 +115,6 @@ namespace engine {
             int color = 255;
             if (horizontal.distance < vertical.distance) {
                 distance = horizontal.distance;
-                if (distance > constants::RENDER_DISTANCE)
-                    continue;
-
                 texture = &map.getTiles()[horizontal.tile.y][horizontal.tile.x].texture;
                 double multiplier = horizontal.hit.y / (double) map.getTileSize() - horizontal.tile.y;
                 int hit = std::floor(engine::math::linearInterpolation<double>(multiplier, 0, 1, 0, (double) texture->getSize().y));
@@ -115,9 +122,6 @@ namespace engine {
                 line->setTextureRect(sf::IntRect(hit, 0, 1, texture->getSize().y));
             } else {
                 distance = vertical.distance;
-                if (distance > constants::RENDER_DISTANCE)
-                    continue;
-
                 texture = &map.getTiles()[vertical.tile.y][vertical.tile.x].texture;
                 double multiplier = vertical.hit.x / (double) map.getTileSize() - vertical.tile.x;
                 int hit = std::floor(engine::math::linearInterpolation<double>(multiplier, 0, 1, 0, (double) texture->getSize().x));
@@ -128,7 +132,7 @@ namespace engine {
             }
 
             // lighting
-            color = (int)((float) color * (float) (1 - distance / constants::RENDER_DISTANCE ));
+            color = (int)((float) color * (float) (1 - std::min((float) distance, constants::RENDER_DISTANCE / 2) / constants::RENDER_DISTANCE ));
             line->setColor(sf::Color(color, color, color));
 
             double calculatedAngle =
