@@ -32,7 +32,7 @@ namespace game {
         bool empty = true;
 
         Tile() {
-            image.loadFromFile((engine::paths::WOLFSTEIN_PATH / "colorstone.png").string());
+            image.loadFromFile((engine::paths::RETRO_PATH / "FLOOR_1A.PNG").string());
             texture.loadFromImage(image);
         }
 

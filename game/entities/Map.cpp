@@ -57,16 +57,16 @@ namespace game {
 
         // Set the color of the tiles in the first and last row to red
         for (ull i = 0; i < width; ++i) {
-                tiles.at(i).at(0).changeTexture((engine::paths::WOLFSTEIN_PATH / "wood.png").string());
-                tiles.at(i).at(height - 1).changeTexture((engine::paths::WOLFSTEIN_PATH / "wood.png").string());
+                tiles.at(i).at(0).changeTexture((engine::paths::RETRO_PATH / "CONCRETE_1A.PNG").string());
+                tiles.at(i).at(height - 1).changeTexture((engine::paths::RETRO_PATH / "CONCRETE_1A.PNG").string());
                 tiles.at(i).at(0).empty = false;
                 tiles.at(i).at(height - 1).empty = false;
         }
 
         // Set the color of the tiles in the first and last column to red
         for (ull j = 0; j < height; ++j) {
-            tiles[0][j].changeTexture((engine::paths::WOLFSTEIN_PATH / "wood.png").string());
-            tiles[width - 1][j].changeTexture((engine::paths::WOLFSTEIN_PATH / "wood.png").string());
+            tiles[0][j].changeTexture((engine::paths::RETRO_PATH / "CONCRETE_1A.PNG").string());
+            tiles[width - 1][j].changeTexture((engine::paths::RETRO_PATH / "CONCRETE_1A.PNG").string());
             tiles[0][j].empty = false;
             tiles[width - 1][j].empty = false;
         }

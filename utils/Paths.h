@@ -51,6 +51,7 @@ namespace engine::paths {
     inline const fs::path FONTS_DIR = RESOURCES_DIR / "fonts";
     inline const fs::path IMAGES_PATH = RESOURCES_DIR / "images";
     inline const fs::path WOLFSTEIN_PATH = IMAGES_PATH / "wolftex" / "pics";
+    inline const fs::path RETRO_PATH = IMAGES_PATH / "retro";
 }
 
 #endif //RAYGAME_PATHS_H
