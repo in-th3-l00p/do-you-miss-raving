@@ -7,7 +7,6 @@
 #include "../game/entities/Player.h"
 #include "../game/graphics/Raycaster.h"
 #include "../game/graphics/UserInterface.h"
-#include "../game/entities/SSprite.h"
 
 namespace engine {
     Scene::Scene(
@@ -51,11 +50,9 @@ namespace engine {
             ) : Scene(window, sceneRef) {
         std::unique_ptr<engine::Entity> map = std::make_unique<game::TestMap>(10, 10);
         std::unique_ptr<engine::Entity> player = std::make_unique<game::Player>();
-        std::unique_ptr<engine::Entity> enemy = std::make_unique<game::SSprite>();
         auto raycaster = std::make_unique<Raycaster>(
                 dynamic_cast<game::Player&>(*player),
-                dynamic_cast<game::Map&>(*map),
-                dynamic_cast<game::SSprite&>(*enemy)
+                dynamic_cast<game::Map&>(*map)
                 );
         addEntity(std::move(map));
         addEntity(std::move(player));

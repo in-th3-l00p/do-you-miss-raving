@@ -50,42 +50,30 @@ namespace game {
 
     TestMap::TestMap(ull width, ull height, ull tileSize) : Map(width, height, tileSize) {
         sprites.emplace_back(
-                (engine::paths::IMAGES_PATH / "iosub.png").string(),
+                (engine::paths::IMAGES_PATH / "hatz1.png").string(),
                 engine::math::Vec2<float>{ 300, 300 },
                 engine::math::Vec2<float>{ (float) tileSize, (float) tileSize }
                 );
 
-        sprites.emplace_back(
-                (engine::paths::IMAGES_PATH / "gimnastica.jpeg").string(),
-                engine::math::Vec2<float>{ 260, 300 },
-                engine::math::Vec2<float>{ (float) tileSize, (float) tileSize }
-        );
-
-        sprites.emplace_back(
-                (engine::paths::IMAGES_PATH / "iosub_aripi_devant.png").string(),
-                engine::math::Vec2<float>{ 360, 260 },
-                engine::math::Vec2<float>{ (float) tileSize, (float) tileSize }
-        );
-
         // Set the color of the tiles in the first and last row to red
         for (ull i = 0; i < width; ++i) {
-                tiles.at(i).at(0).changeTexture((engine::paths::IMAGES_PATH / "iosubugrasu.png").string());
-                tiles.at(i).at(height - 1).changeTexture((engine::paths::IMAGES_PATH / "iosubugrasu.png").string());
+                tiles.at(i).at(0).changeTexture((engine::paths::WOLFSTEIN_PATH / "wood.png").string());
+                tiles.at(i).at(height - 1).changeTexture((engine::paths::WOLFSTEIN_PATH / "wood.png").string());
                 tiles.at(i).at(0).empty = false;
                 tiles.at(i).at(height - 1).empty = false;
         }
 
         // Set the color of the tiles in the first and last column to red
         for (ull j = 0; j < height; ++j) {
-            tiles[0][j].changeTexture((engine::paths::IMAGES_PATH / "iosubugrasu.png").string());
-            tiles[width - 1][j].changeTexture((engine::paths::IMAGES_PATH / "iosubugrasu.png").string());
+            tiles[0][j].changeTexture((engine::paths::WOLFSTEIN_PATH / "wood.png").string());
+            tiles[width - 1][j].changeTexture((engine::paths::WOLFSTEIN_PATH / "wood.png").string());
             tiles[0][j].empty = false;
             tiles[width - 1][j].empty = false;
         }
 
-        tiles[5][3].changeTexture((engine::paths::IMAGES_PATH / "jumpscare.jpg").string());
+        tiles[5][3].changeTexture((engine::paths::WOLFSTEIN_PATH / "wood.png").string());
         tiles[5][3].empty = false;
-        tiles[2][4].changeTexture((engine::paths::IMAGES_PATH / "jumpscare.jpg").string());
+        tiles[2][4].changeTexture((engine::paths::WOLFSTEIN_PATH / "wood.png").string());
         tiles[2][4].empty = false;
     }
 
