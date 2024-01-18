@@ -170,10 +170,10 @@ namespace engine {
             if (scale < 0)
                 continue;
 
-            spriteInstance->setPosition(screenX, windowHeight / 2 - scale);
+            spriteInstance->setPosition(screenX, windowHeight / 2 + scale / 2);
             spriteInstance->setOrigin(
                     sprite.sprite.getTexture()->getSize().x / 2,
-                    sprite.sprite.getTexture()->getSize().y / 2
+                    0
                     );
 
             float scaleX = (float) scale * (sprite.size.x / sprite.sprite.getTexture()->getSize().x);

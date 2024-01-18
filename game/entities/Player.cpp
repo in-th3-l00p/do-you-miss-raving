@@ -64,8 +64,8 @@ namespace game {
         if (sf::Keyboard::isKeyPressed(sf::Keyboard::W))
         {
             auto newPosition = position + direction * currentSpeed * delta;
-            auto tileX = static_cast<int>((newPosition.x) / map.getTileSize());
-            auto tileY = static_cast<int>((newPosition.y) / map.getTileSize());
+            auto tileX = static_cast<int>((newPosition.x + direction.x * radius) / map.getTileSize());
+            auto tileY = static_cast<int>((newPosition.y + direction.y * radius) / map.getTileSize());
 
             if (map.getTile(tileY, tileX).empty)
             {
@@ -83,8 +83,8 @@ namespace game {
         if (sf::Keyboard::isKeyPressed(sf::Keyboard::S))
         {
             auto newPosition = position - direction * currentSpeed * delta;
-            auto tileX = static_cast<int>(newPosition.x / map.getTileSize());
-            auto tileY = static_cast<int>(newPosition.y / map.getTileSize());
+            auto tileX = static_cast<int>((newPosition.x - direction.x * radius) / map.getTileSize());
+            auto tileY = static_cast<int>((newPosition.y - direction.y * radius) / map.getTileSize());
 
             if (map.getTile(tileY, tileX).empty)
             {

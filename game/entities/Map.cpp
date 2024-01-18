@@ -54,9 +54,9 @@ namespace game {
 
     TestMap::TestMap(ull width, ull height, ull tileSize) : Map(width, height, tileSize) {
         sprites.emplace_back(
-                (engine::paths::WOLFSTEIN_PATH / "hatz1.png").string(),
+                (engine::paths::SPRITES_PATH / "bar chair.png").string(),
                 engine::math::Vec2<float>{ 360, 260 },
-                engine::math::Vec2<float>{ (float) tileSize, (float) tileSize }
+                engine::math::Vec2<float>{ (float) tileSize / 2.f, (float) tileSize / 2 }
         );
 
         // Set the color of the tiles in the first and last row to red
