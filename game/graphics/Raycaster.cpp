@@ -16,8 +16,9 @@ namespace engine {
     void engine::Raycaster::render(sf::RenderWindow &window) {
         int windowWidth = static_cast<int>(window.getSize().x) + 1;
         int windowHeight = static_cast<int>(window.getSize().y);
+        std::cout << windowWidth << ' ' << windowHeight << '\n';
         sf::Image background;
-        background.create(constants::DEFAULT_WIDTH / 2, constants::DEFAULT_HEIGHT / 2, sf::Color::Red);
+        background.create(constants::DEFAULT_WIDTH / 3, constants::DEFAULT_HEIGHT / 3, sf::Color::Red);
         for (int y = 0; y < background.getSize().y; y++) {
             engine::math::Vec2<float> rayDir0(
                     player.getDirection().x - player.getCameraPlane().x,
@@ -170,14 +171,14 @@ namespace engine {
             if (scale < 0)
                 continue;
 
-            spriteInstance->setPosition(screenX, windowHeight / 2 + scale / 2);
+            spriteInstance->setPosition(screenX, (float) windowHeight / 2 - scale / 2);
             spriteInstance->setOrigin(
                     sprite.sprite.getTexture()->getSize().x / 2,
                     0
                     );
 
-            float scaleX = (float) scale * (sprite.size.x / sprite.sprite.getTexture()->getSize().x);
-            float scaleY = (float) scale * (sprite.size.y / sprite.sprite.getTexture()->getSize().y);
+            float scaleX = (float) scale * (sprite.size.x / sprite.sprite.getTexture()->getSize().x) * ((float) windowWidth / (float) constants::DEFAULT_WIDTH);
+            float scaleY = (float) scale * (sprite.size.y / sprite.sprite.getTexture()->getSize().y) * ((float) windowHeight / (float) constants::DEFAULT_HEIGHT);
             spriteInstance->setScale(scaleX, scaleY);
             zBuffer.emplace_back(spriteInstance, spriteDistance);
         }
