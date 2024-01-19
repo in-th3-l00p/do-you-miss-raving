@@ -173,7 +173,7 @@ namespace engine {
 
             spriteInstance->setPosition(screenX, (float) windowHeight / 2 - scale / 2);
             spriteInstance->setOrigin(
-                    sprite.sprite.getTexture()->getSize().x / 2,
+                    (float) sprite.sprite.getTexture()->getSize().x / 2,
                     0
                     );
 

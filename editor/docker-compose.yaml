@@ -1,0 +1,31 @@
+version: '3.8'
+services:
+  map:
+    build: ./mapService
+    ports:
+      - "3001:3001"
+    volumes:
+      - ./mapService:/usr/src/app
+      - /usr/src/app/node_modules
+    networks:
+      - app
+    depends_on:
+      - mongo
+    environment:
+      - MONGO_URL=mongodb://mongo:27017/mapService
+  mongo:
+    image: mongo
+    ports:
+      - "27017:27017"
+    volumes:
+      - mongodb:/data/db
+    networks:
+      - app
+
+networks:
+  app:
+    driver: bridge
+
+volumes:
+  mongodb:
+    driver: local
