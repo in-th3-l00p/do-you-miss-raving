@@ -27,8 +27,9 @@ const mapSchema = new mongoose.Schema({
         required: false
     },
     textures: [{
-        name: String,
-        image: Buffer
+        label: String,
+        filetype: String,
+        path: String
     }],
     tiles: [{
         texture: {

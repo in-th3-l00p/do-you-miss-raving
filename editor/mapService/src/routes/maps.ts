@@ -20,7 +20,7 @@ router.post(
             ...data,
             tiles: Array
                     .from({ length: data.width * data.height })
-                    .map((item: any) => ({ empty: true }))
+                    .map(() => ({ empty: true }))
         });
         res.send(await Map
             .findById(_id)
@@ -35,8 +35,13 @@ router.get("/", async (req: any, res: any) => {
 
 router.get("/:id", async (req: any, res: any) => {
     const map = await Map.findById(req.params.id);
-    if (map === undefined)
-        return res.status(404).json({ error: "Map not found" });
+    if (!map)
+        return res.status(404).json({ errors: [
+            {
+                "type": "notFound",
+                "msg": "Map not found"
+            }
+        ]});
     res.send(map);
 });
 

@@ -1,14 +1,24 @@
-import express from 'express';
+import express, {Request, Response} from 'express';
 import Map from '../models/map';
-import { body, matchedData, validationResult } from 'express-validator';
+import {body, matchedData, validationResult} from 'express-validator';
+import multer from "multer";
 
 const router = express.Router();
 
+const upload = multer({ dest: "public/textures/" });
+interface MulterRequest extends Request {
+    file?: any;
+}
+
 router.post(
     "/",
-    body("name").notEmpty().isString().trim().isLength({ min: 3, max: 255 }),
-    body("image").notEmpty().isString().trim(),
-    async (req: express.Request, res: express.Response) => {
+    upload.single("image"),
+    body("label")
+        .notEmpty()
+        .isString()
+        .trim()
+        .isLength({ min: 3, max: 255 }),
+    async (req: MulterRequest, res: Response) => {
         const data = matchedData(req);
         let map = await Map.findById(data.mapId);
         if (!map)
@@ -17,10 +27,16 @@ router.post(
         if (!errors.isEmpty())
             return res
                 .status(400)
-                .json({ errors });
-        
-        map!.textures.push(data);
-        res.send(await map!.save());
+                .json(errors);
+
+        map!.textures.push({
+            label: data.label,
+            filetype: req.file!.mimetype,
+            path: req.file!.path
+        });
+        await map!.save();
+
+        res.status(200).end();
     }
 );
 

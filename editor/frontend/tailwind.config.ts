@@ -9,10 +9,11 @@ const config: Config = {
   theme: {
     extend: {
       colors: {
+        "darker-oxford-blue": "#010113",
         "oxford-blue": "#04052e",
         "federal-blue": "#140152",
-        "navy-blue": "#22007c",
-        "duke-blue": "#0d00a4"
+        "navy-blue": "#1c006e",
+        "duke-blue": "#0c0080"
       }
     },
   },

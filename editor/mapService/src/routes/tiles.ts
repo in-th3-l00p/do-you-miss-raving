@@ -5,7 +5,7 @@ import { Request, Response } from "express";
 
 const router = express.Router();
 
-router.get("/", async (req: any, res: any) => {
+router.get("/", async (req: Request, res: Response) => {
     const errors = validationResult(req);
     if (!errors.isEmpty())
         return res
@@ -14,15 +14,20 @@ router.get("/", async (req: any, res: any) => {
     const { mapId } = matchedData(req);
     const textures = await Map.findById(mapId).select("textures");
     if (!textures)
-        return res.status(404).json({ error: "Map not found" });
-    return textures;
+        return res.status(404).json({ errors: [
+                {
+                    "type": "notFound",
+                    "msg": "Map not found"
+                }
+            ]});
+    res.send(textures);
 });
 
 router.put(
     "/",
     query("x").notEmpty().isInt({ min: 0, max: 100 }),
     query("y").notEmpty().isInt({ min: 0, max: 100 }),
-    body("texture").isMongoId(),
+    body("texture").optional().isMongoId(),
     body("floor").optional().isMongoId(),
     body("ceiling").optional().isMongoId(),
     body("empty").notEmpty().isBoolean(),
@@ -32,27 +37,37 @@ router.put(
             return res
                 .status(400)
                 .json(errors);
-        const data = matchedData(req);
+        let data = matchedData(req);
+        data.x = parseInt(data.x);
+        data.y = parseInt(data.y);
         const map = await Map.findById(data.mapId);
         if (!map)
-            return res
-                    .status(404)
-                    .json({ error: "Map not found" });
+            return res.status(404).json({ errors: [
+                    {
+                        "type": "notFound",
+                        "msg": "Map not found"
+                    }
+                ]});
         if (data.x >= map.width || data.y >= map.height || data.x < 0 || data.y < 0)
-            return res
-                    .status(400)
-                    .json({ error: "Invalid coordinates" });
-        console.log(data.y * map.width + data.x); // ce pula mea
-        map.tiles[data.y * map.width + data.x].texture = data.texture;
-        map.tiles[data.y * map.width + data.x].floor = data.floor;
-        map.tiles[data.y * map.width + data.x].ceiling = data.ceiling;
+            return res.status(404).json({ errors: [
+                    {
+                        "type": "notFound",
+                        "msg": "Map not found"
+                    }
+                ]});
+        if (data.texture && !map.textures.find(t => t.id === data.texture))
+            map.tiles[data.y * map.width + data.x].texture = data.texture;
+        if (data.floor && !map.textures.find(t => t.id === data.floor))
+            map.tiles[data.y * map.width + data.x].floor = data.floor;
+        if (data.ceiling && !map.textures.find(t => t.id === data.ceiling))
+            map.tiles[data.y * map.width + data.x].ceiling = data.ceiling;
         map.tiles[data.y * map.width + data.x].empty = data.empty;
         await map.save();
 
         res.send(await Map
             .findById(map.id)
-            .select("-image -textures -tiles -sprites"));
+            .select("-image -textures -sprites"));
     }
-)
+);
 
 export default router;

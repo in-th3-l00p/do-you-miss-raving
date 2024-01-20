@@ -25,3 +25,13 @@ body {
     )
     rgb(var(--background-start-rgb));
 }
+
+.btn {
+  @apply
+    p-4 bg-oxford-blue rounded-md shadow-md
+    hover:bg-darker-oxford-blue hover:shadow-lg transition-all;
+}
+
+.title {
+  @apply text-2xl md:text-4xl;
+}
