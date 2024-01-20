@@ -7,7 +7,7 @@ import {API} from "@/lib/constants";
 import EditorContext, {Point} from "@/lib/contexts/editor";
 import {Canvas, Properties} from "@/components/Editor";
 import Textures from "@/components/Textures";
-
+import Title from "@/components/Title";
 
 export default function MapEditor({ params }: { params: { id: string } }) {
     const [map, setMap] = useState<Map | null>(null);
@@ -22,7 +22,7 @@ export default function MapEditor({ params }: { params: { id: string } }) {
     if (!map) return <p>loading...</p>;
     return (
         <section className={"background flex-grow flex flex-col"}>
-            <h1 className={"p-8 title border-b"}>Map: <span>{map.name}</span></h1>
+            <Title text={"Map: " + map.name} />
             <EditorContext.Provider value={{ map, setMap, selectedTile, setSelectedTile }}>
                 <section
                     className={"grid gap-8 md:grid-cols-2 p-8 flex-grow"}

@@ -75,26 +75,44 @@ interface TextureFieldProps {
     texture?: Texture;
     label: string;
     className?: string;
+    onChange?: (id: string) => void;
 }
 
-function TextureField({ texture, label, className }: TextureFieldProps) {
+function TextureField({ texture, label, className, onChange }: TextureFieldProps) {
+    const {map, setMap} = React.useContext(EditorContext);
+
     return (
         <div className={"flex items-center justify-between gap-4 " + className}>
             <p>{label}</p>
 
-            {texture ? (
-                <img
-                    src={`${API}/api/maps/${texture.path}`}
-                    alt={texture.label}
-                />
-            ): (
-                <button
-                    type={"button"}
-                    className={"btn"}
+            <div>
+                {texture && (
+                    <img
+                        src={`${API}/api/maps/${texture.path}`}
+                        alt={texture.label}
+                        className={"w-16 h-16 object-contain me-4 inline"}
+                    />
+                )}
+
+                <select
+                    className={"input"}
+                    onChange={(e) => {
+                        if (onChange)
+                            onChange(e.target.value);
+                    }}
+                    defaultValue={texture?._id}
                 >
-                    upload
-                </button>
-            )}
+                    <option value={""}>None</option>
+                    {map?.textures?.map((texture, index) => (
+                        <option
+                            key={index}
+                            value={texture._id}
+                        >
+                            {texture.label}
+                        </option>
+                    ))}
+                </select>
+            </div>
         </div>
     );
 }
@@ -109,6 +127,12 @@ export function Properties() {
         return map.tiles[selected.y * map.height + selected.x];
     }
 
+    const getTexture = (id: string | undefined): Texture | undefined => {
+        if (id === undefined)
+            return undefined;
+        return map?.textures?.find((texture) => texture._id === id);
+    }
+
     if (!map || !selectedTile)
         return (
             <Panel title={"Properties"} />
@@ -117,18 +141,72 @@ export function Properties() {
         <Panel title={"Properties"}>
             <TextureField
                 label={"Texture"}
-                texture={getTile(map, selectedTile).texture}
+                texture={getTexture(getTile(map, selectedTile).texture)}
                 className={"mb-4"}
+                onChange={(id) => {
+                    const tile = getTile(map, selectedTile);
+                    tile.texture = id;
+                    setMap({...map});
+
+                    fetch(
+                        `${API}/api/maps/${map._id}/tiles?x=${selectedTile.x}&y=${selectedTile.y}`,
+                        {
+                            method: "PUT",
+                            headers: {
+                                "Content-Type": "application/json"
+                            },
+                            body: JSON.stringify({
+                                "texture": id,
+                                "empty": getTile(map, selectedTile).empty
+                            })
+                        });
+                }}
             />
             <TextureField
                 label={"Floor"}
-                texture={getTile(map, selectedTile).floor}
+                texture={getTexture(getTile(map, selectedTile).floor)}
                 className={"mb-4"}
+                onChange={(id) => {
+                    const tile = getTile(map, selectedTile);
+                    tile.floor = id;
+                    setMap({...map});
+
+                    fetch(
+                        `${API}/api/maps/${map._id}/tiles?x=${selectedTile.x}&y=${selectedTile.y}`,
+                        {
+                            method: "PUT",
+                            headers: {
+                                "Content-Type": "application/json"
+                            },
+                            body: JSON.stringify({
+                                "floor": id,
+                                "empty": getTile(map, selectedTile).empty
+                            })
+                        });
+                }}
             />
             <TextureField
                 label={"Ceiling"}
-                texture={getTile(map, selectedTile).ceiling}
+                texture={getTexture(getTile(map, selectedTile).ceiling)}
                 className={"mb-4"}
+                onChange={(id) => {
+                    const tile = getTile(map, selectedTile);
+                    tile.ceiling = id;
+                    setMap({...map});
+
+                    fetch(
+                        `${API}/api/maps/${map._id}/tiles?x=${selectedTile.x}&y=${selectedTile.y}`,
+                        {
+                            method: "PUT",
+                            headers: {
+                                "Content-Type": "application/json"
+                            },
+                            body: JSON.stringify({
+                                "ceiling": id,
+                                "empty": getTile(map, selectedTile).empty
+                            })
+                        });
+                }}
             />
             <div className={"flex items-center justify-between"}>
                 <p>Empty</p>

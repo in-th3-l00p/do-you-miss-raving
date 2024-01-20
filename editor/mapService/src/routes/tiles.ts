@@ -40,14 +40,30 @@ router.put(
         let data = matchedData(req);
         data.x = parseInt(data.x);
         data.y = parseInt(data.y);
-        const map = await Map.findById(data.mapId);
-        if (!map)
-            return res.status(404).json({ errors: [
+
+        let map;
+        try {
+            map = await Map.findById(data.mapId);
+        } catch (err) {
+            return res.status(404).json({
+                errors: [
                     {
                         "type": "notFound",
                         "msg": "Map not found"
                     }
-                ]});
+                ]
+            });
+        }
+        if (!map)
+            return res.status(404).json({
+                errors: [
+                    {
+                        "type": "notFound",
+                        "msg": "Map not found"
+                    }
+                ]
+            });
+
         if (data.x >= map.width || data.y >= map.height || data.x < 0 || data.y < 0)
             return res.status(404).json({ errors: [
                     {
@@ -55,12 +71,22 @@ router.put(
                         "msg": "Map not found"
                     }
                 ]});
-        if (data.texture && !map.textures.find(t => t.id === data.texture))
+
+        if (data.texture && map.textures.find(t => t.id === data.texture))
             map.tiles[data.y * map.width + data.x].texture = data.texture;
-        if (data.floor && !map.textures.find(t => t.id === data.floor))
+        else if (data.texture === "")
+            map.tiles[data.y * map.width + data.x].texture = null;
+
+        if (data.floor && map.textures.find(t => t.id === data.floor))
             map.tiles[data.y * map.width + data.x].floor = data.floor;
-        if (data.ceiling && !map.textures.find(t => t.id === data.ceiling))
+        else if (data.floor === "")
+            map.tiles[data.y * map.width + data.x].floor = null;
+
+        if (data.ceiling && map.textures.find(t => t.id === data.ceiling))
             map.tiles[data.y * map.width + data.x].ceiling = data.ceiling;
+        else if (data.ceiling === "")
+            map.tiles[data.y * map.width + data.x].ceiling = null;
+
         map.tiles[data.y * map.width + data.x].empty = data.empty;
         await map.save();
 

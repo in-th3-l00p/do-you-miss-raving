@@ -3,6 +3,8 @@ import EditorContext from "@/lib/contexts/editor";
 import {API} from "@/lib/constants";
 import * as Icon from "react-feather";
 import {Panel} from "@/components/Editor";
+import FormGroup from "@/components/form/FormGroup";
+import FormInput from "@/components/form/FormInput";
 
 interface ModalProps {
     title: string;
@@ -19,11 +21,8 @@ function Modal({ title, children, opened, setOpened }: ModalProps) {
         <section
             className={"fixed z-40 top-0 left-0 w-screen h-screen flex items-center justify-center"}
             style={{background: "rgba(0, 0, 0, 0.5)"}}
-            onClick={() => {
-                setOpened(false);
-            }}
         >
-            <div className={"bg-federal-blue rounded-md shadow-md p-8 w-full max-w-[600px]"}>
+            <div className={"bg-federal-blue rounded-md shadow-md p-8 w-full max-w-[600px] z-50 z-50 z-50 z-50"}>
                 <div className={"flex items-center justify-between mb-8"}>
                     <h2 className={"text-2xl"}>{title}</h2>
                     <button
@@ -42,9 +41,58 @@ function Modal({ title, children, opened, setOpened }: ModalProps) {
     );
 }
 
+interface UploadModalProps {
+    opened: boolean;
+    setOpened: React.Dispatch<React.SetStateAction<boolean>>;
+}
+
+function UploadModal({ opened, setOpened }: UploadModalProps) {
+    const {map, setMap} = React.useContext(EditorContext);
+
+    return (
+        <Modal
+            title={"Upload"}
+            opened={opened}
+            setOpened={setOpened}
+        >
+            <form onSubmit={(e) => {
+                e.preventDefault();
+                const form = e.target as HTMLFormElement;
+                const formData = new FormData(form);
+                fetch(`${API}/api/maps/${map!._id}/textures`, {
+                    method: "POST",
+                    body: formData,
+                })
+                    .then((resp) => {
+                        return resp.json();
+                    })
+                    .then((texture) => {
+                        const newMap = {...map!};
+                        newMap.textures?.push(texture);
+                        setMap(newMap);
+                    });
+
+            }}>
+                <FormGroup className={"mb-4"}>
+                    <label htmlFor={"label"}>Label</label>
+                    <FormInput type={"text"} name={"label"} id={"label"} />
+                </FormGroup>
+                <FormGroup className={"mb-8"}>
+                    <label htmlFor={"file"}>File</label>
+                    <FormInput type={"file"} name={"image"} id={"image"} />
+                </FormGroup>
+
+                <button type={"submit"} className={"btn block mx-auto"}>
+                    Upload
+                </button>
+            </form>
+        </Modal>
+    )
+}
+
 export default function Textures() {
     const {map, setMap} = React.useContext(EditorContext);
-    const [modalOpened, setModalOpened] = React.useState(true);
+    const [uploadOpened, setUploadOpened] = React.useState(false);
 
     if (!map)
         return (
@@ -52,8 +100,10 @@ export default function Textures() {
         );
     return (
         <>
-            <Modal title={"Upload"} opened={modalOpened} setOpened={setModalOpened}>
-            </Modal>
+            <UploadModal
+                opened={uploadOpened}
+                setOpened={setUploadOpened}
+            />
             <Panel title={"Textures"}>
                 <div className={"flex flex-wrap gap-8"}>
                     {map.textures?.map((texture, index) => (
@@ -77,9 +127,12 @@ export default function Textures() {
                     <button
                         type={"button"}
                         className={
-                            "flex justify-center items-center bg-oxford-blue w-48 rounded-md shadow-md " +
+                            "flex justify-center items-center bg-oxford-blue aspect-square w-48 rounded-md shadow-md " +
                             "hover:bg-darker-oxford-blue hover:shadow-xl transition-all"
                         }
+                        onClick={() => {
+                            setUploadOpened(true);
+                        }}
                     >
                         <Icon.Plus size={"80px"}/>
                     </button>

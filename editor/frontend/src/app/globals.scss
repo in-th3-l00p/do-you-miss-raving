@@ -32,6 +32,8 @@ body {
     hover:bg-darker-oxford-blue hover:shadow-lg transition-all;
 }
 
-.title {
-  @apply text-2xl md:text-4xl;
+.input {
+  @apply
+    border-2 border-duke-blue outline-none rounded p-4 bg-oxford-blue shadow-md
+    focus:shadow-xl focus:bg-darker-oxford-blue transition-all;
 }

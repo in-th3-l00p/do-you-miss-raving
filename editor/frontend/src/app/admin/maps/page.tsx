@@ -3,13 +3,21 @@ import { Map } from "@/lib/types";
 import React from "react";
 import Link from "next/link";
 import {API} from "@/lib/constants";
+import Title from "@/components/Title";
+import * as Icon from "react-feather";
 
 export default async function Maps() {
-    const maps: Map[] = await fetch(`${API}/api/maps`).then((res) => res.json());
+    const maps: Map[] = await fetch(`${API}/api/maps`, {
+        "cache": "no-cache"
+    }).then((res) => res.json());
 
     return (
         <div className={"background flex-grow"}>
-            <h1 className={"p-8 title border-b mb-8"}>Maps</h1>
+            <Title text={"Maps"}>
+                <a href={"/admin/maps/create"} className={"btn block aspect-square"}>
+                    <Icon.Plus size={"32"} />
+                </a>
+            </Title>
             {maps.map((map, index) => (
                 <Link
                     key={index}

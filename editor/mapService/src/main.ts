@@ -1,4 +1,4 @@
-import express from "express";
+import express, {Request, Response, NextFunction} from "express";
 import mongoose from "mongoose";
 import bodyParser from "body-parser";
 import MapRouter from "./routes/maps";
@@ -6,10 +6,12 @@ import TextureRouter from "./routes/textures";
 import TileRouter from "./routes/tiles";
 import { param } from "express-validator";
 import cors from "cors";
+import {resourceLimits} from "worker_threads";
 
 const app = express();
 
 app.use(bodyParser.json({ limit: "50mb" }));
+app.use(bodyParser.urlencoded({ extended: true, parameterLimit: 50000000 }));
 app.use(cors());
 
 app.use("/api/maps/public", express.static("public"));

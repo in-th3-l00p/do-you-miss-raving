@@ -6,7 +6,7 @@ const router = express.Router();
 
 router.post(
     "/",
-    body("name").notEmpty().isString().trim().isLength({ min: 3, max: 255 }),
+    body("name").notEmpty().trim().isLength({ min: 3, max: 255 }),
     body("width").notEmpty().isInt({ min: 1, max: 100 }),
     body("height").notEmpty().isInt({ min: 1, max: 100 }),
     async (req: express.Request, res: express.Response) => {
@@ -34,15 +34,19 @@ router.get("/", async (req: any, res: any) => {
 });
 
 router.get("/:id", async (req: any, res: any) => {
-    const map = await Map.findById(req.params.id);
-    if (!map)
-        return res.status(404).json({ errors: [
-            {
-                "type": "notFound",
-                "msg": "Map not found"
-            }
-        ]});
-    res.send(map);
+    try {
+        const map = await Map.findById(req.params.id);
+        res.send(map);
+    } catch (err) {
+        return res.status(404).json({
+            errors: [
+                {
+                    "type": "notFound",
+                    "msg": "Map not found"
+                }
+            ]
+        });
+    }
 });
 
 export default router;

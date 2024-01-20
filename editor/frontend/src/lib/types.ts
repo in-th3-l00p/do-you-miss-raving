@@ -8,9 +8,9 @@ export interface Texture extends MongoEntity {
 }
 
 export interface Tile extends MongoEntity {
-    texture?: Texture;
-    floor?: Texture;
-    ceiling?: Texture;
+    texture?: string;
+    floor?: string;
+    ceiling?: string;
     empty: boolean;
 }
 

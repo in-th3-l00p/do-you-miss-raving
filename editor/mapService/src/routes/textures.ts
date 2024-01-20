@@ -20,23 +20,40 @@ router.post(
         .isLength({ min: 3, max: 255 }),
     async (req: MulterRequest, res: Response) => {
         const data = matchedData(req);
-        let map = await Map.findById(data.mapId);
-        if (!map)
-            return res.status(404).json({ error: "Map not found" });
+        let map;
+        try {
+            map = await Map.findById(data.mapId);
+            if (!map)
+                return res.status(404).json({error: "Map not found"});
+        } catch (err) {
+            return res.status(404).json({
+                errors: [
+                    {
+                        "type": "notFound",
+                        "msg": "Map not found"
+                    }
+                ]
+            });
+        }
         const errors = validationResult(req);
         if (!errors.isEmpty())
             return res
                 .status(400)
                 .json(errors);
 
-        map!.textures.push({
-            label: data.label,
-            filetype: req.file!.mimetype,
-            path: req.file!.path
-        });
-        await map!.save();
+        try {
+            map!.textures.push({
+                label: data.label,
+                filetype: req.file!.mimetype,
+                path: req.file!.path
+            });
+        } catch (err) {
+            return res.status(500).json({ error: "Internal server error" });
+        }
+        map = await map!.save();
 
-        res.status(200).end();
+        const texture = map!.textures[map!.textures.length - 1];
+        res.send(texture);
     }
 );
 
