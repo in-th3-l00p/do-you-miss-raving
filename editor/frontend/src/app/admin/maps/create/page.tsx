@@ -29,7 +29,6 @@ export default function CreateMap() {
                     if (name.length < 1)
                         errors["name"] = "Name must be at least 1 character long";
 
-                    console.log(width, height);
                     if (width < 1 || width > 100 || isNaN(width))
                         errors["width"] = "Width must be between 1 and 100";
 
@@ -42,7 +41,6 @@ export default function CreateMap() {
                         return;
                     }
 
-                    console.log(JSON.stringify({ name, width, height }));
                     fetch(`${API}/api/maps`, {
                         method: "POST",
                         headers: {
