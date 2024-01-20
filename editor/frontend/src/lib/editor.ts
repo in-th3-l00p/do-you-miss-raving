@@ -1,4 +1,6 @@
 import {Map} from "@/lib/types";
+import {getTexture} from "@/lib/utils";
+import {API} from "@/lib/constants";
 
 export function renderMap(
     ctx: CanvasRenderingContext2D,
@@ -21,8 +23,14 @@ export function renderMap(
             if (!tile) continue;
 
             if (!tile.empty) {
-                ctx.fillStyle = "red";
-                ctx.fillRect(x * tileWidth, y * tileHeight, tileWidth, tileHeight);
+                if (tile.texture !== undefined) {
+                    const image = new Image();
+                    image.src = `${API}/api/maps/${getTexture(map, tile.texture)?.path}`;
+                    ctx.drawImage(image, x * tileWidth, y * tileHeight, tileWidth, tileHeight);
+                } else {
+                    ctx.fillStyle = "white";
+                    ctx.fillRect(x * tileWidth, y * tileHeight, tileWidth, tileHeight);
+                }
             } else {
                 ctx.strokeStyle = "white";
                 ctx.strokeRect(x * tileWidth, y * tileHeight, tileWidth, tileHeight);

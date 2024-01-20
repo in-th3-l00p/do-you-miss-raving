@@ -1,8 +1,9 @@
 import React, {useEffect} from "react";
-import EditorContext, {Point} from "@/lib/contexts/editor";
+import EditorContext from "@/lib/contexts/editor";
 import {renderMap, setupMapCanvas} from "@/lib/editor";
-import {Map, Texture, Tile} from "@/lib/types";
+import {Texture} from "@/lib/types";
 import {API} from "@/lib/constants";
+import {getTexture, getTile} from "@/lib/utils";
 
 export interface PanelProps {
     title: string;
@@ -100,7 +101,7 @@ function TextureField({ texture, label, className, onChange }: TextureFieldProps
                         if (onChange)
                             onChange(e.target.value);
                     }}
-                    defaultValue={texture?._id}
+                    value={texture?._id || ""}
                 >
                     <option value={""}>None</option>
                     {map?.textures?.map((texture, index) => (
@@ -119,19 +120,19 @@ function TextureField({ texture, label, className, onChange }: TextureFieldProps
 
 export function Properties() {
     const {map, setMap, selectedTile} = React.useContext(EditorContext);
-    const getTile = (map: Map, selected: Point): Tile => {
-        if (map.tiles?.length! < selected.y * map.height + selected.x)
-            throw new Error("Tile out of bounds");
-        if (!map.tiles)
-            throw new Error("No tiles");
-        return map.tiles[selected.y * map.height + selected.x];
-    }
+    const [texture, setTexture] = React.useState<Texture>();
+    const [floor, setFloor] = React.useState<Texture>();
+    const [ceiling, setCeiling] = React.useState<Texture>();
 
-    const getTexture = (id: string | undefined): Texture | undefined => {
-        if (id === undefined)
-            return undefined;
-        return map?.textures?.find((texture) => texture._id === id);
-    }
+    useEffect(() => {
+        if (!map || !selectedTile)
+            return;
+
+        const tile = getTile(map, selectedTile);
+        setTexture(() => getTexture(map, tile.texture));
+        setFloor(() => getTexture(map, tile.floor));
+        setCeiling(() => getTexture(map, tile.ceiling));
+    }, [map, selectedTile]);
 
     if (!map || !selectedTile)
         return (
@@ -141,7 +142,7 @@ export function Properties() {
         <Panel title={"Properties"}>
             <TextureField
                 label={"Texture"}
-                texture={getTexture(getTile(map, selectedTile).texture)}
+                texture={texture}
                 className={"mb-4"}
                 onChange={(id) => {
                     const tile = getTile(map, selectedTile);
@@ -164,7 +165,7 @@ export function Properties() {
             />
             <TextureField
                 label={"Floor"}
-                texture={getTexture(getTile(map, selectedTile).floor)}
+                texture={floor}
                 className={"mb-4"}
                 onChange={(id) => {
                     const tile = getTile(map, selectedTile);
@@ -187,7 +188,7 @@ export function Properties() {
             />
             <TextureField
                 label={"Ceiling"}
-                texture={getTexture(getTile(map, selectedTile).ceiling)}
+                texture={ceiling}
                 className={"mb-4"}
                 onChange={(id) => {
                     const tile = getTile(map, selectedTile);

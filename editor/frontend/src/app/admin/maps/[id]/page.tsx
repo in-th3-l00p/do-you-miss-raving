@@ -25,7 +25,7 @@ export default function MapEditor({ params }: { params: { id: string } }) {
             <Title text={"Map: " + map.name} />
             <EditorContext.Provider value={{ map, setMap, selectedTile, setSelectedTile }}>
                 <section
-                    className={"grid gap-8 md:grid-cols-2 p-8 flex-grow"}
+                    className={"grid gap-8 lg:grid-cols-2 p-8 flex-grow"}
                     style={{ background: "rgba(255, 255, 255, 0.1)" }}
                 >
                     <Canvas />
