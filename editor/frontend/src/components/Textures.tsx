@@ -70,7 +70,8 @@ function UploadModal({ opened, setOpened }: UploadModalProps) {
                         const newMap = {...map!};
                         newMap.textures?.push(texture);
                         setMap(newMap);
-                    });
+                    })
+                    .finally(() => setOpened(false));
 
             }}>
                 <FormGroup className={"mb-4"}>
