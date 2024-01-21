@@ -1,76 +1,10 @@
 import React, {useEffect} from "react";
 import EditorContext from "@/lib/contexts/editor";
-import {renderMap, setupMapCanvas} from "@/lib/editor";
 import {Texture} from "@/lib/types";
-import {API} from "@/lib/constants";
 import {getTexture, getTile} from "@/lib/utils";
+import {API} from "@/lib/constants";
 
-export interface PanelProps {
-    title: string;
-    children?: React.ReactNode;
-}
-
-export function Panel({title, children}: PanelProps) {
-    return (
-        <div className={"flex flex-col bg-oxford-blue rounded-md p-8 mb-8"}>
-            <h2 className={"text-xl mb-4"}>{title}</h2>
-            <div className={"w-full h-full bg-navy-blue rounded-md p-8"}>
-                {children}
-            </div>
-        </div>
-    );
-}
-
-export function Canvas() {
-    const {map, selectedTile, setSelectedTile} = React.useContext(EditorContext);
-
-    const canvasRef = React.useRef<HTMLCanvasElement>(null);
-
-    useEffect(() => {
-        if (!canvasRef.current || !map)
-            return;
-
-        const canvas = canvasRef.current;
-        const destructor = setupMapCanvas(canvas, map, (hitX, hitY) => {
-            if (
-                selectedTile &&
-                selectedTile.x === hitX &&
-                selectedTile.y === hitY
-            ) {
-                setSelectedTile(null);
-                return;
-            }
-            setSelectedTile({x: hitX, y: hitY});
-        });
-
-        return () => {
-            destructor();
-        }
-    }, [canvasRef, map, selectedTile]);
-
-    useEffect(() => {
-        if (!canvasRef.current || !map || !selectedTile)
-            return;
-
-        const canvas = canvasRef.current;
-        const ctx = canvas.getContext("2d");
-        if (!ctx)
-            return;
-
-        renderMap(ctx, map, selectedTile);
-    }, [selectedTile]);
-
-    return (
-        <Panel title={"Canvas"}>
-            <div className={"relative aspect-square w-full max-w-[500px] mx-auto my-auto bg-red-700"}>
-                <canvas
-                    className={"absolute top-0 left-0"}
-                    ref={canvasRef}
-                />
-            </div>
-        </Panel>
-    );
-}
+import {Panel} from "@/components/Panel";
 
 interface TextureFieldProps {
     texture?: Texture;
@@ -79,7 +13,7 @@ interface TextureFieldProps {
     onChange?: (id: string) => void;
 }
 
-function TextureField({ texture, label, className, onChange }: TextureFieldProps) {
+function TextureField({texture, label, className, onChange}: TextureFieldProps) {
     const {map, setMap} = React.useContext(EditorContext);
 
     return (
@@ -136,7 +70,7 @@ export function Properties() {
 
     if (!map || !selectedTile)
         return (
-            <Panel title={"Properties"} />
+            <Panel title={"Properties"}/>
         );
     return (
         <Panel title={"Properties"}>
@@ -235,6 +169,5 @@ export function Properties() {
                 />
             </div>
         </Panel>
-);
+    );
 }
-

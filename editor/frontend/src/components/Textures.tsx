@@ -2,9 +2,9 @@ import React from "react";
 import EditorContext from "@/lib/contexts/editor";
 import {API} from "@/lib/constants";
 import * as Icon from "react-feather";
-import {Panel} from "@/components/Editor";
 import FormGroup from "@/components/form/FormGroup";
 import FormInput from "@/components/form/FormInput";
+import {Panel} from "@/components/Panel";
 
 interface ModalProps {
     title: string;

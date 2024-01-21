@@ -1,11 +1,16 @@
 import {Map} from "@/lib/types";
 import {getTexture} from "@/lib/utils";
 import {API} from "@/lib/constants";
+import React from "react";
+import {Point} from "@/lib/contexts/editor";
+import {VisualizeMode} from "@/components/Canvas";
 
 export function renderMap(
     ctx: CanvasRenderingContext2D,
     map: Map,
-    selectedTile?: {x: number, y: number}
+    visualizeMode: VisualizeMode,
+    images: Record<string, HTMLImageElement>,
+    selectedTile?: {x: number, y: number},
 ) {
     const width = ctx.canvas.width;
     const height = ctx.canvas.height;
@@ -22,23 +27,41 @@ export function renderMap(
             const tile = map.tiles![y * map.height + x];
             if (!tile) continue;
 
-            if (!tile.empty) {
-                if (tile.texture !== undefined) {
-                    const image = new Image();
-                    image.src = `${API}/api/maps/${getTexture(map, tile.texture)?.path}`;
-                    ctx.drawImage(image, x * tileWidth, y * tileHeight, tileWidth, tileHeight);
-                } else {
-                    ctx.fillStyle = "white";
-                    ctx.fillRect(x * tileWidth, y * tileHeight, tileWidth, tileHeight);
-                }
-            } else {
-                ctx.strokeStyle = "white";
-                ctx.strokeRect(x * tileWidth, y * tileHeight, tileWidth, tileHeight);
-            }
+            switch (visualizeMode) {
+                case VisualizeMode.Texture:
+                    if (!tile.empty) {
+                        if (tile.texture !== undefined) {
+                            ctx.drawImage(images[tile.texture], x * tileWidth, y * tileHeight, tileWidth, tileHeight);
+                        } else {
+                            ctx.fillStyle = "white";
+                            ctx.fillRect(x * tileWidth, y * tileHeight, tileWidth, tileHeight);
+                        }
+                    } else {
+                        ctx.strokeStyle = "white";
+                        ctx.strokeRect(x * tileWidth, y * tileHeight, tileWidth, tileHeight);
+                    }
 
-            if (x === selectedTile?.x && y === selectedTile?.y) {
-                ctx.fillStyle = "rgba(255, 255, 255, 0.5)";
-                ctx.fillRect(x * tileWidth, y * tileHeight, tileWidth, tileHeight);
+                    if (x === selectedTile?.x && y === selectedTile?.y) {
+                        ctx.fillStyle = "rgba(255, 255, 255, 0.5)";
+                        ctx.fillRect(x * tileWidth, y * tileHeight, tileWidth, tileHeight);
+                    }
+                    break;
+                case VisualizeMode.Ceiling:
+                    if (tile.ceiling !== undefined) {
+                        ctx.drawImage(images[tile.ceiling], x * tileWidth, y * tileHeight, tileWidth, tileHeight);
+                    } else {
+                        ctx.fillStyle = "white";
+                        ctx.fillRect(x * tileWidth, y * tileHeight, tileWidth, tileHeight);
+                    }
+                    break;
+                case VisualizeMode.Floor:
+                    if (tile.floor !== undefined) {
+                        ctx.drawImage(images[tile.floor], x * tileWidth, y * tileHeight, tileWidth, tileHeight);
+                    } else {
+                        ctx.fillStyle = "white";
+                        ctx.fillRect(x * tileWidth, y * tileHeight, tileWidth, tileHeight);
+                    }
+                    break;
             }
         }
     }
@@ -47,7 +70,8 @@ export function renderMap(
 export function setupMapCanvas(
     canvas: HTMLCanvasElement,
     map: Map,
-    onTileClick?: (x: number, y: number) => void
+    visualizeMode: VisualizeMode,
+    images: Record<string, HTMLImageElement>
 ) {
     const ctx = canvas.getContext("2d");
     if (!ctx) return () => {};
@@ -56,10 +80,25 @@ export function setupMapCanvas(
         if (canvas.parentElement) {
             canvas.width = canvas.parentElement!.clientWidth;
             canvas.height = canvas.parentElement!.clientHeight;
-            renderMap(canvas.getContext("2d")!, map);
+            renderMap(canvas.getContext("2d")!, map, visualizeMode, images);
         }
     }
 
+    if (canvas.parentElement)
+        window.addEventListener("resize", toggleRender);
+
+    toggleRender();
+    return () => {
+        window.removeEventListener("resize", toggleRender);
+    }
+}
+
+export default function selectMode(
+    canvas: HTMLCanvasElement,
+    map: Map,
+    setSelectedTile: React.Dispatch<React.SetStateAction<Point | null>>,
+    onTileClick?: (x: number, y: number) => void
+) {
     const onClick = (e: MouseEvent) => {
         const tileSize = canvas.width / map.width;
         const hitX = Math.floor(e.offsetX / tileSize);
@@ -68,13 +107,55 @@ export function setupMapCanvas(
             onTileClick(hitX, hitY);
     }
 
-    if (canvas.parentElement)
-        window.addEventListener("resize", toggleRender);
     canvas.addEventListener("click", onClick);
-
-    toggleRender();
     return () => {
-        window.removeEventListener("resize", toggleRender);
         canvas.removeEventListener("click", onClick);
+        setSelectedTile(null);
+    }
+}
+
+export function drawMode(
+    canvas: HTMLCanvasElement,
+    map: Map,
+    onTileDraw?: (x: number, y: number) => void,
+    onTileErase?: (x: number, y: number) => void,
+    updateMap?: (x: number, y: number) => void
+) {
+    const onMove = (e: MouseEvent) => {
+        if (e.buttons === 0) return;
+        if (e.buttons === 1) {
+            const tileSize = canvas.width / map.width;
+            const hitX = Math.floor(e.offsetX / tileSize);
+            const hitY = Math.floor(e.offsetY / tileSize);
+            if (onTileDraw) {
+                onTileDraw(hitX, hitY);
+                if (updateMap)
+                    updateMap(hitX, hitY);
+            }
+        } else if (e.buttons === 4) {
+            const tileSize = canvas.width / map.width;
+            const hitX = Math.floor(e.offsetX / tileSize);
+            const hitY = Math.floor(e.offsetY / tileSize);
+            if (onTileErase) {
+                onTileErase(hitX, hitY);
+                if (updateMap)
+                    updateMap(hitX, hitY);
+            }
+        }
+    }
+
+    const onClick = (e: MouseEvent) => {
+        const tileSize = canvas.width / map.width;
+        const hitX = Math.floor(e.offsetX / tileSize);
+        const hitY = Math.floor(e.offsetY / tileSize);
+        if (onTileDraw)
+            onTileDraw(hitX, hitY);
+    }
+
+    canvas.addEventListener("mousemove", onMove);
+    canvas.addEventListener("mousedown", onMove);
+    return () => {
+        canvas.removeEventListener("mousemove", onMove);
+        canvas.removeEventListener("mousedown", onMove);
     }
 }
