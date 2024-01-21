@@ -22,7 +22,7 @@ namespace game {
         const float maxStamina;
         const float staminaRegen;
         bool isRunning;
-        game::Map& map;
+        Map& map;
     public:
         explicit Player(
                 game::Map& map,
