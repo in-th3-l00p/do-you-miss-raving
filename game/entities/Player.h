@@ -25,7 +25,8 @@ namespace game {
         game::Map& map;
     public:
         explicit Player(
-                game::Map& map,
+                const std::set<std::unique_ptr<Entity>>& container,
+                const std::map<std::string, Entity*>& labels,
                 engine::math::Vec2<float> position = {engine::constants::DEFAULT_PLAYER_X, engine::constants::DEFAULT_PLAYER_Y },
                 engine::math::Vec2<float> direction = {engine::constants::DEFAULT_PLAYER_DIR_X, engine::constants::DEFAULT_PLAYER_DIR_Y },
                 float radius = engine::constants::DEFAULT_PLAYER_RADIUS,

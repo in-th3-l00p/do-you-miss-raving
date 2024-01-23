@@ -19,10 +19,12 @@ namespace engine {
         sf::RenderWindow& window;
         std::unique_ptr<Scene>& sceneRef;
 
-        std::set<std::unique_ptr<Entity>> container;
         std::list<Entity*> renderQueue;
+        std::set<std::unique_ptr<Entity>> container;
+        std::map<std::string, Entity*> labels;
 
         void addEntity(std::unique_ptr<Entity> entity);
+        void addEntity(std::unique_ptr<Entity> entity, const std::string& label);
 
     public:
         explicit Scene(

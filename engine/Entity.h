@@ -5,6 +5,8 @@
 #ifndef RAYGAME_ENTITY_H
 #define RAYGAME_ENTITY_H
 
+#include <set>
+#include <map>
 #include <SFML/Graphics/RenderWindow.hpp>
 #include "../utils/Constants.h"
 
@@ -14,8 +16,15 @@ namespace engine {
         ull id;
         ull zIndex = 0;
 
+    protected:
+        const std::set<std::unique_ptr<Entity>>& container;
+        const std::map<std::string, Entity*>& labels;
+
     public:
-        Entity();
+        Entity(
+                const std::set<std::unique_ptr<Entity>>& container,
+                const std::map<std::string, Entity*>& labels
+                );
         virtual ~Entity() = default;
 
         virtual void render(sf::RenderWindow& window) = 0;

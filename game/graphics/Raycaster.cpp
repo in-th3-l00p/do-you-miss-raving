@@ -8,8 +8,13 @@
 #include <iostream>
 
 namespace engine {
-    engine::Raycaster::Raycaster(game::Player &player, game::Map &map):
-            player(player), map(map) {
+    engine::Raycaster::Raycaster(
+            const std::set<std::unique_ptr<Entity>>& container,
+            const std::map<std::string, Entity*>& labels
+        ):
+            Entity(container, labels),
+            player(dynamic_cast<game::Player&>(*labels.at("player"))),
+            map(dynamic_cast<game::Map&>(*labels.at("map"))) {
         setZIndex(10);
     }
 

@@ -43,6 +43,8 @@ namespace game::ui {
     }
 
     Button::Button(
+            const std::set<std::unique_ptr<Entity>>& container,
+            const std::map<std::string, Entity*>& labels,
             float x, float y,
             float width, float height,
             const std::string &text,
@@ -51,6 +53,7 @@ namespace game::ui {
             const sf::Color &backgroundColor,
             const sf::Color &textColor
             ):
+            Entity(container, labels),
             backgroundColor(backgroundColor),
             textColor(textColor) {
         shape.setPosition(x, y);
@@ -93,6 +96,7 @@ namespace game::ui {
             std::unique_ptr<Scene> &sceneRef
     ) : Scene(window, sceneRef) {
         std::unique_ptr<engine::Entity> button = std::make_unique<Button>(
+                container, labels,
                 100, 100, 100, 50,
                 "Start",
                 FontLoader::getInstance()->getDefault(),
