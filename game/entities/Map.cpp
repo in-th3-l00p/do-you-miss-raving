@@ -59,6 +59,12 @@ namespace game {
                 engine::math::Vec2<float>{ (float) tileSize / 2.f, (float) tileSize / 2 }
         );
 
+        sprites.emplace_back(
+                (engine::paths::SPRITES_PATH / "disco1.png").string(),
+                engine::math::Vec2<float>{ 200, 100 },
+                engine::math::Vec2<float>{ (float) tileSize, (float) tileSize }
+        );
+
         // Set the color of the tiles in the first and last row to red
         for (ull i = 0; i < width; ++i) {
                 tiles.at(i).at(0).changeTexture((engine::paths::RETRO_PATH / "CONCRETE_1A.PNG").string());
