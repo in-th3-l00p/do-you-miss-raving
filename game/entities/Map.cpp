@@ -4,7 +4,6 @@
 
 #include <iostream>
 #include "Map.h"
-#include "../../utils/Paths.h"
 
 namespace game {
 
@@ -76,14 +75,8 @@ namespace game {
     void Sprite::update(float deltaTime) {
     }
 
-    Killer::Killer(std::string path,
-                   engine::math::Vec2<float> position,
-                   engine::math::Vec2<float> size,
-                   Map& map,
-                   Player& player)
-        :Sprite(path, position, size),
-        map(map),
-        player(player)
+    Killer::Killer(std::string path, engine::math::Vec2<float> position, engine::math::Vec2<float> size)
+            : Sprite(path, position, size)
     {
         texture = new sf::Texture();
         bool loadSuccessful = texture->loadFromFile(path);
@@ -95,83 +88,83 @@ namespace game {
 
     void Killer::update(float deltaTime) {
 
-        engine::math::Vec2<float> playerPosition = {
-                player.getPosition().x,
-                player.getPosition().y
-        };
-        int tileSize = map.getTileSize();
-
-        engine::math::Vec2<int> playerTile = {
-                static_cast<int>(playerPosition.x /  tileSize),
-                static_cast<int>(playerPosition.y / tileSize)
-        };
-
-        engine::math::Vec2<int> killerTile = {
-                static_cast<int>(position.x / tileSize),
-                static_cast<int>(position.y / tileSize)
-        };
-
-        if (playerTile == killerTile) {
-            std::cout<<"hatz\n";
-        } else {
-            auto heuristic = [](int x, int y, const engine::math::Vec2<int>& target) {
-                return std::sqrt(static_cast<float>((x - target.x) * (x - target.x) + (y - target.y) * (y - target.y)));
-            };
-
-            // Calculate cost from current to neighbor (you need to replace this with your actual cost calculation)
-            auto calculateCost = [](int /*currentX*/, int /*currentY*/, int /*neighborX*/, int /*neighborY*/) {
-                return 1.0f;  // Replace this with your actual cost calculation
-            };
-            // Perform A* pathfinding
-            openSet.push({killerTile.x, killerTile.y, 0.0f, 0.0f});
-
-            while (!openSet.empty()) {
-                Node current = openSet.top();
-                openSet.pop();
-
-                // Check if the current node is the target
-                if (current.x == playerTile.x && current.y == playerTile.y) {
-                    // Found the target, move towards it
-                    position.x = current.x * tileSize;
-                    position.y = current.y * tileSize;
-                    break;
-                }
-
-                // Process neighbors (adjacent tiles)
-                for (int i = -1; i <= 1; ++i) {
-                    for (int j = -1; j <= 1; ++j) {
-                        if (i == 0 && j == 0) continue;
-
-                        int neighborX = current.x + i;
-                        int neighborY = current.y + j;
-
-                        if (isValidTile(neighborX, neighborY)) {
-                            float newG = current.g + calculateCost(current.x, current.y, neighborX, neighborY);
-                            addToOpenSet(neighborX, neighborY, newG, playerTile, heuristic);
-                        }
-                    }
-                }
-
-                closedSet.insert(current.x * map.getWidth() + current.y);
-            }
-
-            // Clear open and closed sets for the next update
-            openSet = std::priority_queue<Node, std::vector<Node>, std::greater<Node>>();
-            closedSet.clear();
-        }
+//        engine::math::Vec2<float> playerPosition = {
+//                player.getPosition().x,
+//                player.getPosition().y
+//        };
+//        int tileSize = map.getTileSize();
+//
+//        engine::math::Vec2<int> playerTile = {
+//                static_cast<int>(playerPosition.x /  tileSize),
+//                static_cast<int>(playerPosition.y / tileSize)
+//        };
+//
+//        engine::math::Vec2<int> killerTile = {
+//                static_cast<int>(position.x / tileSize),
+//                static_cast<int>(position.y / tileSize)
+//        };
+//
+//        if (playerTile == killerTile) {
+//            std::cout<<"hatz\n";
+//        } else {
+//            auto heuristic = [](int x, int y, const engine::math::Vec2<int>& target) {
+//                return std::sqrt(static_cast<float>((x - target.x) * (x - target.x) + (y - target.y) * (y - target.y)));
+//            };
+//
+//            // Calculate cost from current to neighbor (you need to replace this with your actual cost calculation)
+//            auto calculateCost = [](int /*currentX*/, int /*currentY*/, int /*neighborX*/, int /*neighborY*/) {
+//                return 1.0f;  // Replace this with your actual cost calculation
+//            };
+//            // Perform A* pathfinding
+//            openSet.push({killerTile.x, killerTile.y, 0.0f, 0.0f});
+//
+//            while (!openSet.empty()) {
+//                Node current = openSet.top();
+//                openSet.pop();
+//
+//                // Check if the current node is the target
+//                if (current.x == playerTile.x && current.y == playerTile.y) {
+//                    // Found the target, move towards it
+//                    position.x = current.x * tileSize;
+//                    position.y = current.y * tileSize;
+//                    break;
+//                }
+//
+//                // Process neighbors (adjacent tiles)
+//                for (int i = -1; i <= 1; ++i) {
+//                    for (int j = -1; j <= 1; ++j) {
+//                        if (i == 0 && j == 0) continue;
+//
+//                        int neighborX = current.x + i;
+//                        int neighborY = current.y + j;
+//
+//                        if (isValidTile(neighborX, neighborY)) {
+//                            float newG = current.g + calculateCost(current.x, current.y, neighborX, neighborY);
+//                            addToOpenSet(neighborX, neighborY, newG, playerTile, heuristic);
+//                        }
+//                    }
+//                }
+//
+//                closedSet.insert(current.x * map.getWidth() + current.y);
+//            }
+//
+//            // Clear open and closed sets for the next update
+//            openSet = std::priority_queue<Node, std::vector<Node>, std::greater<Node>>();
+//            closedSet.clear();
+//        }
     }
 
-    void Killer::addToOpenSet(int x, int y, float g, const engine::math::Vec2<int>& target, HeuristicFunction heuristic) {
-        if (closedSet.find(x * map.getWidth() + y) == closedSet.end()) {
-            float h = heuristic(x, y, target);  // Calculate heuristic
-            float f = g + h;
-            openSet.push({x, y, f, g});
-        }
-    }
-
-    bool Killer::isValidTile(int x, int y) {
-        return x >= 0 && x < map.getWidth() && y >= 0 && y < map.getHeight() && map.getTiles()[y][x].empty;
-    }
+//    void Killer::addToOpenSet(int x, int y, float g, const engine::math::Vec2<int>& target, HeuristicFunction heuristic) {
+//        if (closedSet.find(x * map.getWidth() + y) == closedSet.end()) {
+//            float h = heuristic(x, y, target);  // Calculate heuristic
+//            float f = g + h;
+//            openSet.push({x, y, f, g});
+//        }
+//    }
+//
+//    bool Killer::isValidTile(int x, int y) {
+//        return x >= 0 && x < map.getWidth() && y >= 0 && y < map.getHeight() && map.getTiles()[y][x].empty;
+//    }
 
     Decoration::Decoration(std::string path, engine::math::Vec2<float> position, engine::math::Vec2<float> size)
             : Sprite(path, position, size)
@@ -191,13 +184,11 @@ namespace game {
         sprite.rotate(10 * deltaTime); // Adjust the rotation speed
     }
 
-    TestMap::TestMap(ull width, ull height, Player& player, ull tileSize) : Map(width, height, tileSize) {
+    TestMap::TestMap(ull width, ull height, ull tileSize) : Map(width, height, tileSize) {
         killers.emplace_back(
                 (engine::paths::SPRITES_PATH / "bar chair.png").string(),
                 engine::math::Vec2<float>{120, 300},
-                engine::math::Vec2<float>{(float) tileSize / 2.f, (float) tileSize / 2},
-                *this,
-                player
+                engine::math::Vec2<float>{(float) tileSize / 2.f, (float) tileSize / 2}
         );
         decorations.emplace_back(
                 (engine::paths::SPRITES_PATH / "bar chair.png").string(),

@@ -7,11 +7,10 @@
 
 #include "../../utils/Math.h"
 #include "../../engine/Entity.h"
-#include "Map.h"
 #include "../../utils/Constants.h"
+#include "Map.h"
 
 namespace game {
-
     class Player: public engine::Entity {
     private:
         engine::math::Vec2<float> position;
