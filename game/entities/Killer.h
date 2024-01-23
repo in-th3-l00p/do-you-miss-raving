@@ -6,6 +6,7 @@
 #define RAYGAME_KILLER_H
 
 #include "AStar.h"
+#include "Player.h"
 
 namespace game {
 

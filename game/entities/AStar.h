@@ -9,8 +9,8 @@
 #include <vector>
 #include <queue>
 #include <unordered_set>
+#include <functional>
 #include "../../utils/Math.h"
-#include "Map.h"
 #include "Player.h"
 
 namespace game {
@@ -30,23 +30,16 @@ namespace game {
 
         std::priority_queue<Node, std::vector<Node>, std::greater<Node>> openSet;
         std::unordered_set<int> closedSet;
-
-        void addToOpenSet(int x, int y, float g, const engine::math::Vec2<int>& target, HeuristicFunction heuristic);
-        bool isValidTile(int x, int y);
-
+        void addToOpenSet(int x, int y, float g, const engine::math::Vec2<int> &target, HeuristicFunction heuristic, const Player& player);
     public:
         AStar() = default;
         ~AStar() = default;
-        Player player;
+        Player& player;
 
-        void
-        addToOpenSet(int x, int y, float g, const engine::math::Vec2<int> &target, HeuristicFunction heuristic,
-                     const Map &map);
 
-        bool isValidTile(int x, int y, const Map &map);
-
+        bool isValidTile(int x, int y,const Player& player);
         engine::math::Vec2<float>
-        findPath(const engine::math::Vec2<float> &start, const Map &map);
+        findPath(const engine::math::Vec2<float> &start, const Player& player);
     };
 
 } // game

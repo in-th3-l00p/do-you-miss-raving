@@ -3,24 +3,23 @@
 //
 
 #include "AStar.h"
-#include "Player.h"
 
 
 namespace game {
 
-    void AStar::addToOpenSet(int x, int y, float g, const engine::math::Vec2<int>& target, HeuristicFunction heuristic, const Map& map) {
+    void AStar::addToOpenSet(int x, int y, float g, const engine::math::Vec2<int>& target, HeuristicFunction heuristic, const Player& player) {
         if (closedSet.find(x * map.getWidth() + y) == closedSet.end()) {
-            float h = heuristic(x, y, target);  // Calculate heuristic
+            float h = heuristic(x, y, target);
             float f = g + h;
             openSet.push({x, y, f, g});
         }
     }
 
-    bool AStar::isValidTile(int x, int y, const Map& map) {
-        return x >= 0 && x < map.getWidth() && y >= 0 && y < map.getHeight() && map.getTiles()[y][x].empty;
+    bool AStar::isValidTile(int x, int y, const Player& player) {
+        return x >= 0 && x < player.PlayerGetWidth() && y >= 0 && y < player.PlayerGetHeight() && player..getTiles()[y][x].empty;
     }
 
-    engine::math::Vec2<float> AStar::findPath(const engine::math::Vec2<float>& start, const Map& map) {
+    engine::math::Vec2<float> AStar::findPath(const engine::math::Vec2<float>& start) {
         int tileSize = engine::constants::DEFAULT_TILESIZE;
 
         engine::math::Vec2<int> startTile = {
@@ -29,8 +28,8 @@ namespace game {
         };
 
         engine::math::Vec2<int> goalTile = {
-                static_cast<int>(player.getPosition().x / tileSize),
-                static_cast<int>(player.getPosition().y / tileSize)
+                static_cast<int>(300 / tileSize),
+                static_cast<int>(300 / tileSize)
         };
 
         auto heuristic = [tileSize](int x, int y, const engine::math::Vec2<int>& target) {

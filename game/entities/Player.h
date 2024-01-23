@@ -44,6 +44,14 @@ namespace game {
         float getStamina() const;
 
         void renderStaminaBar(sf::RenderWindow &window);
+
+        ull PlayerGetTileSize() const;
+
+        ull PlayerGetWidth() const;
+
+        ull PlayerGetHeight() const;
+
+        Tile &PlayergetTile(int i, int i1);
     };
 
 } // game

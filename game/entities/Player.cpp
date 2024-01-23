@@ -124,6 +124,26 @@ namespace game {
         return radius;
     }
 
+    const std::vector<std::vector<Tile>>&Map::getTiles() const {
+        return tiles;
+    }
+
+    ull Player::PlayerGetTileSize() const {
+        return map.getTileSize();
+    }
+
+    ull Player::PlayerGetWidth() const {
+        return map.getWidth();
+    }
+
+    ull Player::PlayerGetHeight() const {
+        return map.getHeight();
+    }
+
+    Tile & Player::PlayergetTile(int i, int i1) {
+        return map.getTile(i, i1);
+    }
+
     float Player::getSpeed() const {
         return speed;
     }
