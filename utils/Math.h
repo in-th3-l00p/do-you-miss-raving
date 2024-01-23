@@ -139,6 +139,22 @@ namespace engine::math {
     inline T linearInterpolation(T value, T min1, T max1, T min2, T max2) {
         return (value - min1) * (max2 - min2) / (max1 - min1) + min2;
     }
+
+    template <typename T>
+    T distance(const Vec2<T>& v1, const Vec2<T>& v2) {
+        return std::sqrt((v1.x - v2.x) * (v1.x - v2.x) + (v1.y - v2.y) * (v1.y - v2.y));
+    }
+
+    template <typename T>
+    Vec2<T> normalize(const Vec2<T>& v) {
+        T length = std::sqrt(v.x * v.x + v.y * v.y);
+        if (length != 0.0f) {
+            return Vec2<T>(v.x / length, v.y / length);
+        } else {
+            // Avoid division by zero if the length is zero
+            return Vec2<T>(0.0f, 0.0f);
+        }
+    }
 }
 
 #endif //RAYGAME_MATH_H

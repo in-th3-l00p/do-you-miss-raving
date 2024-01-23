@@ -37,6 +37,7 @@ namespace engine::constants {
     inline constexpr float DEFAULT_ENEMY_SPEED = 10;
     inline constexpr float DEFAULT_ENEMY_DIR_X = 1;
     inline constexpr float DEFAULT_ENEMY_DIR_Y = 0;
+    inline constexpr float detectionRange= 30;
 }
 
 #endif //RAYGAME_CONSTANTS_H

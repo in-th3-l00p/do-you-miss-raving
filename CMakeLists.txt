@@ -21,6 +21,10 @@ add_executable(raygame main.cpp
         game/graphics/UserInterface.cpp
         game/graphics/UserInterface.h
         utils/Paths.h
+        game/entities/AStar.cpp
+        game/entities/AStar.h
+        game/entities/Killer.cpp
+        game/entities/Killer.h
 )
 
 # luci

@@ -15,6 +15,8 @@
 #include "../../utils/Constants.h"
 #include "../../utils/Math.h"
 #include "../../utils/Paths.h"
+#include "AStar.h"
+#include "Killer.h"
 
 namespace game{
     class Map;
@@ -30,28 +32,14 @@ namespace game{
         void update(float deltaTime);
     };
 
-    struct Node {
-        int x, y;
-        float f, g;
-
-        bool operator>(const Node& other) const {
-            return f > other.f;
-        }
-    };
-    using HeuristicFunction = std::function<float(int, int, const engine::math::Vec2<int>&)>;
-
-    struct Killer : public game::Sprite {
-    private:
-        std::priority_queue<game::Node, std::vector<game::Node>, std::greater<game::Node>> openSet;
-        std::unordered_set<int> closedSet;
-
-        void addToOpenSet(int x, int y, float g, const engine::math::Vec2<int>& target, game::HeuristicFunction heuristic);
-        bool isValidTile(int x, int y);
-
-    public:
-        Killer(std::string path, engine::math::Vec2<float> position, engine::math::Vec2<float> size);
-        void update(float deltaTime);
-    };
+//    struct Killer : public game::Sprite {
+//    private:
+//        AStar astar;
+//        Map& map;
+//    public:
+//        Killer(std::string path, engine::math::Vec2<float> position, engine::math::Vec2<float> size, Map &map);
+//        void update(float deltaTime);
+//    };
 
     struct Decoration : public Sprite {
     public:
@@ -81,7 +69,6 @@ namespace game{
         const ull tileSize;
 
         std::vector<Sprite> sprites;
-        std::vector<Killer> killers;
         std::vector<Decoration> decorations;
         std::vector<std::shared_ptr<Sprite>> allSprites;
 
