@@ -4,7 +4,6 @@
 
 #include <SFML/Graphics.hpp>
 #include "Raycaster.h"
-#include "../../utils/Math.h"
 #include <iostream>
 
 namespace engine {
@@ -178,7 +177,7 @@ namespace engine {
             spriteInstance->setPosition(screenX, (float) windowHeight / 2 - scale / 2);
             spriteInstance->setOrigin(
                     (float) sprite.sprite.getTexture()->getSize().x / 2,
-                    0
+                    (float) sprite.sprite.getTexture()->getSize().y / 2
                     );
 
             float scaleX = (float) scale * (sprite.size.x / sprite.sprite.getTexture()->getSize().x) * ((float) windowWidth / (float) constants::DEFAULT_WIDTH);

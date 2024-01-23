@@ -64,12 +64,12 @@ namespace game {
         sprites.emplace_back(
                 (engine::paths::SPRITES_PATH / "bar chair.png").string(),
                 engine::math::Vec2<float>{ 360, 260 },
-                engine::math::Vec2<float>{ (float) tileSize / 2.f, (float) tileSize / 2 }
+                engine::math::Vec2<float>{ (float) tileSize / 2, (float) tileSize }
         );
 
         sprites.emplace_back(
                 (engine::paths::SPRITES_PATH / "disco1.png").string(),
-                engine::math::Vec2<float>{ 200, 100 },
+                engine::math::Vec2<float>{ 150, 150 },
                 engine::math::Vec2<float>{ (float) tileSize, (float) tileSize }
         );
 
