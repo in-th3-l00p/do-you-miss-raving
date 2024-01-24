@@ -20,7 +20,11 @@ namespace game {
         sprite.setTexture(*texture);
     }
 
-    Map::Map(ull width, ull height, ull tileSize): tileSize(tileSize) {
+    Map::Map(
+            const std::set<std::unique_ptr<Entity>>& container,
+            const std::map<std::string, Entity*>& labels,
+            ull width, ull height
+            ): Entity(container, labels) {
         setZIndex(100);
         tiles.resize(width);
         for (auto &row : tiles)
@@ -52,11 +56,21 @@ namespace game {
         return tiles[i][i1];
     }
 
-    TestMap::TestMap(ull width, ull height, ull tileSize) : Map(width, height, tileSize) {
+    TestMap::TestMap(
+            const std::set<std::unique_ptr<Entity>>& container,
+            const std::map<std::string, Entity*>& labels,
+            ull width, ull height
+            ) : Map(container, labels, width, height) {
         sprites.emplace_back(
                 (engine::paths::SPRITES_PATH / "bar chair.png").string(),
                 engine::math::Vec2<float>{ 360, 260 },
-                engine::math::Vec2<float>{ (float) tileSize / 2.f, (float) tileSize / 2 }
+                engine::math::Vec2<float>{ (float) tileSize / 2, (float) tileSize }
+        );
+
+        sprites.emplace_back(
+                (engine::paths::SPRITES_PATH / "disco1.png").string(),
+                engine::math::Vec2<float>{ 150, 150 },
+                engine::math::Vec2<float>{ (float) tileSize, (float) tileSize }
         );
 
         // Set the color of the tiles in the first and last row to red

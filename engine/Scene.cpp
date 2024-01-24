@@ -36,6 +36,12 @@ namespace engine {
         renderQueue.insert(std::next(renderQueue.begin(), lo), entityPtr);
     }
 
+    void Scene::addEntity(std::unique_ptr<Entity> entity, const std::string &label) {
+        Entity* ref = entity.get();
+        addEntity(std::move(entity));
+        labels[label] = ref;
+    }
+
     void Scene::update(float deltaTime) {
         for (auto& entity: container)
             entity->update(deltaTime);
@@ -48,15 +54,16 @@ namespace engine {
             sf::RenderWindow &window,
             std::unique_ptr<Scene>& sceneRef
             ) : Scene(window, sceneRef) {
-        std::unique_ptr<engine::Entity> map = std::make_unique<game::TestMap>(10, 10);
-        std::unique_ptr<engine::Entity> player = std::make_unique<game::Player>(dynamic_cast<game::Map&>(*map));
+        std::unique_ptr<engine::Entity> map = std::make_unique<game::TestMap>(container, labels, 10, 10);
+        addEntity(std::move(map), "map");
+
+        std::unique_ptr<engine::Entity> player = std::make_unique<game::Player>(container, labels);
+        addEntity(std::move(player), "player");
+
         auto raycaster = std::make_unique<Raycaster>(
-                dynamic_cast<game::Player&>(*player),
-                dynamic_cast<game::Map&>(*map)
-                );
-        addEntity(std::move(map));
-        addEntity(std::move(player));
-        addEntity(std::move(raycaster));
+                container, labels
+        );
+        addEntity(std::move(raycaster), "raycaster");
     }
 
     void TestScene::update(float deltaTime) {

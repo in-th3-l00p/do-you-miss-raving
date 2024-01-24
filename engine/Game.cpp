@@ -33,7 +33,6 @@ void Game::run() {
         sf::Time dt = deltaClock.restart();
         window.clear();
         scene->update(dt.asSeconds());
-        //player.renderStaminaBar(window);
         window.display(); // update
     }
 }

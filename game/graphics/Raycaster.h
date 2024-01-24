@@ -33,7 +33,10 @@ namespace engine {
                 );
 
     public:
-        Raycaster(game::Player& player, game::Map& map);
+        Raycaster(
+                const std::set<std::unique_ptr<Entity>>& container,
+                const std::map<std::string, Entity*>& labels
+                );
         ~Raycaster() override = default;
         void render(sf::RenderWindow& window) override;
         void update(float deltaTime) override {};

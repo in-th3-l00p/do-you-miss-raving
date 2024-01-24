@@ -45,12 +45,17 @@ namespace game {
     class Map: public engine::Entity {
     protected:
         std::vector<std::vector<Tile>> tiles;
-        const ull tileSize;
+        const ull tileSize = engine::constants::DEFAULT_TILESIZE;
 
         std::vector<Sprite> sprites;
 
     public:
-        Map(ull width, ull height, ull tileSize = engine::constants::DEFAULT_TILESIZE);
+        Map(
+                const std::set<std::unique_ptr<Entity>>& container,
+                const std::map<std::string, Entity*>& labels,
+                ull width,
+                ull height
+        );
         ~Map() override = default;
 
         [[nodiscard]] const std::vector<std::vector<Tile>> &getTiles() const;
@@ -66,7 +71,11 @@ namespace game {
 
     class TestMap: public Map {
     public:
-        TestMap(ull width, ull height, ull tileSize = engine::constants::DEFAULT_TILESIZE);
+        TestMap(
+                const std::set<std::unique_ptr<Entity>>& container,
+                const std::map<std::string, Entity*>& labels,
+                ull width, ull height
+            );
         void render(sf::RenderWindow& window) override;
         void update(float deltaTime) override;
     };

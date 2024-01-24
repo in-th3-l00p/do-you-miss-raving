@@ -53,6 +53,8 @@ namespace game::ui {
 
     public:
         Button(
+                const std::set<std::unique_ptr<Entity>>& container,
+                const std::map<std::string, Entity*>& labels,
                 float x, float y,
                 float width, float height,
                 const std::string& text,

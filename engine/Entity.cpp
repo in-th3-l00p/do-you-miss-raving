@@ -10,7 +10,10 @@ namespace engine {
         return id++;
     }
 
-    Entity::Entity(): id(generateId()) {
+    Entity::Entity(
+            const std::set<std::unique_ptr<Entity>>& container,
+            const std::map<std::string, Entity*>& labels
+        ) : id(generateId()), container(container), labels(labels) {
 
     }
 

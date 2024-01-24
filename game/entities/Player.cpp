@@ -8,13 +8,26 @@
 
 namespace game {
     Player::Player(
-            game::Map& map,
+            const std::set<std::unique_ptr<Entity>>& container,
+            const std::map<std::string, Entity*>& labels,
             engine::math::Vec2<float> position,
             engine::math::Vec2<float> direction,
             float radius,
             float speed,
             float rotateSpeed
-    ): position(position), direction(direction), radius(radius), speed(speed), rotateSpeed(rotateSpeed), stamina(80), maxStamina(100), staminaRegen(20), isRunning(false), map(map){
+    ):
+        Entity(container, labels),
+        position(position),
+        direction(direction),
+        radius(radius),
+        speed(speed),
+        rotateSpeed(rotateSpeed),
+        stamina(80),
+        maxStamina(100),
+        staminaRegen(20),
+        isRunning(false),
+        map(dynamic_cast<Map&>(*labels.at("map")))
+        {
         setZIndex(1000);
     }
 

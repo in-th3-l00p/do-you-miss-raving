@@ -4,19 +4,22 @@
 
 #include <SFML/Graphics.hpp>
 #include "Raycaster.h"
-#include "../../utils/Math.h"
 #include <iostream>
 
 namespace engine {
-    engine::Raycaster::Raycaster(game::Player &player, game::Map &map):
-            player(player), map(map) {
+    engine::Raycaster::Raycaster(
+            const std::set<std::unique_ptr<Entity>>& container,
+            const std::map<std::string, Entity*>& labels
+        ):
+            Entity(container, labels),
+            player(dynamic_cast<game::Player&>(*labels.at("player"))),
+            map(dynamic_cast<game::Map&>(*labels.at("map"))) {
         setZIndex(10);
     }
 
     void engine::Raycaster::render(sf::RenderWindow &window) {
         int windowWidth = static_cast<int>(window.getSize().x) + 1;
         int windowHeight = static_cast<int>(window.getSize().y);
-        std::cout << windowWidth << ' ' << windowHeight << '\n';
         sf::Image background;
         background.create(constants::DEFAULT_WIDTH / 3, constants::DEFAULT_HEIGHT / 3, sf::Color::Red);
         for (int y = 0; y < background.getSize().y; y++) {
@@ -174,7 +177,7 @@ namespace engine {
             spriteInstance->setPosition(screenX, (float) windowHeight / 2 - scale / 2);
             spriteInstance->setOrigin(
                     (float) sprite.sprite.getTexture()->getSize().x / 2,
-                    0
+                    (float) sprite.sprite.getTexture()->getSize().y / 2
                     );
 
             float scaleX = (float) scale * (sprite.size.x / sprite.sprite.getTexture()->getSize().x) * ((float) windowWidth / (float) constants::DEFAULT_WIDTH);
