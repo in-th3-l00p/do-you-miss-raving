@@ -4,7 +4,7 @@ import {Texture} from "@/lib/types";
 import {getTexture, getTile} from "@/lib/utils";
 import {API} from "@/lib/constants";
 
-import {Panel} from "@/components/Panel";
+import {Panel} from "@/app/admin/maps/[id]/Panel";
 
 interface TextureFieldProps {
     texture?: Texture;

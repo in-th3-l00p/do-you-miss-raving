@@ -1,9 +1,8 @@
-import "../style.scss";
 import { Map } from "@/lib/types";
 import React from "react";
 import Link from "next/link";
 import {API} from "@/lib/constants";
-import Title from "@/components/Title";
+import Title from "@/app/admin/maps/[id]/Title";
 import * as Icon from "react-feather";
 
 export default async function Maps() {

@@ -26,7 +26,7 @@ export default function RootLayout({
   return (
     <html lang="en" className={"min-h-screen"}>
       <body className={inter.className + " min-h-screen flex flex-col"}>
-          <header className={"flex items-center bg-federal-blue justify-between py-8 px-8 sm:px-16 md:px-32 lg:px-64"}>
+          <header className={"flex flex-wrap gap-8 items-center bg-federal-blue justify-between py-8 px-8 sm:px-16 md:px-32 lg:px-64"}>
               <Link href={"/"}>
                   <span className={"text-center text-xl"}>
                       <h2>Do you miss raving?</h2>

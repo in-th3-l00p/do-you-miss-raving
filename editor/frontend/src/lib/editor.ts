@@ -3,7 +3,7 @@ import {getTexture} from "@/lib/utils";
 import {API} from "@/lib/constants";
 import React from "react";
 import {Point} from "@/lib/contexts/editor";
-import {VisualizeMode} from "@/components/Canvas";
+import {VisualizeMode} from "@/app/admin/maps/[id]/Canvas";
 
 export function renderMap(
     ctx: CanvasRenderingContext2D,

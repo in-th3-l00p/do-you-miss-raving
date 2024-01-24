@@ -4,7 +4,7 @@ import selectMode, {drawMode, renderMap, setupMapCanvas} from "@/lib/editor";
 import {API} from "@/lib/constants";
 import {getTile} from "@/lib/utils";
 import FormGroup from "@/components/form/FormGroup";
-import {Panel} from "@/components/Panel";
+import {Panel} from "@/app/admin/maps/[id]/Panel";
 
 export enum VisualizeMode {
     Floor,

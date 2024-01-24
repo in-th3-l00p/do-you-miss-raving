@@ -1,15 +1,15 @@
 "use client";
 
-import "../../style.scss";
 import {Map, Texture} from "@/lib/types";
 import React, {useEffect, useState} from "react";
 import {API} from "@/lib/constants";
 import EditorContext, {EditorMode, Point} from "@/lib/contexts/editor";
-import {Canvas} from "@/components/Canvas";
-import Textures from "@/components/Textures";
-import Title from "@/components/Title";
-import {Properties} from "@/components/Properties";
+import {Canvas} from "@/app/admin/maps/[id]/Canvas";
+import Textures from "@/app/admin/maps/[id]/Textures";
+import Title from "@/app/admin/maps/[id]/Title";
+import {Properties} from "@/app/admin/maps/[id]/Properties";
 import {getTexture} from "@/lib/utils";
+import Loading from "@/components/Loading";
 
 export default function MapEditor({ params }: { params: { id: string } }) {
     const [map, setMap] = useState<Map | null>(null);
@@ -39,7 +39,7 @@ export default function MapEditor({ params }: { params: { id: string } }) {
     }, [map]);
 
     if (!map || Object.keys(images).length !== map.textures?.length)
-        return <p>loading...</p>;
+        return <Loading />;
     return (
         <section className={"background flex-grow flex flex-col"}>
             <Title text={"Map: " + map.name} />

@@ -4,7 +4,7 @@ import {API} from "@/lib/constants";
 import * as Icon from "react-feather";
 import FormGroup from "@/components/form/FormGroup";
 import FormInput from "@/components/form/FormInput";
-import {Panel} from "@/components/Panel";
+import {Panel} from "@/app/admin/maps/[id]/Panel";
 
 interface ModalProps {
     title: string;
