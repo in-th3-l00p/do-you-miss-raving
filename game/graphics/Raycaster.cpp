@@ -16,7 +16,6 @@ namespace engine {
     void engine::Raycaster::render(sf::RenderWindow &window) {
         int windowWidth = static_cast<int>(window.getSize().x) + 1;
         int windowHeight = static_cast<int>(window.getSize().y);
-        std::cout << windowWidth << ' ' << windowHeight << '\n';
         sf::Image background;
         background.create(constants::DEFAULT_WIDTH / 3, constants::DEFAULT_HEIGHT / 3, sf::Color::Red);
         for (int y = 0; y < background.getSize().y; y++) {
