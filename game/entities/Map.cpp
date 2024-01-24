@@ -6,7 +6,7 @@
 #include "Map.h"
 #include "../../utils/Paths.h"
 
-namespace game {
+namespace engine {
     Sprite::Sprite(
             std::string path,
             engine::math::Vec2<float> position,
@@ -122,4 +122,4 @@ namespace game {
     void TestMap::update(float deltaTime) {
 
     }
-} // game
+} // engine

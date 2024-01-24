@@ -12,7 +12,7 @@
 #include "../../utils/Constants.h"
 #include "../../utils/Paths.h"
 
-namespace game::ui {
+namespace engine::ui {
     // singleton class that loads fonts automatically and stores them once they are loaded
     class FontLoader {
     private:

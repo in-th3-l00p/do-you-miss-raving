@@ -17,8 +17,8 @@ namespace engine {
 
     class Raycaster: public engine::Entity {
     private:
-        game::Player& player;
-        game::Map& map;
+        engine::Player& player;
+        engine::Map& map;
 
         // dda for two different sides
         Intersection getHorizontalDistance(

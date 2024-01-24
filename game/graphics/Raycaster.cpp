@@ -12,8 +12,8 @@ namespace engine {
             const std::map<std::string, Entity*>& labels
         ):
             Entity(container, labels),
-            player(dynamic_cast<game::Player&>(*labels.at("player"))),
-            map(dynamic_cast<game::Map&>(*labels.at("map"))) {
+            player(dynamic_cast<engine::Player&>(*labels.at("player"))),
+            map(dynamic_cast<engine::Map&>(*labels.at("map"))) {
         setZIndex(10);
     }
 

@@ -6,7 +6,7 @@
 #include <SFML/Graphics.hpp>
 #include <iostream>
 
-namespace game {
+namespace engine {
     Player::Player(
             const std::set<std::unique_ptr<Entity>>& container,
             const std::map<std::string, Entity*>& labels,
@@ -152,4 +152,4 @@ namespace game {
     float Player::getStamina() const {
         return stamina;
     }
-} // game
+} // engine

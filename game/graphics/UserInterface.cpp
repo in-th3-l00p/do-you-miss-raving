@@ -7,7 +7,7 @@
 #include "UserInterface.h"
 #include "../../engine/Scene.h"
 
-namespace game::ui {
+namespace engine::ui {
     // font loader implementation
     sf::Font &FontLoader::getFont(const std::string &fontName) {
         if (fontsContainer.find(fontName) == fontsContainer.end()) {

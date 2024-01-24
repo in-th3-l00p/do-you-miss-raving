@@ -10,7 +10,7 @@
 #include "Map.h"
 #include "../../utils/Constants.h"
 
-namespace game {
+namespace engine {
 
     class Player: public engine::Entity {
     private:
@@ -22,7 +22,7 @@ namespace game {
         const float maxStamina;
         const float staminaRegen;
         bool isRunning;
-        game::Map& map;
+        engine::Map& map;
     public:
         explicit Player(
                 const std::set<std::unique_ptr<Entity>>& container,
@@ -48,6 +48,6 @@ namespace game {
         void renderStaminaBar(sf::RenderWindow &window);
     };
 
-} // game
+} // engine
 
 #endif //RAYGAME_PLAYER_H

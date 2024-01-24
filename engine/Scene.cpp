@@ -54,10 +54,10 @@ namespace engine {
             sf::RenderWindow &window,
             std::unique_ptr<Scene>& sceneRef
             ) : Scene(window, sceneRef) {
-        std::unique_ptr<engine::Entity> map = std::make_unique<game::TestMap>(container, labels, 10, 10);
+        std::unique_ptr<engine::Entity> map = std::make_unique<engine::TestMap>(container, labels, 10, 10);
         addEntity(std::move(map), "map");
 
-        std::unique_ptr<engine::Entity> player = std::make_unique<game::Player>(container, labels);
+        std::unique_ptr<engine::Entity> player = std::make_unique<engine::Player>(container, labels);
         addEntity(std::move(player), "player");
 
         auto raycaster = std::make_unique<Raycaster>(

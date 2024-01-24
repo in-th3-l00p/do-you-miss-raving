@@ -13,7 +13,7 @@
 #include "../../utils/Math.h"
 #include "../../utils/Paths.h"
 
-namespace game {
+namespace engine {
     // to do: fix memory leak
     struct Sprite {
         Sprite(std::string path, engine::math::Vec2<float> position, engine::math::Vec2<float> size);
@@ -79,6 +79,6 @@ namespace game {
         void render(sf::RenderWindow& window) override;
         void update(float deltaTime) override;
     };
-} // game
+} // engine
 
 #endif //RAYGAME_MAP_H

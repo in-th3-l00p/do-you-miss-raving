@@ -6,7 +6,7 @@ export default function Home() {
       <section className={style.hero}>
           <div className={"p-8 text-center md:text-left"}>
               <h1 className={"text-3xl font-bold mb-4"}>Do you miss raving?</h1>
-              <p>game made from scratch in C++, using SFML as a graphics library</p>
+              <p>engine made from scratch in C++, using SFML as a graphics library</p>
           </div>
           <div
               className={"relative flex justify-center md:items-center"}
@@ -16,7 +16,7 @@ export default function Home() {
                   src="/screenshot.png"
                   width={500}
                   height={500}
-                  alt="screen shot of the game"
+                  alt="screen shot of the engine"
                   className={"rounded-lg shadow w-64 h-40 md:w-96 md:h-60"}
               />
               <Image
