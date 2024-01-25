@@ -48,9 +48,12 @@ namespace engine {
 
         math::Vec2<float> target;
 
-        std::deque<math::Vec2<float>> path;
+        std::vector<math::Vec2<float>> path;
+        int pathIndex = -1;
         bool calculatingPath = false;
-        std::future<void> pathFuture;
+        std::thread aiThread;
+
+        void aiCallback();
 
     public:
         Enemy(

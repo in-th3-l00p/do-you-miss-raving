@@ -22,7 +22,7 @@ namespace engine::constants {
     inline constexpr float HORIZONTAL_DARKER_MUTLIPLIER = 0.7;
     inline constexpr float RENDER_DISTANCE = 700;
     inline constexpr int DEFAULT_TILESIZE = 64;
-    inline constexpr float ENEMY_SPEED = 40;
+    inline constexpr float ENEMY_SPEED = 240;
 
     // testing
     inline constexpr float DEFAULT_PLAYER_X = 100;

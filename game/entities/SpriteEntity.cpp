@@ -8,6 +8,8 @@
 #include <iostream>
 #include <queue>
 
+std::mutex mutex;
+
 namespace engine {
     SpriteEntity::SpriteEntity(
             std::set<std::unique_ptr<Entity>> &container,
@@ -29,21 +31,21 @@ namespace engine {
             ):
         SpriteEntity(container, labels, std::move(path), position, size),
         player(player), map(map) {
+        aiThread = std::thread(&Enemy::aiCallback, this);
     }
 
     void Enemy::update(float deltaTime) {
-        if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::Space) && !calculatingPath)
-            pathFuture = std::async(std::launch::async, &Enemy::setTarget, this, player.getPosition());
-
         if (calculatingPath)
             return;
         float speedLeft = speed * deltaTime;
-        std::cout << speedLeft << '\n';
-        while (speedLeft > 0 && !path.empty()) {
-            math::Vec2<float> next = path.front();
-            if (next.getDistance(position) <= speedLeft) {
-                position = next;
-                path.pop_front();
+        while (speedLeft > 0 && pathIndex >= 0 && pathIndex < path.size()) {
+            math::Vec2<float> next = path[pathIndex];
+            if ( // fvk sqrt
+                    ((next.x - position.x) * (next.x - position.x) +
+                    (next.y - position.y) * (next.y - position.y))
+                    <= speedLeft * speedLeft
+            ) {
+                pathIndex--;
                 speedLeft -= next.getDistance(position);
             } else {
                 math::Vec2<float> direction = next - position;
@@ -58,9 +60,7 @@ namespace engine {
     }
 
     void Enemy::setTarget(math::Vec2<float> target) {
-        calculatingPath = true;
         this->target = target;
-        path.clear();
 
         std::queue<math::Vec2<float>> queue;
         std::set<math::Vec2<float>> visited;
@@ -76,10 +76,9 @@ namespace engine {
 
             if (current.getDistance(target) < player.getRadius()) {
                 while (current != position) {
-                    path.push_front(current);
+                    path.push_back(current);
                     current = parent[current];
                 }
-
                 break;
             }
 
@@ -119,8 +118,24 @@ namespace engine {
                 }
             }
         }
+    }
 
-        calculatingPath = false;
+    void Enemy::aiCallback() {
+        while (true) {
+            if (!calculatingPath && pathIndex < 0) {
+                mutex.lock();
+                calculatingPath = true;
+                mutex.unlock();
+
+                path.clear();
+                setTarget(player.getPosition());
+
+                mutex.lock();
+                pathIndex = path.size() - 1;
+                calculatingPath = false;
+                mutex.unlock();
+            }
+        }
     }
 
     StaticSprite::StaticSprite(
