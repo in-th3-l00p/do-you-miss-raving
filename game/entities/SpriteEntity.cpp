@@ -7,7 +7,6 @@
 #include <utility>
 #include <iostream>
 #include <queue>
-#include <future> // puffin on zooties
 
 namespace engine {
     SpriteEntity::SpriteEntity(
@@ -34,38 +33,12 @@ namespace engine {
 
     void Enemy::update(float deltaTime) {
         if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::Space) && !calculatingPath)
-            std::async(std::launch::async, &Enemy::setTarget, this, player.getPosition());
+            pathFuture = std::async(std::launch::async, &Enemy::setTarget, this, player.getPosition());
 
         if (calculatingPath)
             return;
-        if (sf::Keyboard::isKeyPressed(sf::Keyboard::M)) {
-            for (auto& coord: path) {
-                sf::RectangleShape point;
-                point.setPosition(coord.x, coord.y);
-                point.setSize(sf::Vector2f(1, 1));
-                point.setFillColor(sf::Color::Blue);
-                window->draw(point);
-
-                sf::RectangleShape point1;
-                point1.setPosition(coord.x + size.x, coord.y);
-                point1.setSize(sf::Vector2f(1, 1));
-                point1.setFillColor(sf::Color::Blue);
-                window->draw(point1);
-
-                sf::RectangleShape point2;
-                point2.setPosition(coord.x, coord.y + size.y);
-                point2.setSize(sf::Vector2f(1, 1));
-                point2.setFillColor(sf::Color::Blue);
-                window->draw(point2);
-
-                sf::RectangleShape point3;
-                point3.setPosition(coord.x + size.x, coord.y + size.y);
-                point3.setSize(sf::Vector2f(1, 1));
-                point3.setFillColor(sf::Color::Blue);
-                window->draw(point3);
-            }
-        }
-        float speedLeft = speed;
+        float speedLeft = speed * deltaTime;
+        std::cout << speedLeft << '\n';
         while (speedLeft > 0 && !path.empty()) {
             math::Vec2<float> next = path.front();
             if (next.getDistance(position) <= speedLeft) {
@@ -82,7 +55,6 @@ namespace engine {
     }
 
     void Enemy::render(sf::RenderWindow &window) {
-        this->window = &window;
     }
 
     void Enemy::setTarget(math::Vec2<float> target) {

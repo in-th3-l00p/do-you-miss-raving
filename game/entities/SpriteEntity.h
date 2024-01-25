@@ -8,6 +8,7 @@
 #include <set>
 #include <map>
 #include <deque>
+#include <future> // puffin on zooties
 #include "Player.h"
 #include "Map.h"
 
@@ -43,14 +44,13 @@ namespace engine {
     private:
         Player& player;
         Map& map;
-        float speed = 0.5;
+        float speed = constants::ENEMY_SPEED;
 
         math::Vec2<float> target;
 
         std::deque<math::Vec2<float>> path;
         bool calculatingPath = false;
-
-        sf::RenderWindow* window;
+        std::future<void> pathFuture;
 
     public:
         Enemy(

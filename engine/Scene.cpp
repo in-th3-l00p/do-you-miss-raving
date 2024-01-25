@@ -44,10 +44,10 @@ namespace engine {
     }
 
     void Scene::update(float deltaTime) {
-        for (auto& entity: renderQueue)
-            entity->render(window);
         for (auto& entity: container)
             entity->update(deltaTime);
+        for (auto& entity: renderQueue)
+            entity->render(window);
     }
 
     TestScene::TestScene(
