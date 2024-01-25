@@ -67,7 +67,7 @@ namespace engine {
 
         auto enemy = std::make_unique<engine::Enemy>(
                 container, labels,
-                (paths::IMAGES_PATH / "iosub.png").string(),
+                (paths::IMAGES_PATH / "iosub gimnastica.png").string(),
                 math::Vec2<float>(200, 200),
                 math::Vec2<float>(constants::DEFAULT_TILESIZE, constants::DEFAULT_TILESIZE),
                 dynamic_cast<engine::Player&>(*labels.at("player")),

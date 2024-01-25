@@ -2,6 +2,7 @@
 // Created by intheloop on 10.01.2024.
 //
 
+#include <memory>
 #include "Entity.h"
 
 namespace engine {
