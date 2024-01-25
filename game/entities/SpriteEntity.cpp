@@ -46,17 +46,11 @@ namespace engine {
                 point.setFillColor(sf::Color::Blue);
                 window->draw(point);
 
-                if (!map.getTile((int) (coord.x / map.getTileSize()), (int) (coord.y / map.getTileSize())).empty)
-                    std::cout << "PULA\n";
-
                 sf::RectangleShape point1;
                 point1.setPosition(coord.x + size.x, coord.y);
                 point1.setSize(sf::Vector2f(1, 1));
                 point1.setFillColor(sf::Color::Blue);
                 window->draw(point1);
-
-                if (!map.getTile((int) ((coord.x + size.x) / map.getTileSize()), (int) (coord.y / map.getTileSize())).empty)
-                    std::cout << "PULA\n";
 
                 sf::RectangleShape point2;
                 point2.setPosition(coord.x, coord.y + size.y);
@@ -64,17 +58,11 @@ namespace engine {
                 point2.setFillColor(sf::Color::Blue);
                 window->draw(point2);
 
-                if (!map.getTile((int) (coord.x / map.getTileSize()), (int) ((coord.y + size.y) / map.getTileSize())).empty)
-                    std::cout << "PULA\n";
-
                 sf::RectangleShape point3;
                 point3.setPosition(coord.x + size.x, coord.y + size.y);
                 point3.setSize(sf::Vector2f(1, 1));
                 point3.setFillColor(sf::Color::Blue);
                 window->draw(point3);
-
-                if (!map.getTile((int) ((coord.x + size.x) / map.getTileSize()), (int) ((coord.y + size.y) / map.getTileSize())).empty)
-                    std::cout << "PULA\n";
             }
         }
         float speedLeft = speed;
@@ -133,16 +121,6 @@ namespace engine {
                             next + size
                     };
 
-                    for (int i = 0; i < 4; i++) {
-                        std::cout << "point " << i << ": " <<
-                                  points[i].x << " " << points[i].y << " "
-                                  << (int) (points[i].x / (float) map.getTileSize()) << ' '
-                                  << (int) (points[i].y / (float) map.getTileSize()) << ' '
-                                  << map.getTile(
-                                        (int) (points[i].x / (float) map.getTileSize()),
-                                        (int) (points[i].y / (float) map.getTileSize())
-                                    ).empty << std::endl;
-                    }
                     if (
                             visited.find(next) == visited.end() &&
                             map.getTile(
@@ -165,9 +143,6 @@ namespace engine {
                         queue.push(next);
                         visited.insert(next);
                         parent[next] = current;
-                        std::cout << "added\n\n";
-                    } else {
-                        std::cout << "not added\n\n";
                     }
                 }
             }
