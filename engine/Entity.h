@@ -6,6 +6,7 @@
 #define RAYGAME_ENTITY_H
 
 #include <set>
+#include <memory>
 #include <map>
 #include <SFML/Graphics/RenderWindow.hpp>
 #include "../utils/Constants.h"
