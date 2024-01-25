@@ -35,7 +35,7 @@ namespace engine {
         return tiles;
     }
 
-    const std::vector<Sprite> &Map::getSprites() const {
+    const std::vector<Sprite*> &Map::getSprites() const {
         return sprites;
     }
 
@@ -56,22 +56,15 @@ namespace engine {
         return tiles[i][i1];
     }
 
+    void Map::addSprite(Sprite* sprite) {
+        sprites.push_back(sprite);
+    }
+
     TestMap::TestMap(
             const std::set<std::unique_ptr<Entity>>& container,
             const std::map<std::string, Entity*>& labels,
             ull width, ull height
             ) : Map(container, labels, width, height) {
-        sprites.emplace_back(
-                (engine::paths::SPRITES_PATH / "bar chair.png").string(),
-                engine::math::Vec2<float>{ 360, 260 },
-                engine::math::Vec2<float>{ (float) tileSize / 2, (float) tileSize }
-        );
-
-        sprites.emplace_back(
-                (engine::paths::SPRITES_PATH / "disco1.png").string(),
-                engine::math::Vec2<float>{ 150, 150 },
-                engine::math::Vec2<float>{ (float) tileSize, (float) tileSize }
-        );
 
         // Set the color of the tiles in the first and last row to red
         for (ull i = 0; i < width; ++i) {
@@ -110,12 +103,25 @@ namespace engine {
             }
         }
 
-        for (auto &sprite : sprites) {
-            sprite.sprite.setPosition(sprite.position.x, sprite.position.y);
-            sprite.sprite.setScale(sprite.size.x / sprite.texture->getSize().x,
-                                   sprite.size.y / sprite.texture->getSize().y);
-            if (sf::Keyboard::isKeyPressed(sf::Keyboard::M))
-                window.draw(sprite.sprite);
+        if (sf::Keyboard::isKeyPressed(sf::Keyboard::M)) {
+            for (auto &sprite: sprites) {
+                sf::RectangleShape background;
+                background.setPosition(sprite->position.x, sprite->position.y);
+                background.setSize(sf::Vector2f(sprite->size.x, sprite->size.y));
+                background.setFillColor(sf::Color::Magenta);
+                window.draw(background);
+
+                sprite->sprite.setPosition(sprite->position.x, sprite->position.y);
+                sprite->sprite.setScale(sprite->size.x / sprite->texture->getSize().x,
+                                        sprite->size.y / sprite->texture->getSize().y);
+                window.draw(sprite->sprite);
+
+                sf::RectangleShape point;
+                point.setPosition(sprite->position.x, sprite->position.y);
+                point.setSize(sf::Vector2f(1, 1));
+                point.setFillColor(sf::Color::Green);
+                window.draw(point);
+            }
         }
     }
 

@@ -74,7 +74,19 @@ namespace engine::math {
         }
 
         bool operator!=(const Vec2& rhs) const {
-            return *this != rhs;
+            return x != rhs.x || y != rhs.y;
+        }
+
+        bool operator<(const Vec2& rhs) const {
+            if (x == rhs.x)
+                return y < rhs.y;
+            return x < rhs.x;
+        }
+
+        bool operator>(const Vec2& rhs) const {
+            if (x == rhs.x)
+                return y > rhs.y;
+            return x > rhs.x;
         }
 
         [[nodiscard]] float getAngle() const {

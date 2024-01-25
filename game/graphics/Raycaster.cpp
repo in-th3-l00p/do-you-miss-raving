@@ -157,13 +157,13 @@ namespace engine {
 
         // putting the sprites in the z buffer
         for (auto sprite: map.getSprites()) {
-            double spriteDistance = player.getPosition().getDistance(sprite.position);
+            double spriteDistance = player.getPosition().getDistance(sprite->position);
             if (spriteDistance > constants::RENDER_DISTANCE)
                 continue;
 
-            auto* spriteInstance = new sf::Sprite(sprite.sprite);
-            float spriteX = sprite.position.x - player.getPosition().x + sprite.size.x / 2;
-            float spriteY = sprite.position.y - player.getPosition().y + sprite.size.y / 2;
+            auto* spriteInstance = new sf::Sprite(sprite->sprite);
+            float spriteX = sprite->position.x - player.getPosition().x + sprite->size.x / 2;
+            float spriteY = sprite->position.y - player.getPosition().y + sprite->size.y / 2;
 
             float invDet = 1.0f / (player.getCameraPlane().x * player.getDirection().y - player.getDirection().x * player.getCameraPlane().y);
             float transformX = invDet * (player.getDirection().y * spriteX - player.getDirection().x * spriteY);
@@ -176,12 +176,12 @@ namespace engine {
 
             spriteInstance->setPosition(screenX, (float) windowHeight / 2 - scale / 2);
             spriteInstance->setOrigin(
-                    (float) sprite.sprite.getTexture()->getSize().x / 2,
-                    (float) sprite.sprite.getTexture()->getSize().y / 2
-                    );
+                    (float) sprite->sprite.getTexture()->getSize().x / 2,
+                    (float) sprite->sprite.getTexture()->getSize().y / 2
+            );
 
-            float scaleX = (float) scale * (sprite.size.x / sprite.sprite.getTexture()->getSize().x) * ((float) windowWidth / (float) constants::DEFAULT_WIDTH);
-            float scaleY = (float) scale * (sprite.size.y / sprite.sprite.getTexture()->getSize().y) * ((float) windowHeight / (float) constants::DEFAULT_HEIGHT);
+            float scaleX = (float) scale * (sprite->size.x / sprite->sprite.getTexture()->getSize().x) * ((float) windowWidth / (float) constants::DEFAULT_WIDTH);
+            float scaleY = (float) scale * (sprite->size.y / sprite->sprite.getTexture()->getSize().y) * ((float) windowHeight / (float) constants::DEFAULT_HEIGHT);
             spriteInstance->setScale(scaleX, scaleY);
             zBuffer.emplace_back(spriteInstance, spriteDistance);
         }

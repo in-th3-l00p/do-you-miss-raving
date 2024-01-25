@@ -21,6 +21,8 @@ add_executable(raygame main.cpp
         game/graphics/UserInterface.cpp
         game/graphics/UserInterface.h
         utils/Paths.h
+        game/entities/SpriteEntity.cpp
+        game/entities/SpriteEntity.h
 )
 
 # luci

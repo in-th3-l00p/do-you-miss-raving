@@ -47,7 +47,7 @@ namespace engine {
         std::vector<std::vector<Tile>> tiles;
         const ull tileSize = engine::constants::DEFAULT_TILESIZE;
 
-        std::vector<Sprite> sprites;
+        std::vector<Sprite*> sprites;
 
     public:
         Map(
@@ -60,7 +60,8 @@ namespace engine {
 
         [[nodiscard]] const std::vector<std::vector<Tile>> &getTiles() const;
 
-        const std::vector<Sprite> &getSprites() const;
+        [[nodiscard]] const std::vector<Sprite*>& getSprites() const;
+        void addSprite(Sprite* sprite);
 
         [[nodiscard]] ull getTileSize() const;
         [[nodiscard]] ull getWidth() const;
