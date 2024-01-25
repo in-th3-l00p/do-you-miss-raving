@@ -52,8 +52,10 @@ namespace game {
         return tiles.size();
     }
 
-    Tile & Map::getTile(int i, int i1) {
-        return tiles[i][i1];
+    Tile & Map::getTile(int x, int y) {
+        if (x < 0 || x >= getWidth() || y < 0 || y >= getHeight())
+            throw std::runtime_error("out of bounds");
+        return tiles[y][x];
     }
 
     TestMap::TestMap(

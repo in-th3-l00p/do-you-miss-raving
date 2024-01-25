@@ -21,9 +21,9 @@ namespace engine::constants {
     // ingame constants
     inline constexpr float HORIZONTAL_DARKER_MUTLIPLIER = 0.7;
     inline constexpr float RENDER_DISTANCE = 700;
+    inline constexpr int DEFAULT_TILESIZE = 64;
 
     // testing
-    inline constexpr int DEFAULT_TILESIZE = 64;
     inline constexpr float DEFAULT_PLAYER_X = 100;
     inline constexpr float DEFAULT_PLAYER_Y = 100;
     inline constexpr float DEFAULT_PLAYER_DIR_X = 1;
