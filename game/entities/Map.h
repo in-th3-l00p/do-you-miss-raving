@@ -67,7 +67,7 @@ namespace engine {
         [[nodiscard]] ull getWidth() const;
         [[nodiscard]] ull getHeight() const;
 
-        Tile & getTile(int i, int i1);
+        Tile & getTile(int x, int y);
     };
 
     class TestMap: public Map {
