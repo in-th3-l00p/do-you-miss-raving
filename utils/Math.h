@@ -11,6 +11,24 @@
 #define RAD_TO_DEG(angle) (angle * 180.0f / M_PI)
 
 namespace engine::math {
+    // quake 3 fast inverse square root legendary algorithm
+    inline float q_rsqrt(float number)
+    {
+        long i;
+        float x2, y;
+        const float threehalfs = 1.5F;
+
+        x2 = number * 0.5F;
+        y  = number;
+        i  = * ( long * ) &y;                       // evil floating point bit level hacking
+        i  = 0x5f3759df - ( i >> 1 );               // what the fuck?
+        y  = * ( float * ) &i;
+        y  = y * ( threehalfs - ( x2 * y * y ) );   // 1st iteration
+        // y  = y * ( threehalfs - ( x2 * y * y ) );   // 2nd iteration, this can be removed
+
+        return y;
+    }
+
     template <typename T>
     struct Mat2;
 
@@ -22,12 +40,12 @@ namespace engine::math {
         Vec2(T x = 0, T y = 0) : x(x), y(y) {}
 
         [[nodiscard]] Vec2<float> normalize() const {
-            float length = std::sqrt(x * x + y * y);
-            if (length != 0) {
-                return Vec2<float>(x / length, y / length);
+            float invLength = q_rsqrt(x * x + y * y);
+            if (invLength != 0) {
+                return Vec2<float>(x * invLength, y * invLength);
             } else {
                 // Handle division by zero if the vector is already of zero length
-                return Vec2<float>(0, 0);
+                return {0, 0};
             }
         }
 
