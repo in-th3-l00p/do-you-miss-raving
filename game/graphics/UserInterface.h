@@ -72,7 +72,12 @@ namespace engine::ui {
 
     class MenuScene: public engine::Scene {
     private:
-        Button* startButton;
+        float menuWidth = 500.f;
+        float menuHeight = 300.f;
+        float margin = 10.f;
+
+        sf::Texture logo;
+
     public:
         explicit MenuScene(
                 sf::RenderWindow &window,

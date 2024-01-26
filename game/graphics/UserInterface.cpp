@@ -4,6 +4,8 @@
 
 #include <filesystem>
 #include <iostream>
+#include "imgui.h"
+#include "imgui-SFML.h"
 #include "UserInterface.h"
 #include "../../engine/Scene.h"
 
@@ -95,26 +97,47 @@ namespace engine::ui {
             sf::RenderWindow &window,
             std::unique_ptr<Scene> &sceneRef
     ) : Scene(window, sceneRef) {
-        std::unique_ptr<engine::Entity> button = std::make_unique<Button>(
-                container, labels,
-                100, 100, 100, 50,
-                "Start",
-                FontLoader::getInstance()->getDefault(),
-                24,
-                sf::Color::Blue,
-                sf::Color::White
-                );
-        startButton = dynamic_cast<Button*>(button.get());
-        addEntity(std::move(button));
+        logo.loadFromFile((paths::IMAGES_PATH / "logo.png").string());
     }
 
     void MenuScene::update(float deltaTime) {
         Scene::update(deltaTime);
 
-        const sf::Vector2f mousePos = sf::Vector2f(sf::Mouse::getPosition(window));
-        if (startButton->isPressed(mousePos)) {
-            sceneRef = std::make_unique<engine::TestScene>(window, sceneRef);
-        }
+        ImGui::Begin("menu", nullptr,
+                    ImGuiWindowFlags_NoTitleBar |
+                    ImGuiWindowFlags_NoResize |
+                    ImGuiWindowFlags_NoMove |
+                    ImGuiWindowFlags_NoCollapse |
+                    ImGuiWindowFlags_NoSavedSettings |
+                    ImGuiWindowFlags_NoBringToFrontOnFocus |
+                    ImGuiWindowFlags_NoNavFocus |
+                    ImGuiWindowFlags_NoBackground
+                     );
+        ImGui::SetWindowPos("menu", ImVec2(
+                (float) window.getSize().x / 2 - menuWidth / 2,
+                (float) window.getSize().y / 2 - menuHeight / 2
+            ));
+        ImGui::SetWindowSize("menu", ImVec2(menuWidth, menuHeight));
+
+        sf::Sprite sprite;
+        sprite.setTexture(logo);
+        sprite.setOrigin(
+                (float) logo.getSize().x / 2.f,
+                (float) logo.getSize().y / 2.f
+                );
+        ImGui::SetCursorPosX(ImGui::GetCursorPosX() + menuWidth / 4);
+        ImGui::Image(sprite, {200.f, 200.f});
+
+        ImGui::SetCursorPosY(ImGui::GetCursorPosY() + margin);
+        ImGui::Spacing();
+
+        ImGui::SetCursorPosY(ImGui::GetCursorPosY() + margin);
+        ImGui::SetCursorPosX(ImGui::GetCursorPosX() + menuWidth / 4);
+        ImGui::Button("Start test scene", {200.f, 50.f});
+        if (ImGui::IsItemClicked())
+            sceneRef = std::make_unique<TestScene>(window, sceneRef);
+
+        ImGui::End();
     }
 
 }

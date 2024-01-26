@@ -59,6 +59,13 @@ namespace engine {
 
     void Player::update(float delta) {
         float currentSpeed = speed;
+        if (sf::Keyboard::isKeyPressed(sf::Keyboard::LShift) && stamina > 0) {
+            currentSpeed *= 1.5;
+            stamina--;
+            isRunning = true;
+        } else {
+            isRunning = false;
+        }
 
         engine::math::Vec2<float> newPosition = position;
         if (sf::Keyboard::isKeyPressed(sf::Keyboard::W)) {

@@ -31,6 +31,7 @@ namespace engine::constants {
     inline constexpr float DEFAULT_PLAYER_DIR_Y = 0;
     inline constexpr float DEFAULT_PLAYER_RADIUS = 20;
     inline constexpr float DEFAULT_PLAYER_SPEED = 200;
+    inline constexpr float DEFAULT_PLAYER_SPRINT_RATION = 1.5;
     inline constexpr float DEFAULT_PLAYER_ROTATE_SPEED = DEG_TO_RAD(120);
 }
 
