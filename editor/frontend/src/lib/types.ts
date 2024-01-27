@@ -27,6 +27,12 @@ export interface Map extends MongoEntity {
     name: string;
     width: number;
     height: number;
+    playerStartX: number;
+    playerStartY: number;
+    playerStartDirectionX: number;
+    playerStartDirectionY: number;
+    enemyStartX?: number;
+    enemyStartY?: number;
     image?: string;
     textures?: Texture[];
     tiles?: Tile[];

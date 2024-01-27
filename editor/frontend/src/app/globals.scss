@@ -37,3 +37,12 @@ body {
     border-2 border-duke-blue outline-none rounded p-4 bg-oxford-blue shadow-md
     focus:shadow-xl focus:bg-darker-oxford-blue transition-all;
 }
+
+.scrollbar-hide::-webkit-scrollbar {
+  display: none;
+}
+
+.scrollbar-hide {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}

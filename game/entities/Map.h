@@ -49,6 +49,9 @@ namespace engine {
 
         std::vector<Sprite*> sprites;
 
+        math::Vec2<float> playerStartPosition;
+        math::Vec2<float> enemyStartPosition;
+
     public:
         Map(
                 const std::set<std::unique_ptr<Entity>>& container,

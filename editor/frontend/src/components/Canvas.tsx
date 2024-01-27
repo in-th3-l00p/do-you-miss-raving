@@ -55,15 +55,15 @@ export function Canvas() {
         switch (mode) {
             case EditorMode.Select:
                 destructor = selectMode(canvas, map, setSelectedTile, (hitX, hitY) => {
-                    if (
-                        selectedTile &&
-                        selectedTile.x === hitX &&
-                        selectedTile.y === hitY
-                    ) {
-                        setSelectedTile(null);
-                        return;
-                    }
-                    setSelectedTile({x: hitX, y: hitY});
+                    setSelectedTile(selectedTile => {
+                        if (
+                            selectedTile &&
+                            selectedTile.x === hitX &&
+                            selectedTile.y === hitY
+                        )
+                            return null;
+                        return {x: hitX, y: hitY};
+                    })
                 });
                 break;
             case EditorMode.Fill:

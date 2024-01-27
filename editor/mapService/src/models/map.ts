@@ -22,6 +22,42 @@ const mapSchema = new mongoose.Schema({
         max: 100,
         required: true
     },
+    playerStartX: {
+        type: Number,
+        min: 0,
+        required: true,
+        default: 0
+    },
+    playerStartY: {
+        type: Number,
+        min: 0,
+        required: true,
+        default: 0
+    },
+    playerStartDirectionX: {
+        type: Number,
+        min: 0,
+        max: 1,
+        required: true,
+        default: 1
+    },
+    playerStartDirectionY: {
+        type: Number,
+        min: 0,
+        max: 1,
+        required: true,
+        default: 0
+    },
+    enemyStartX: {
+        type: Number,
+        min: 0,
+        required: false
+    },
+    enemyStartY: {
+        type: Number,
+        min: 0,
+        required: false
+    },
     image: {
         type: String,
         required: false
