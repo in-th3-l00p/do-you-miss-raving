@@ -5,6 +5,9 @@ import React from "react";
 import {Point} from "@/lib/contexts/editor";
 import {VisualizeMode} from "@/components/Canvas";
 
+const TILE_SIZE = 64;
+const PLAYER_SIZE = 20;
+
 export function renderMap(
     ctx: CanvasRenderingContext2D,
     map: Map,
@@ -21,6 +24,7 @@ export function renderMap(
 
     const tileWidth = width / map.width;
     const tileHeight = height / map.height;
+    const textureSize = Math.min(tileWidth, tileHeight);
 
     for (let x = 0; x < map.width; x++) {
         for (let y = 0; y < map.height; y++) {
@@ -31,39 +35,60 @@ export function renderMap(
                 case VisualizeMode.Texture:
                     if (!tile.empty) {
                         if (tile.texture !== undefined) {
-                            ctx.drawImage(images[tile.texture], x * tileWidth, y * tileHeight, tileWidth, tileHeight);
+                            ctx.drawImage(images[tile.texture], x * textureSize, y * textureSize, textureSize, textureSize);
                         } else {
                             ctx.fillStyle = "white";
-                            ctx.fillRect(x * tileWidth, y * tileHeight, tileWidth, tileHeight);
+                            ctx.fillRect(x * textureSize, y * textureSize, textureSize, textureSize);
                         }
                     } else {
                         ctx.strokeStyle = "white";
-                        ctx.strokeRect(x * tileWidth, y * tileHeight, tileWidth, tileHeight);
+                        ctx.strokeRect(x * textureSize, y * textureSize, textureSize, textureSize);
                     }
 
                     if (x === selectedTile?.x && y === selectedTile?.y) {
                         ctx.fillStyle = "rgba(255, 255, 255, 0.5)";
-                        ctx.fillRect(x * tileWidth, y * tileHeight, tileWidth, tileHeight);
+                        ctx.fillRect(x * textureSize, y * textureSize, textureSize, textureSize);
                     }
                     break;
                 case VisualizeMode.Ceiling:
                     if (tile.ceiling !== undefined) {
-                        ctx.drawImage(images[tile.ceiling], x * tileWidth, y * tileHeight, tileWidth, tileHeight);
+                        ctx.drawImage(images[tile.ceiling], x * textureSize, y * textureSize, textureSize, textureSize);
                     } else {
                         ctx.fillStyle = "white";
-                        ctx.fillRect(x * tileWidth, y * tileHeight, tileWidth, tileHeight);
+                        ctx.fillRect(x * textureSize, y * textureSize, textureSize, textureSize);
                     }
                     break;
                 case VisualizeMode.Floor:
                     if (tile.floor !== undefined) {
-                        ctx.drawImage(images[tile.floor], x * tileWidth, y * tileHeight, tileWidth, tileHeight);
+                        ctx.drawImage(images[tile.floor], x * textureSize, y * textureSize, textureSize, textureSize);
                     } else {
                         ctx.fillStyle = "white";
-                        ctx.fillRect(x * tileWidth, y * tileHeight, tileWidth, tileHeight);
+                        ctx.fillRect(x * textureSize, y * textureSize, textureSize, textureSize);
                     }
                     break;
             }
         }
+    }
+
+    ctx.fillStyle = "green";
+    ctx.arc(
+        map.playerStartX * textureSize / TILE_SIZE,
+        map.playerStartY * textureSize / TILE_SIZE,
+        PLAYER_SIZE * (textureSize / TILE_SIZE),
+        0, 2 * Math.PI
+    );
+    ctx.fill();
+    ctx.closePath();
+
+    if (map.enemyStartX !== undefined && map.enemyStartY !== undefined) {
+        ctx.fillStyle = "red";
+        ctx.arc(
+            map.enemyStartX * textureSize / TILE_SIZE,
+            map.enemyStartY * textureSize / TILE_SIZE,
+            PLAYER_SIZE * (textureSize / TILE_SIZE),
+            0, 2 * Math.PI
+        );
+        ctx.fill();
     }
 }
 

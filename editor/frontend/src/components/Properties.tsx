@@ -35,7 +35,7 @@ function TextureField({texture, label, className, onChange}: TextureFieldProps) 
                         if (onChange)
                             onChange(e.target.value);
                     }}
-                    value={texture?._id || ""}
+                    defaultValue={texture?._id || ""}
                 >
                     <option value={""}>None</option>
                     {map?.textures?.map((texture, index) => (
@@ -216,6 +216,24 @@ export function Properties() {
                                 type="number"
                                 name={"enemyStartX"} id={"enemyStartX"}
                                 className={"input"} defaultValue={map?.enemyStartX}
+                                onChange={(e) => {
+                                    if (isNaN(parseFloat(e.target.value)))
+                                        return;
+                                    fetch(`${API}/api/maps/${map!._id}/enemyCoord`, {
+                                        method: "PUT",
+                                        headers: {
+                                            "Content-Type": "application/json"
+                                        },
+                                        body: JSON.stringify({
+                                            x: e.target.value, y: map?.enemyStartY
+                                        })
+                                    })
+                                        .then(() => setMap( map => ({
+                                            ...map!,
+                                            enemyStartX: parseFloat(e.target.value),
+                                            enemyStartY: map?.enemyStartY
+                                        })));
+                                }}
                             />
                         </div>
 
@@ -225,6 +243,24 @@ export function Properties() {
                                 type="number"
                                 name={"enemyStartY"} id={"enemyStartY"}
                                 className={"input"} defaultValue={map?.enemyStartY}
+                                onChange={(e) => {
+                                    if (isNaN(parseFloat(e.target.value)))
+                                        return;
+                                    fetch(`${API}/api/maps/${map!._id}/enemyCoord`, {
+                                        method: "PUT",
+                                        headers: {
+                                            "Content-Type": "application/json"
+                                        },
+                                        body: JSON.stringify({
+                                            y: e.target.value, x: map?.enemyStartX
+                                        })
+                                    })
+                                        .then(() => setMap( map => ({
+                                            ...map!,
+                                            enemyStartY: parseFloat(e.target.value),
+                                            enemyStartX: map?.enemyStartX
+                                        })));
+                                }}
                             />
                         </div>
                     </>
@@ -307,7 +343,7 @@ export function Properties() {
                 <input
                     type={"checkbox"}
                     className={"w-4 h-4 m-4"}
-                    checked={getTile(map, selectedTile).empty}
+                    defaultChecked={getTile(map, selectedTile).empty}
                     onChange={(e) => {
                         const tile = getTile(map, selectedTile);
                         tile.empty = e.target.checked;
