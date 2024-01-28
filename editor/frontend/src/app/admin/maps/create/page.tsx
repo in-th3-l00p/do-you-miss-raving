@@ -14,7 +14,7 @@ export default function CreateMap() {
         <div className={"background flex-grow"}>
             <Title text={"Create Map"} />
             <form
-                className={"flex flex-col items-center justify-center gap-8"}
+                className={"flex flex-col items-center justify-center gap-8 mt-4"}
                 onSubmit={(e) => {
                     e.preventDefault();
                     setErrors({});
