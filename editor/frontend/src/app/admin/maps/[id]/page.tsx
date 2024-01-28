@@ -6,7 +6,7 @@ import React, {useEffect, useState} from "react";
 import {API} from "@/lib/constants";
 import EditorContext, {EditorMode, Point} from "@/lib/contexts/editor";
 import {Canvas} from "@/app/admin/maps/[id]/lib/Canvas";
-import Textures from "@/app/admin/maps/[id]/lib/Textures";
+import Textures from "@/app/admin/maps/[id]/lib/textures/Textures";
 import Title from "@/app/admin/maps/[id]/lib/Title";
 import {Properties} from "@/app/admin/maps/[id]/lib/properties/Properties";
 import {getTexture} from "@/lib/utils";

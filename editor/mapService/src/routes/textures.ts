@@ -1,7 +1,10 @@
 import express, {Request, Response} from 'express';
 import Map from '../models/map';
-import {body, matchedData, validationResult} from 'express-validator';
+import {body, matchedData, param, validationResult} from 'express-validator';
 import multer from "multer";
+import {validateRequest} from "../utils";
+import fs from "fs";
+import path from "path";
 
 const router = express.Router();
 
@@ -56,5 +59,46 @@ router.post(
         res.send(texture);
     }
 );
+
+router.put(
+    "/:textureId",
+    upload.single("image"),
+    param("textureId").isMongoId(),
+    body("label")
+        .notEmpty()
+        .isString()
+        .trim()
+        .isLength({ min: 3, max: 255 }),
+    validateRequest,
+    async (req: MulterRequest, res: Response) => {
+        const data = matchedData(req);
+        try {
+            const map = await Map.findOne({
+                "_id": data.mapId
+            });
+            if (!map)
+                return res.status(404).json({error: "Map not found"});
+            map.textures.forEach((texture) => {
+            });
+
+            for (let texture of map.textures) {
+                if (texture._id == data.textureId) {
+                    texture.label = data.label;
+                    if (req.file) {
+                        console.log(path.join(process.cwd(), "public", texture.path!));
+                        fs.rm(path.join(process.cwd(), "public", texture.path!), () => {});
+                        texture.filetype = req.file.mimetype;
+                        texture.path = req.file.path;
+                    }
+
+                    await map.save();
+                }
+            }
+
+            res.send(map.textures);
+        } catch (err) {
+            res.status(404).json({error: "Map not found"});
+        }
+    });
 
 export default router;

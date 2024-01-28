@@ -2,64 +2,16 @@ import React from "react";
 import EditorContext from "@/lib/contexts/editor";
 import {API} from "@/lib/constants";
 import * as Icon from "react-feather";
-import FormGroup from "@/components/form/FormGroup";
-import FormInput from "@/components/form/FormInput";
 import {Panel} from "@/components/Panel";
-import {Modal} from "@/components/Modal";
-
-interface UploadModalProps {
-    opened: boolean;
-    setOpened: React.Dispatch<React.SetStateAction<boolean>>;
-}
-
-function UploadModal({ opened, setOpened }: UploadModalProps) {
-    const {map, setMap} = React.useContext(EditorContext);
-
-    return (
-        <Modal
-            title={"Upload"}
-            opened={opened}
-            setOpened={setOpened}
-        >
-            <form onSubmit={(e) => {
-                e.preventDefault();
-                const form = e.target as HTMLFormElement;
-                const formData = new FormData(form);
-                fetch(`${API}/api/maps/${map!._id}/textures`, {
-                    method: "POST",
-                    body: formData,
-                })
-                    .then((resp) => {
-                        return resp.json();
-                    })
-                    .then((texture) => {
-                        const newMap = {...map!};
-                        newMap.textures?.push(texture);
-                        setMap(newMap);
-                    })
-                    .finally(() => setOpened(false));
-
-            }}>
-                <FormGroup className={"mb-4"}>
-                    <label htmlFor={"label"}>Label</label>
-                    <FormInput type={"text"} name={"label"} id={"label"} />
-                </FormGroup>
-                <FormGroup className={"mb-8"}>
-                    <label htmlFor={"file"}>File</label>
-                    <FormInput type={"file"} name={"image"} id={"image"} />
-                </FormGroup>
-
-                <button type={"submit"} className={"btn block mx-auto"}>
-                    Upload
-                </button>
-            </form>
-        </Modal>
-    )
-}
+import {UploadModal} from "@/app/admin/maps/[id]/lib/textures/UploadModal";
+import {Texture} from "@/lib/types";
+import EditModal from "@/app/admin/maps/[id]/lib/textures/EditModal";
 
 export default function Textures() {
-    const {map} = React.useContext(EditorContext);
+    const {map, setMap} = React.useContext(EditorContext);
     const [uploadOpened, setUploadOpened] = React.useState(false);
+
+    const [selectedTexture, setSelectedTexture] = React.useState<Texture | null>(null);
 
     if (!map)
         return (
@@ -71,6 +23,18 @@ export default function Textures() {
                 opened={uploadOpened}
                 setOpened={setUploadOpened}
             />
+            {selectedTexture && (
+                <EditModal
+                    map={map}
+                    texture={selectedTexture}
+                    setMap={setMap}
+                    open={!!selectedTexture}
+                    setOpened={(opened) => {
+                        if (!opened)
+                            setSelectedTexture(null);
+                    }}
+                />
+            )}
             <Panel title={"Textures"}>
                 <div className={"flex flex-wrap gap-8"}>
                     {map.textures?.map((texture, index) => (
@@ -81,6 +45,7 @@ export default function Textures() {
                                 "text-center p-4 bg-oxford-blue rounded-md w-48 " +
                                 "hover:bg-darker-oxford-blue hover:shadow-xl transition-all"
                             }
+                            onClick={() => setSelectedTexture(texture)}
                         >
                             <img
                                 src={`${API}/api/maps/${texture.path}`}
