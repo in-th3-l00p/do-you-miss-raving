@@ -1,4 +1,4 @@
-import { Map } from "../types"
+import {Map, Sprite} from "../types"
 import React from "react";
 
 export type Point = {
@@ -22,6 +22,9 @@ export interface EditorContextType {
     selectedTile: Point | null;
     setSelectedTile: React.Dispatch<React.SetStateAction<Point | null>>;
 
+    selectedSprite: Sprite | null;
+    setSelectedSprite: React.Dispatch<React.SetStateAction<Sprite | null>>;
+
     mode: EditorMode;
     setMode: React.Dispatch<React.SetStateAction<EditorMode>>;
 
@@ -37,7 +40,9 @@ const EditorContext = React.createContext<EditorContextType>({
     mode: EditorMode.Select,
     setMode: () => {},
     images: {},
-    setImages: () => {}
+    setImages: () => {},
+    selectedSprite: null,
+    setSelectedSprite: () => {}
 });
 
 export default EditorContext;

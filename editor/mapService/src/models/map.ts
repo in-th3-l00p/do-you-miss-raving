@@ -1,10 +1,5 @@
 import mongoose = require("mongoose");
 
-enum SpriteAction {
-    STATIC,
-    ENEMY
-}
-
 const mapSchema = new mongoose.Schema({
     name: {
         type: String,
@@ -89,6 +84,10 @@ const mapSchema = new mongoose.Schema({
         }
     }],
     sprites: [{
+        name: {
+            type: String,
+            required: true
+        },
         texture: {
             type: String,
             ref: "Texture",
@@ -108,11 +107,6 @@ const mapSchema = new mongoose.Schema({
         },
         height: {
             type: Number,
-            required: true
-        },
-        action: {
-            type: String,
-            enum: SpriteAction,
             required: true
         }
     }]

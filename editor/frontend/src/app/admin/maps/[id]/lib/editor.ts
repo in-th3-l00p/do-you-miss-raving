@@ -1,9 +1,7 @@
 import {Map} from "@/lib/types";
-import {getTexture} from "@/lib/utils";
-import {API} from "@/lib/constants";
 import React from "react";
 import {Point} from "@/lib/contexts/editor";
-import {VisualizeMode} from "@/components/Canvas";
+import {VisualizeMode} from "@/app/admin/maps/[id]/lib/Canvas";
 
 const TILE_SIZE = 64;
 const PLAYER_SIZE = 20;
@@ -168,15 +166,6 @@ export function drawMode(
             }
         }
     }
-
-    const onClick = (e: MouseEvent) => {
-        const tileSize = canvas.width / map.width;
-        const hitX = Math.floor(e.offsetX / tileSize);
-        const hitY = Math.floor(e.offsetY / tileSize);
-        if (onTileDraw)
-            onTileDraw(hitX, hitY);
-    }
-
     canvas.addEventListener("mousemove", onMove);
     canvas.addEventListener("mousedown", onMove);
     return () => {

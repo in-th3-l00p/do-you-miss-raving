@@ -1,6 +1,6 @@
 import React, {useEffect} from "react";
 import EditorContext, {EditorMode} from "@/lib/contexts/editor";
-import selectMode, {drawMode, renderMap, setupMapCanvas} from "@/lib/editor";
+import selectMode, {drawMode, renderMap, setupMapCanvas} from "@/app/admin/maps/[id]/lib/editor";
 import {API} from "@/lib/constants";
 import {getTile} from "@/lib/utils";
 import FormGroup from "@/components/form/FormGroup";
@@ -13,7 +13,7 @@ export enum VisualizeMode {
 }
 
 export function Canvas() {
-    const {map, selectedTile, setSelectedTile, mode, setMode, images} = React.useContext(EditorContext);
+    const {map, selectedTile, setSelectedTile, setSelectedSprite, mode, setMode, images} = React.useContext(EditorContext);
     const canvasRef = React.useRef<HTMLCanvasElement>(null);
     const [fillTexture, setFillTexture] = React.useState(map?.textures?.length! > 0 ? map!.textures![0]._id : undefined);
     const [visualizeMode, setVisualizeMode] = React.useState<VisualizeMode>(VisualizeMode.Texture);
@@ -55,6 +55,7 @@ export function Canvas() {
         switch (mode) {
             case EditorMode.Select:
                 destructor = selectMode(canvas, map, setSelectedTile, (hitX, hitY) => {
+                    setSelectedSprite(null);
                     setSelectedTile(selectedTile => {
                         if (
                             selectedTile &&

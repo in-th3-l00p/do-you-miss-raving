@@ -1,12 +1,12 @@
-import express, {Request, Response, NextFunction} from "express";
+import express from "express";
 import mongoose from "mongoose";
 import bodyParser from "body-parser";
 import MapRouter from "./routes/maps";
 import TextureRouter from "./routes/textures";
 import TileRouter from "./routes/tiles";
-import { param } from "express-validator";
+import SpriteRouter from "./routes/sprites";
+import {param} from "express-validator";
 import cors from "cors";
-import {resourceLimits} from "worker_threads";
 
 const app = express();
 
@@ -25,6 +25,11 @@ app.use(
     "/api/maps/:mapId/tiles",
     param("mapId").isMongoId(),
     TileRouter
+);
+app.use(
+    "/api/maps/:mapId/sprites",
+    param("mapId").isMongoId(),
+    SpriteRouter
 );
 
 mongoose.connect(process.env.MONGO_URL!!)

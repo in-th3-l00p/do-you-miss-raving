@@ -1,19 +1,21 @@
 "use client";
 
 import "../../style.scss";
-import {Map, Texture} from "@/lib/types";
+import {Map, Sprite, Texture} from "@/lib/types";
 import React, {useEffect, useState} from "react";
 import {API} from "@/lib/constants";
 import EditorContext, {EditorMode, Point} from "@/lib/contexts/editor";
-import {Canvas} from "@/components/Canvas";
-import Textures from "@/components/Textures";
-import Title from "@/components/Title";
-import {Properties} from "@/components/Properties";
+import {Canvas} from "@/app/admin/maps/[id]/lib/Canvas";
+import Textures from "@/app/admin/maps/[id]/lib/Textures";
+import Title from "@/app/admin/maps/[id]/lib/Title";
+import {Properties} from "@/app/admin/maps/[id]/lib/properties/Properties";
 import {getTexture} from "@/lib/utils";
+import Sprites from "@/app/admin/maps/[id]/lib/Sprites";
 
 export default function MapEditor({ params }: { params: { id: string } }) {
     const [map, setMap] = useState<Map | null>(null);
     const [selectedTile, setSelectedTile] = useState<Point | null>(null);
+    const [selectedSprite, setSelectedSprite] = useState<Sprite | null>(null);
     const [mode, setMode] = useState<EditorMode>(EditorMode.Select);
     const [images, setImages] = useState<Record<string, HTMLImageElement>>({});
 
@@ -46,6 +48,7 @@ export default function MapEditor({ params }: { params: { id: string } }) {
             <EditorContext.Provider value={{
                 map, setMap,
                 selectedTile, setSelectedTile,
+                selectedSprite, setSelectedSprite,
                 mode, setMode,
                 images, setImages
             }}>
@@ -56,6 +59,7 @@ export default function MapEditor({ params }: { params: { id: string } }) {
                     <Canvas />
                     <Properties />
                     <Textures />
+                    <Sprites />
                 </section>
             </EditorContext.Provider>
         </section>

@@ -15,6 +15,7 @@ export interface Tile extends MongoEntity {
 }
 
 export interface Sprite extends MongoEntity {
+    name: string;
     texture: string;
     x: number;
     y: number;
