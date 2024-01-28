@@ -44,6 +44,17 @@ namespace engine {
 
         void update(float deltaTime) override;
     };
+
+    class EditorMapScene: public Scene {
+    public:
+        explicit EditorMapScene(
+                sf::RenderWindow &window,
+                std::unique_ptr<Scene>& sceneRef,
+                std::string id
+                );
+
+        void update(float deltaTime) override;
+    };
 } // engine
 
 #endif //RAYGAME_SCENE_H

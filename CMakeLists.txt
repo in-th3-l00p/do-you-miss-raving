@@ -6,6 +6,10 @@ set(CMAKE_CXX_STANDARD 17)
 
 find_package(OpenGL REQUIRED)
 include_directories(${OPENGL_INCLUDE_DIR})
+include(FetchContent)
+FetchContent_Declare(cpr GIT_REPOSITORY https://github.com/libcpr/cpr.git
+        GIT_TAG 871ed52d350214a034f6ef8a3b8f51c5ce1bd400) # The commit hash for 1.9.0. Replace with the latest from: https://github.com/libcpr/cpr/releases
+FetchContent_MakeAvailable(cpr)
 
 add_executable(raygame main.cpp
         engine/Game.cpp
@@ -44,7 +48,8 @@ if (WIN32)
 endif ()
 
 find_package(SFML COMPONENTS system window graphics CONFIG REQUIRED)
-target_link_libraries(raygame PRIVATE sfml-system sfml-graphics sfml-window ${OPENGL_LIBRARIES})
+target_link_libraries(raygame PRIVATE sfml-system sfml-graphics sfml-window ${OPENGL_LIBRARIES} cpr::cpr)
+
 
 target_include_directories(raygame PRIVATE
         ${CMAKE_SOURCE_DIR}/lib/imgui

@@ -40,10 +40,10 @@ namespace engine {
         line[1].position = sf::Vector2f(position.x + direction.x * 30, position.y + direction.y * 30);
         line[0].color = sf::Color::Red;
         line[1].color = sf::Color::Red;
-        if (sf::Keyboard::isKeyPressed(sf::Keyboard::M)) {
-            window.draw(circle);
-            window.draw(line);
-        }
+//        if (sf::Keyboard::isKeyPressed(sf::Keyboard::M)) {
+//            window.draw(circle);
+//            window.draw(line);
+//        }
     }
 
     void Player::renderStaminaBar(sf::RenderWindow &window) {

@@ -4,10 +4,12 @@
 
 #include <filesystem>
 #include <iostream>
+#include <cpr/cpr.h>
 #include "imgui.h"
 #include "imgui-SFML.h"
+#include "../../utils/json.hpp"
 #include "UserInterface.h"
-#include "../../engine/Scene.h"
+#include "../entities/SpriteEntity.h"
 
 namespace engine::ui {
     // font loader implementation
@@ -98,6 +100,20 @@ namespace engine::ui {
             std::unique_ptr<Scene> &sceneRef
     ) : Scene(window, sceneRef) {
         logo.loadFromFile((paths::IMAGES_PATH / "logo.png").string());
+
+        cpr::Response response = cpr::Get(cpr::Url{"https://doyoumissraving.intheloop.bio/api/maps"});
+        if (response.status_code != 200) {
+            std::cerr << "Error: " << response.status_code << std::endl;
+            return;
+        }
+
+        nlohmann::json json = nlohmann::json::parse(response.text);
+        for (auto & map : json) {
+            maps.push_back({
+                map["_id"],
+                map["name"]
+            });
+        }
     }
 
     void MenuScene::update(float deltaTime) {
@@ -136,6 +152,19 @@ namespace engine::ui {
         ImGui::Button("Start test scene", {200.f, 50.f});
         if (ImGui::IsItemClicked())
             sceneRef = std::make_unique<TestScene>(window, sceneRef);
+
+        ImGui::End();
+
+        ImGui::Begin("maps");
+        ImGui::SetWindowSize("maps", ImVec2(215, 200));
+
+        for (auto& map: maps) {
+            ImGui::Button(map.name.c_str(), {200.f, 50.f});
+            if (ImGui::IsItemClicked()) {
+                std::unique_ptr<EditorMapScene> scene = std::make_unique<EditorMapScene>(window, sceneRef, map.id);
+                sceneRef = std::move(scene);
+            }
+        }
 
         ImGui::End();
     }

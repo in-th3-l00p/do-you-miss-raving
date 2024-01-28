@@ -70,6 +70,11 @@ namespace engine::ui {
         bool isPressed(const sf::Vector2f& mousePos) const;
     };
 
+    struct MapDto {
+        std::string id;
+        std::string name;
+    };
+
     class MenuScene: public engine::Scene {
     private:
         float menuWidth = 500.f;
@@ -77,6 +82,7 @@ namespace engine::ui {
         float margin = 10.f;
 
         sf::Texture logo;
+        std::vector<MapDto> maps;
 
     public:
         explicit MenuScene(

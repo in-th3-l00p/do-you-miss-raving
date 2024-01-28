@@ -34,8 +34,10 @@ namespace engine {
 
     public:
         Raycaster(
-                const std::set<std::unique_ptr<Entity>>& container,
-                const std::map<std::string, Entity*>& labels
+                std::set<std::unique_ptr<Entity>>& container,
+                std::map<std::string, Entity*>& labels,
+                engine::Player& player,
+                engine::Map& map
                 );
         ~Raycaster() override = default;
         void render(sf::RenderWindow& window) override;

@@ -35,6 +35,7 @@ namespace engine {
     }
 
     void Enemy::update(float deltaTime) {
+        std::cout << position.x << ' ' << position.y << std::endl;
         if (calculatingPath)
             return;
         float speedLeft = speed * deltaTime;

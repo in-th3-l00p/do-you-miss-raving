@@ -17,7 +17,8 @@ namespace engine {
         if (!loadSuccessful) {
             std::cerr << "Failed to load texture from path: " << path << std::endl;
         }
-        sprite.setTexture(*texture);
+
+        sprite = std::make_unique<sf::Sprite>(*texture);
     }
 
     Map::Map(
@@ -60,6 +61,30 @@ namespace engine {
 
     void Map::addSprite(Sprite* sprite) {
         sprites.push_back(sprite);
+    }
+
+    const math::Vec2<float> &Map::getPlayerStartPosition() const {
+        return playerStartPosition;
+    }
+
+    void Map::setPlayerStartPosition(const math::Vec2<float> &playerStartPosition) {
+        Map::playerStartPosition = playerStartPosition;
+    }
+
+    const math::Vec2<float> &Map::getPlayerStartDirection() const {
+        return playerStartDirection;
+    }
+
+    void Map::setPlayerStartDirection(const math::Vec2<float> &playerStartDirection) {
+        Map::playerStartDirection = playerStartDirection;
+    }
+
+    const math::Vec2<float> &Map::getEnemyStartPosition() const {
+        return enemyStartPosition;
+    }
+
+    void Map::setEnemyStartPosition(const math::Vec2<float> &enemyStartPosition) {
+        Map::enemyStartPosition = enemyStartPosition;
     }
 
     TestMap::TestMap(
@@ -113,10 +138,10 @@ namespace engine {
                 background.setFillColor(sf::Color::Magenta);
                 window.draw(background);
 
-                sprite->sprite.setPosition(sprite->position.x, sprite->position.y);
-                sprite->sprite.setScale(sprite->size.x / sprite->texture->getSize().x,
+                sprite->sprite->setPosition(sprite->position.x, sprite->position.y);
+                sprite->sprite->setScale(sprite->size.x / sprite->texture->getSize().x,
                                         sprite->size.y / sprite->texture->getSize().y);
-                window.draw(sprite->sprite);
+                window.draw(*sprite->sprite);
 
                 sf::RectangleShape point;
                 point.setPosition(sprite->position.x, sprite->position.y);

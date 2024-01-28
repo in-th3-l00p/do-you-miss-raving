@@ -16,12 +16,12 @@
 namespace engine {
     // to do: fix memory leak
     struct Sprite {
-        Sprite(std::string path, engine::math::Vec2<float> position, engine::math::Vec2<float> size);
         sf::Texture *texture;
-        sf::Sprite sprite;
+        std::unique_ptr<sf::Sprite> sprite;
         engine::math::Vec2<float> position; // ruxy
         engine::math::Vec2<float> size;
 
+        Sprite(std::string path, engine::math::Vec2<float> position, engine::math::Vec2<float> size);
         ~Sprite() = default;
     };
 
@@ -50,6 +50,7 @@ namespace engine {
         std::vector<Sprite*> sprites;
 
         math::Vec2<float> playerStartPosition;
+        math::Vec2<float> playerStartDirection;
         math::Vec2<float> enemyStartPosition;
 
     public:
@@ -71,6 +72,21 @@ namespace engine {
         [[nodiscard]] ull getHeight() const;
 
         Tile & getTile(int x, int y);
+
+        const math::Vec2<float> &getPlayerStartPosition() const;
+
+        void setPlayerStartPosition(const math::Vec2<float> &playerStartPosition);
+
+        const math::Vec2<float> &getPlayerStartDirection() const;
+
+        void setPlayerStartDirection(const math::Vec2<float> &playerStartDirection);
+
+        const math::Vec2<float> &getEnemyStartPosition() const;
+
+        void setEnemyStartPosition(const math::Vec2<float> &enemyStartPosition);
+
+        void render(sf::RenderWindow& window) override {};
+        void update(float deltaTime) override {};
     };
 
     class TestMap: public Map {
