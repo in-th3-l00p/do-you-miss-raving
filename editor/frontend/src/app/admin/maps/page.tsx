@@ -1,16 +1,25 @@
-import "../style.scss";
+"use client"
+
 import {Map} from "@/lib/types";
-import React from "react";
+import React, {useEffect, useState} from "react";
 import Link from "next/link";
 import {API} from "@/lib/constants";
 import Title from "@/components/Title";
 import * as Icon from "react-feather";
+import Loading from "@/components/Loading";
 
 export default async function Maps() {
-    const maps: Map[] = await fetch(`${API}/api/maps`, {
-        "cache": "no-cache"
-    }).then((res) => res.json());
+    const [maps, setMaps] = useState<Map[]>();
+    useEffect(() => {
+        fetch(`${API}/api/maps`, {
+            "cache": "no-cache"
+        })
+            .then((res) => res.json())
+            .then((maps) => setMaps(maps));
+    }, []);
 
+    if (maps === undefined)
+        return <Loading />
     return (
         <div className={"background flex-grow"}>
             <Title text={"Maps"}>

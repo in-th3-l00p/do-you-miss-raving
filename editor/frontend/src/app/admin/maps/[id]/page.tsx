@@ -1,6 +1,5 @@
 "use client";
 
-import "../../style.scss";
 import {Map, Sprite, Texture} from "@/lib/types";
 import React, {useEffect, useState} from "react";
 import {API} from "@/lib/constants";
@@ -11,6 +10,7 @@ import Title from "@/components/Title";
 import {Properties} from "@/app/admin/maps/[id]/lib/properties/Properties";
 import {getTexture} from "@/lib/utils";
 import Sprites from "@/app/admin/maps/[id]/lib/Sprites";
+import Loading from "@/components/Loading";
 
 export default function MapEditor({ params }: { params: { id: string } }) {
     const [map, setMap] = useState<Map | null>(null);
@@ -41,7 +41,7 @@ export default function MapEditor({ params }: { params: { id: string } }) {
     }, [map]);
 
     if (!map || Object.keys(images).length !== map.textures?.length)
-        return <p>loading...</p>;
+        return <Loading />;
     return (
         <section className={"background flex-grow flex flex-col"}>
             <Title text={"Map: " + map.name} />
