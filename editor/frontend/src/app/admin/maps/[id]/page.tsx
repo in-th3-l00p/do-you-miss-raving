@@ -7,7 +7,7 @@ import {API} from "@/lib/constants";
 import EditorContext, {EditorMode, Point} from "@/lib/contexts/editor";
 import {Canvas} from "@/app/admin/maps/[id]/lib/Canvas";
 import Textures from "@/app/admin/maps/[id]/lib/textures/Textures";
-import Title from "@/app/admin/maps/[id]/lib/Title";
+import Title from "@/components/Title";
 import {Properties} from "@/app/admin/maps/[id]/lib/properties/Properties";
 import {getTexture} from "@/lib/utils";
 import Sprites from "@/app/admin/maps/[id]/lib/Sprites";

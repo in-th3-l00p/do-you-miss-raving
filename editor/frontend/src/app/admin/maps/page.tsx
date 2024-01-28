@@ -3,7 +3,7 @@ import {Map} from "@/lib/types";
 import React from "react";
 import Link from "next/link";
 import {API} from "@/lib/constants";
-import Title from "@/app/admin/maps/[id]/lib/Title";
+import Title from "@/components/Title";
 import * as Icon from "react-feather";
 
 export default async function Maps() {

@@ -10,8 +10,12 @@ import cors from "cors";
 
 const app = express();
 
+app.use(bodyParser.urlencoded({
+    extended: false,
+    limit:'100mb',
+    parameterLimit:1000000
+}));
 app.use(bodyParser.json({ limit: "50mb" }));
-app.use(bodyParser.urlencoded({ extended: true, parameterLimit: 50000000 }));
 app.use(cors());
 
 app.use("/api/maps/public", express.static("public"));

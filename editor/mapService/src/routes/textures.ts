@@ -78,15 +78,12 @@ router.put(
             });
             if (!map)
                 return res.status(404).json({error: "Map not found"});
-            map.textures.forEach((texture) => {
-            });
 
             for (let texture of map.textures) {
                 if (texture._id == data.textureId) {
                     texture.label = data.label;
                     if (req.file) {
-                        console.log(path.join(process.cwd(), "public", texture.path!));
-                        fs.rm(path.join(process.cwd(), "public", texture.path!), () => {});
+                        fs.rm(path.join(process.cwd(), texture.path!), () => {});
                         texture.filetype = req.file.mimetype;
                         texture.path = req.file.path;
                     }

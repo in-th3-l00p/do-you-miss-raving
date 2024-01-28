@@ -22,6 +22,10 @@ function onUpdateFormSubmit(
         body: formData,
     })
         .then((resp) => {
+            if (resp.status === 413) {
+                alert("File too large.");
+                return;
+            }
             return resp.json();
         })
         .then((textures) =>

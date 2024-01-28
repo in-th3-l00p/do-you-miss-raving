@@ -1,6 +1,6 @@
 "use client";
 
-import Title from "@/app/admin/maps/[id]/lib/Title";
+import Title from "@/components/Title";
 import "@/app/admin/style.scss";
 import FormInput from "@/components/form/FormInput";
 import FormGroup from "@/components/form/FormGroup";
